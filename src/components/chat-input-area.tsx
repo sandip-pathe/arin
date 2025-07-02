@@ -64,13 +64,10 @@ export function ChatInputArea() {
               </Button>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-2 md:gap-4">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">Summarize</Button>
-              <Button variant="outline" size="sm">Info Extract</Button>
-              <Button variant="outline" size="sm">Visualize</Button>
-            </div>
-            <div className="hidden md:flex flex-grow" />
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:gap-4">
+            <Button variant="outline" size="sm">Summarize</Button>
+            <Button variant="outline" size="sm">Info Extract</Button>
+            <Button variant="outline" size="sm">Visualize</Button>
             <Select defaultValue="indian-law">
               <SelectTrigger className="w-full md:w-[150px] text-xs h-9">
                 <SelectValue placeholder="Jurisdiction" />
