@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,89 +11,190 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Paperclip, Link, Camera, ArrowUp, Sparkles } from "lucide-react"
+import { Paperclip, Link, Camera, ArrowUp, Settings, X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 
 export function ChatInputArea() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [selectedJurisdiction, setSelectedJurisdiction] = useState('indian-law');
+  const [selectedResponseType, setSelectedResponseType] = useState('auto');
+
+  const actionOptions = ['Summarize', 'Info Extract', 'Visualize'];
+  const jurisdictionOptions = [
+    { value: 'indian-law', label: 'Indian Law' },
+    { value: 'us-law', label: 'US Law' },
+    { value: 'eu-law', label: 'EU Law' },
+    { value: 'trade-law', label: 'Trade Law' },
+  ];
+  const responseTypeOptions = [
+    { value: 'fast', label: 'Fast Answer' },
+    { value: 'slow', label: 'Slow Thinking' },
+    { value: 'auto', label: 'Auto' },
+  ];
+
   return (
-    <div className="p-4 bg-transparent">
-      <Card className="rounded-2xl shadow-2xl shadow-primary/10">
+    <div className="bg-transparent">
+      <Card className="bg-white rounded-2xl border-2 border-gray-400 border-dashed mx-16 my-16 shadow-none">
         <CardContent className="p-2 md:p-4">
-          <div className="relative">
+          <div className="relative pb-8">
             <Textarea
+              autoFocus
               placeholder="Paste text, upload a file, or ask a question..."
-              className="min-h-[80px] w-full rounded-xl border-2 border-input bg-background pr-24 pl-12 py-4 resize-none focus-visible:ring-primary"
+              className="min-h-[180px] bg-white border-none w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
+              style={{ 
+                maxHeight: '80vh',
+                overflowY: 'auto',
+              }}
             />
-            <div className="absolute left-3 top-4 flex items-center gap-1">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground h-8 w-8 hover:text-primary">
-                      <Paperclip className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Upload File</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground h-8 w-8 hover:text-primary">
-                      <Link className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add Link</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground h-8 w-8 hover:text-primary">
-                      <Camera className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Capture Image</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <Button size="icon" className="rounded-full h-10 w-10">
-                <ArrowUp className="h-5 w-5" />
+            <div className="absolute bottom-0 left-4 right-4 flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-muted-foreground h-10 w-10">
+                        <Paperclip className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Upload File</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-muted-foreground h-10 w-10 hover:text-primary">
+                        <Link className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add Link</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-muted-foreground h-10 w-10 hover:text-primary">
+                        <Camera className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Capture Image</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-muted-foreground h-10 w-10 hover:text-primary"
+                        onClick={() => setIsModalOpen(true)}
+                      >
+                        <Settings className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Customize</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Button size="icon" className="rounded-full h-10 w-10 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+                <ArrowUp className="h-5 w-5 text-white" />
                 <span className="sr-only">Send</span>
               </Button>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:gap-4">
-            <Button variant="outline" size="sm">Summarize</Button>
-            <Button variant="outline" size="sm">Info Extract</Button>
-            <Button variant="outline" size="sm">Visualize</Button>
-            <Select defaultValue="indian-law">
-              <SelectTrigger className="w-full md:w-[150px] text-xs h-9">
-                <SelectValue placeholder="Jurisdiction" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="indian-law">Indian Law</SelectItem>
-                <SelectItem value="us-law">US Law</SelectItem>
-                <SelectItem value="eu-law">EU Law</SelectItem>
-                <SelectItem value="trade-law">Trade Law</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="auto">
-              <SelectTrigger className="w-full md:w-[150px] text-xs h-9">
-                <Sparkles className="mr-2 h-4 w-4 text-accent" />
-                <SelectValue placeholder="Response Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fast">Fast Answer</SelectItem>
-                <SelectItem value="slow">Slow Thinking</SelectItem>
-                <SelectItem value="auto">Auto</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </CardContent>
       </Card>
+
+      {/* Customization Modal */}
+      {isModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div 
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-lg shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">Customize Options</h3>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-muted-foreground"
+                onClick={() => setIsModalOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Action Options */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 text-muted-foreground">Action Options</h4>
+                <div className="flex flex-wrap gap-2">
+                  {actionOptions.map((action) => (
+                    <Button
+                      key={action}
+                      variant={selectedAction === action ? "default" : "outline"}
+                      className={
+                        selectedAction === action 
+                          ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0" 
+                          : ""
+                      }
+                      onClick={() => setSelectedAction(action)}
+                    >
+                      {action}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Jurisdiction Options */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 text-muted-foreground">Jurisdiction</h4>
+                <div className="flex flex-wrap gap-2">
+                  {jurisdictionOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      variant={selectedJurisdiction === option.value ? "default" : "outline"}
+                      className={
+                        selectedJurisdiction === option.value 
+                          ? "bg-gradient-to-r from-green-500 to-teal-500 text-white border-0" 
+                          : ""
+                      }
+                      onClick={() => setSelectedJurisdiction(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Response Type Options */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 text-muted-foreground">Response Type</h4>
+                <div className="flex flex-wrap gap-2">
+                  {responseTypeOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      variant={selectedResponseType === option.value ? "default" : "outline"}
+                      className={
+                        selectedResponseType === option.value 
+                          ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0" 
+                          : ""
+                      }
+                      onClick={() => setSelectedResponseType(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

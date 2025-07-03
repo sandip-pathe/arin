@@ -86,3 +86,17 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* For Webkit browsers */
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: #c7c7c7;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
