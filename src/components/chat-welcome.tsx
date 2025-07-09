@@ -8,8 +8,8 @@ export function ChatWelcome() {
   const displayName = user?.displayName?.split(' ')[0] || 'User';
 
   return (
-    <div className="flex h-full flex-col items-center justify-center p-4">
-      <div className="mx-auto max-w-4xl text-center">
+    <div className="flex flex-col items-center justify-center p-4">
+      <div className="mx-auto max-w-4xl text-start">
           <h1 className="mt-8 font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Welcome {displayName},
