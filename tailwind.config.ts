@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Source Sans Pro"', 'sans-serif'],
-        headline: ['"Playfair Display"', 'serif'],
-        logo: ['"League Spartan"', 'sans-serif'],
+        body: ['"Inter"', 'sans-serif'],
+        headline: ['"Space Grotesk"', 'sans-serif'],
+        logo: ['"Space Grotesk"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

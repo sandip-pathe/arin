@@ -1,24 +1,46 @@
 'use client'
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Paperclip, Link, Camera, ArrowUp, Settings, X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { useToast } from '@/hooks/use-toast';
+import { extractText } from '@/lib/file-utils';
+
 
 export function ChatInputArea() {
+  const [inputText, setInputText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [selectedJurisdiction, setSelectedJurisdiction] = useState('indian-law');
   const [selectedResponseType, setSelectedResponseType] = useState('auto');
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await extractText(file);
+      setInputText(prev => prev ? `${prev}\n\n---
+      \n\n${text}` : text);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error reading file",
+        description: error.message,
+      });
+    } finally {
+      // Reset the file input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const actionOptions = ['Summarize', 'Info Extract', 'Visualize'];
   const jurisdictionOptions = [
@@ -34,7 +56,15 @@ export function ChatInputArea() {
   ];
 
   return (
-    <div className="bg-transparent">
+    <>
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        onChange={handleFileChange}
+        className="hidden" 
+        accept=".pdf,.doc,.docx,.txt,.md"
+      />
+      <div className="bg-transparent">
       <Card className=" flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed my-auto mx-16 shadow-none">
         <CardContent className="p-2 md:p-4">
           <div className="relative pb-8">
@@ -42,6 +72,8 @@ export function ChatInputArea() {
               autoFocus
               placeholder="Paste text, upload a file, or ask a question..."
               className="min-h-[180px] bg-white border-none w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
               style={{ 
                 maxHeight: '80vh',
                 overflowY: 'auto',
@@ -52,7 +84,7 @@ export function ChatInputArea() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="text-muted-foreground h-10 w-10">
+                      <Button variant="ghost" size="icon" className="text-muted-foreground h-10 w-10" onClick={() => fileInputRef.current?.click()}>
                         <Paperclip className="h-5 w-5" />
                       </Button>
                     </TooltipTrigger>
@@ -196,5 +228,6 @@ export function ChatInputArea() {
         </div>
       )}
     </div>
+    </>
   )
 }
