@@ -10,8 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Source Sans Pro', 'sans-serif'],
-        headline: ['Playfair Display', 'serif'],
+        body: ['"Source Sans Pro"', 'sans-serif'],
+        headline: ['"Playfair Display"', 'serif'],
+        logo: ['"League Spartan"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

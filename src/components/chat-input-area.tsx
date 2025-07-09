@@ -35,7 +35,7 @@ export function ChatInputArea() {
 
   return (
     <div className="bg-transparent">
-      <Card className="bg-white rounded-2xl border-2 border-gray-400 border-dashed mx-16 my-16 shadow-none">
+      <Card className=" flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed my-auto mx-16 shadow-none">
         <CardContent className="p-2 md:p-4">
           <div className="relative pb-8">
             <Textarea

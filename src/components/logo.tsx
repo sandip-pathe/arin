@@ -1,11 +1,9 @@
-import { BrainCircuit } from 'lucide-react';
-
-export function Logo() {
+export default function Logo() {
   return (
-    <div className="flex items-center gap-2 p-2">
-      <h1 className="text-3xl font-bold font-headline text-primary group-data-[collapsible=icon]:hidden">
+    <div className="flex items-center">
+      <span className="font-logo text-4xl font-bold text-foreground">
         Arin
-      </h1>
+      </span>
     </div>
   );
 }
