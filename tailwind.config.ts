@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Lora"', 'serif'],
-        headline: ['"Montserrat"', 'sans-serif'],
-        logo: ['"Montserrat"', 'sans-serif'],
+        body: ['"Source Sans 3"', 'sans-serif'],
+        headline: ['"Playfair Display"', 'serif'],
+        logo: ['"League Spartan"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
