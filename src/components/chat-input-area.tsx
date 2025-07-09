@@ -26,8 +26,7 @@ export function ChatInputArea() {
 
     try {
       const text = await extractText(file);
-      setInputText(prev => prev ? `${prev}\n\n---
-      \n\n${text}` : text);
+      setInputText(prev => prev ? `${prev}\n\n---\n\n${text}` : text);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -62,10 +61,9 @@ export function ChatInputArea() {
         ref={fileInputRef} 
         onChange={handleFileChange}
         className="hidden" 
-        accept=".pdf,.doc,.docx,.txt,.md"
+        accept=".pdf,.doc,.docx,.txt,.md,.xlsx"
       />
-      <div className="bg-transparent">
-      <Card className=" flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed my-auto mx-16 shadow-none">
+      <Card className="flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed mt-8 shadow-none">
         <CardContent className="p-2 md:p-4">
           <div className="relative pb-8">
             <Textarea
@@ -227,7 +225,6 @@ export function ChatInputArea() {
           </div>
         </div>
       )}
-    </div>
     </>
   )
 }

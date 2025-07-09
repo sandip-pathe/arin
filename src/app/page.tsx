@@ -97,11 +97,11 @@ export default function Home() {
             <SidebarTrigger className="text-gray-700 dark:text-gray-300" />
             <Logo />
           </header>
-          <main className="overflow-y-auto my-16 justify-start">
+          <main className="flex-1 overflow-y-auto p-6">
             <ChatWelcome />
+            <ChatInputArea />
+            <Footer />
           </main>
-          <ChatInputArea />
-          <Footer />
         </div>
       </SidebarInset>
     </SidebarProvider>
