@@ -45,7 +45,7 @@ export default function SignupPage() {
             <div className='flex justify-center mb-4'>
                 <Logo />
             </div>
-          <CardTitle className='font-headline'>Create an Account</CardTitle>
+          <CardTitle className='font-headline text-2xl lg:text-3xl'>Create an Account</CardTitle>
           <CardDescription>Enter your information to create an account</CardDescription>
         </CardHeader>
         <CardContent>

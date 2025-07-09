@@ -63,13 +63,13 @@ export function ChatInputArea() {
         className="hidden" 
         accept=".pdf,.doc,.docx,.txt,.md,.xlsx"
       />
-      <Card className="flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed mt-8 shadow-none">
+      <Card className="flex-1 bg-white rounded-2xl border-2 border-gray-400 border-dashed shadow-none">
         <CardContent className="p-2 md:p-4">
           <div className="relative pb-8">
             <Textarea
               autoFocus
               placeholder="Paste text, upload a file, or ask a question..."
-              className="min-h-[180px] bg-white border-none w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
+              className="min-h-[120px] md:min-h-[180px] bg-white border-none w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               style={{ 
