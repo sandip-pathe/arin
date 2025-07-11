@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+  SidebarFooter,  
   SidebarHeader,
   SidebarInset,
   SidebarProvider,
@@ -24,16 +24,64 @@ import Logo from '@/components/logo';
 import Footer from '@/components/footer';
 import { UserProfile } from '@/components/user-profile';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ChatMessage } from '@/components/chat-message';
+import { ChunkData } from '@/lib/ChatGPT+api';
+
+// Define message type
+type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  attachments?: Array<{ name: string; type: string }>;
+  summary?: ChunkData; // For assistant messages
+  timestamp: Date;
+};
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Handle new messages from chat input
+  const handleNewMessage = (message: Message) => {
+    setMessages(prev => [...prev, message]);
+    
+    if (message.role === 'user') {
+      setIsProcessing(true);
+      // Simulate AI processing
+      setTimeout(() => {
+        setMessages(prev => [
+          ...prev, 
+          {
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: 'Here is the summary of your documents:',
+            summary: {
+              summary: "This is a placeholder summary. The actual summary will appear here once processing is complete.",
+              legal_classification: [],
+              key_information: {
+                parties: [],
+                dates: [],
+                sections: [],
+                amounts: []
+              },
+              definitions: [],
+              connections: []
+            },
+            timestamp: new Date()
+          }
+        ]);
+        setIsProcessing(false);
+      }, 2000);
+    }
+  };
 
   if (loading || !user) {
     return (
@@ -97,9 +145,30 @@ export default function Home() {
             <SidebarTrigger className="text-gray-700 dark:text-gray-300" />
             <Logo />
           </header>
-          <main className="flex-1 overflow-y-auto p-6">
-            <ChatWelcome />
-            <ChatInputArea />
+          <main className="flex-1 overflow-y-auto p-6 flex flex-col">
+            {messages.length === 0 ? (
+              <ChatWelcome />
+            ) : (
+              <div className="flex-1 overflow-y-auto mb-4">
+                {messages.map((message) => (
+                  <ChatMessage 
+                    key={message.id} 
+                    message={message} 
+                  />
+                ))}
+                {isProcessing && (
+                  <div className="flex items-center justify-center p-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                    <span className="ml-3">Processing documents...</span>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <ChatInputArea 
+              onNewMessage={handleNewMessage} 
+              isProcessing={isProcessing}
+            />
             <Footer />
           </main>
         </div>
