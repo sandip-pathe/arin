@@ -9,9 +9,9 @@ const estimateTokens = (text: string) => Math.round(text.trim().split(/\s+/).len
 
 export function chunkDocument(
   rawText: string,
-  options: { type?: 'legal' | 'plain' | 'ocr'; maxChunkSize?: number } = {}
+  options: { maxChunkSize?: number } = {}
 ) {
-  const { type = 'plain', maxChunkSize = 4000 } = options;
+  const { maxChunkSize = 4000 } = options;
   const minChunkSize = 3000;  
   const chunks: {
     id: string;
@@ -20,26 +20,9 @@ export function chunkDocument(
     tokenEstimate: number;
   }[] = [];
 
- 
+  // Always use legal segmentation for legal platform
   let segments: string[] = [];
-  
-  if (type === 'legal') {
-
-    console.log("Segmenting legal document...");
-    segments = rawText.split(/(?=\n\s*(?:SECTION|ARTICLE|CLAUSE|SUBSECTION|ACT|RULE)\s+[IVXLCDM0-9]+[.)]?\s)/gi);
-  } else if (type === 'ocr') {
-    // OCR-specific segmentation using larger gaps
-    console.log("Segmenting OCR document...");
-    segments = rawText.split(/(\n{3,}|[•■♦§]\s+)/);
-  } else {
-    // General document segmentation
-    console.log("Segmenting plain document...");
-    segments = nlp.readDoc(rawText)
-      .sentences()
-      .out()
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0);
-  }
+  segments = rawText.split(/(?=\n\s*(?:SECTION|ARTICLE|CLAUSE|SUBSECTION|ACT|RULE)\s+[IVXLCDM0-9]+[.)]?\s)/gi);
 
   // Process each segment intelligently
   for (const segment of segments) {

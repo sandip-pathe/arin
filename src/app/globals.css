@@ -29,7 +29,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 231 48% 48%;
@@ -93,4 +93,76 @@ textarea::-webkit-scrollbar-thumb {
 
 textarea::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Add these styles to your existing CSS */
+.entity-highlight {
+  background-color: #dbeafe;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.entity-highlight:hover {
+  background-color: #bfdbfe;
+}
+
+.entity-highlight::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(90deg, transparent, #3b82f6, transparent);
+}
+
+/* Party entities */
+.entity-highlight[data-entity*="Party"] {
+  background-color: #ede9fe;
+}
+.entity-highlight[data-entity*="Party"]:hover {
+  background-color: #ddd6fe;
+}
+
+/* Date entities */
+.entity-highlight[data-entity*="Date"] {
+  background-color: #dcfce7;
+}
+.entity-highlight[data-entity*="Date"]:hover {
+  background-color: #bbf7d0;
+}
+
+/* Amount entities */
+.entity-highlight[data-entity*="$"],
+.entity-highlight[data-entity*="₹"],
+.entity-highlight[data-entity*="Amount"] {
+  background-color: #fef3c7;
+}
+.entity-highlight[data-entity*="$"]:hover,
+.entity-highlight[data-entity*="₹"]:hover,
+.entity-highlight[data-entity*="Amount"]:hover {
+  background-color: #fde68a;
+}
+
+/* Section entities */
+.entity-highlight[data-entity*="Section"] {
+  background-color: #e0f2fe;
+}
+.entity-highlight[data-entity*="Section"]:hover {
+  background-color: #bae6fd;
+}
+
+/* Legal term entities */
+.entity-highlight[data-entity*="Act"],
+.entity-highlight[data-entity*="Law"],
+.entity-highlight[data-entity*="Clause"] {
+  background-color: #fee2e2;
+}
+.entity-highlight[data-entity*="Act"]:hover,
+.entity-highlight[data-entity*="Law"]:hover,
+.entity-highlight[data-entity*="Clause"]:hover {
+  background-color: #fecaca;
 }
