@@ -22,7 +22,7 @@ export interface ChunkData {
 }
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: "",
   dangerouslyAllowBrowser: true,
 });
 
@@ -86,7 +86,7 @@ export async function processChunks(
     id: string;
     content: string;
     sectionTitle?: string;
-    tokenEstimate: number;
+    documentName?: string;
   }[]
 ) {
   const results: {

@@ -49,15 +49,16 @@ export function ChatInputArea({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [selectedResponseType, setSelectedResponseType] = useState("auto");
-  const [selectedJurisdiction, setSelectedJurisdiction] = useState("indian-law");
+  const [selectedJurisdiction, setSelectedJurisdiction] =
+    useState("indian-law");
   const hasMessages = false;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-    
-    Array.from(files).forEach(file => onFileAdded(file));
-    
+
+    Array.from(files).forEach((file) => onFileAdded(file));
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -116,18 +117,15 @@ export function ChatInputArea({
         multiple
       />
       <Card
-        className={`${
-          hasMessages ? "h-[40px]" : "min-h-[120px]"
-        } flex flex-col bg-white rounded-2xl border-2 border-gray-400 border-dashed shadow-none`}
+        className={`flex flex-col bg-white max-w-4xl w-full self-center rounded-2xl border-none shadow-none`}
       >
         <CardContent className="flex flex-col flex-1 p-2 md:p-4">
-          <div className="flex flex-col flex-1 relative overflow-hidden">
-            {/* Textarea container */}
-            <div className="flex-1 overflow-y-auto">
+          <div className="flex flex-col flex-1 relative overflow-auto">
+            <div className="flex-1">
               <Textarea
                 autoFocus
                 placeholder="Type your message or question here..."
-                className={`bg-white border-none w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none`}
+                className={`bg-white border-none overflow-auto max-h-64 h-24 w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none`}
                 value={inputText}
                 onChange={(e) => onInputTextChange(e.target.value)}
                 onKeyDown={(e) => {
@@ -135,11 +133,6 @@ export function ChatInputArea({
                     e.preventDefault();
                     onSend();
                   }
-                }}
-                style={{
-                  minHeight: hasMessages ? "40px" : "80px",
-                  maxHeight: "240px",
-                  overflowY: "auto",
                 }}
               />
             </div>

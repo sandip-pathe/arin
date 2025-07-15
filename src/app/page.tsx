@@ -3,20 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import {
-  Search,
-  PlusCircle,
-  MessageSquare,
-  X,
-  FileText,
-  FileImage,
-  File,
-  Loader2,
-  ArrowUp,
-} from "lucide-react";
+import { Search, PlusCircle, MessageSquare, X, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChatHistory } from "@/components/chat-history";
 import { ChatInputArea } from "@/components/chat-input-area";
 import { ChatWelcome } from "@/components/chat-welcome";
 import Logo from "@/components/logo";
@@ -27,14 +16,6 @@ import { extractText } from "@/lib/file-utils";
 import { chunkDocument } from "@/lib/chunk";
 import { processChunks } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  deleteDoc,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import {
   Sheet,
@@ -51,6 +32,54 @@ import {
 import { ChatMessage } from "@/components/chat-messages";
 import { SummaryDisplay } from "@/components/summary-view";
 import { VscThreeBars } from "react-icons/vsc";
+import { BiSolidMessageSquareAdd } from "react-icons/bi";
+import { FaHistory, FaSearch } from "react-icons/fa";
+import { chunks } from "@/lib/data";
+import { summaries } from "@/lib/data";
+import {
+  FaFile,
+  FaFileExcel,
+  FaFileImage,
+  FaFilePdf,
+  FaFileWord,
+} from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+const attachment = [
+  {
+    id: "doc-1",
+    name: "Service_Agreement.pdf",
+    type: "pdf",
+  },
+  {
+    id: "doc-2",
+    name: "Client_ID_Verification.png",
+    type: "image",
+  },
+  {
+    id: "doc-3",
+    name: "Terms_and_Conditions.txt",
+    type: "text",
+  },
+  {
+    id: "doc-4",
+    name: "Terms_and_Conditions.docs",
+    type: "docs",
+  },
+  {
+    id: "doc-5",
+    name: "Terms_and_Conditions.xlsx",
+    type: "xlsx",
+  },
+];
+
+const message = [
+  {
+    role: "user",
+    content:
+      "Summarize this contract and extract any obligations, rights, and important clauses.",
+  },
+];
 
 export type Message = {
   id: string;
@@ -64,7 +93,7 @@ export type Message = {
 export type SummaryItem = {
   summary: string;
   legalOntology: Ontology;
-  chunkIds: string[];
+  chunkIds: string;
 };
 
 export type Ontology = {
@@ -104,19 +133,105 @@ export default function Home() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [chunks, setChunks] = useState<DocumentChunk[]>([]);
+  const [chunk, setChunks] = useState<DocumentChunk[]>([]);
   const [isInputCollapsed, setIsInputCollapsed] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(true);
   const summaryRef = useRef<HTMLDivElement>(null);
-  const hasMessages = messages.length > 0;
-  const [summaries, setSummaries] = useState<SummaryItem[]>([]);
+  const hasMessages = chatMessages.length > 0;
+  const [summarie, setSummaries] = useState<SummaryItem[]>([]);
   const summaryMessage = messages.find(
     (msg) => msg.role === "assistant" && msg.summaries
   );
+  const [inputMessageText, setInputMessageText] = useState("");
+  const [isProcessing2, setIsProcessing2] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSubmit = async () => {
+    if (inputText.trim() === "" || isProcessing) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: inputText,
+      timestamp: new Date(),
+    };
+
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setChatMessages((prev) => [...prev, userMessage]);
+    setInputText("");
+    setIsProcessing2(true);
+
+    try {
+      // Construct context from summaries and chunks
+      const context = summaries.map((summary) => summary.summary).join("\n\n");
+
+      // Make API call to ChatGPT
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: `You are a legal assistant. Use this context to answer questions: ${context}`,
+            },
+            ...newMessages.map((msg) => ({
+              role: msg.role,
+              content: msg.content,
+            })),
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+
+      const aiMessage: Message = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: data.message,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
+      setChatMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Chat Error",
+        description: "Failed to get response from AI",
+      });
+    } finally {
+      setIsProcessing2(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -148,8 +263,6 @@ export default function Home() {
           a.id === newAttachment.id ? { ...a, status: "extracted", text } : a
         )
       );
-
-      // Process document immediately after extraction
       processDocument(newAttachment.id, text, file.name);
     } catch (error: any) {
       setAttachments((prev) =>
@@ -177,7 +290,6 @@ export default function Home() {
     documentName: string
   ) => {
     try {
-      // Chunk the document
       const documentChunks = chunkDocument(text, { maxChunkSize: 4000 }).map(
         (chunk) => ({
           ...chunk,
@@ -186,10 +298,7 @@ export default function Home() {
         })
       );
 
-      // Save chunks to Firebase
       await saveChunksToFirebase(documentChunks);
-
-      // Add to local state
       setChunks((prev) => [...prev, ...documentChunks]);
     } catch (error: any) {
       toast({
@@ -206,17 +315,6 @@ export default function Home() {
 
   const removeDocumentChunks = async (documentId: string) => {
     try {
-      // Remove from Firebase
-      const chunksCollection = collection(db, "chunks");
-      const q = query(chunksCollection, where("documentId", "==", documentId));
-      const querySnapshot = await getDocs(q);
-
-      const deletePromises = querySnapshot.docs.map((doc) =>
-        deleteDoc(doc.ref)
-      );
-
-      await Promise.all(deletePromises);
-
       setChunks((prev) =>
         prev.filter((chunk) => chunk.documentId !== documentId)
       );
@@ -231,18 +329,13 @@ export default function Home() {
   };
 
   const handleRemoveAttachment = async (id: string) => {
-    // Remove document chunks
     await removeDocumentChunks(id);
-
-    // Remove attachment
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
   const handleSend = async () => {
     if ((inputText.trim() === "" && attachments.length === 0) || isProcessing)
       return;
-
-    // Create user message
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -346,7 +439,6 @@ export default function Home() {
               <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                 Recent Chats
               </h3>
-              <ChatHistory />
             </div>
             <div className="border-t pt-4">
               <UserProfile />
@@ -368,9 +460,8 @@ export default function Home() {
         }}
       >
         <div className="flex flex-col w-full relative">
-          {/* 🧭 Toggle Button (Desktop Only) */}
           <button
-            className="absolute left-2 top-4 z-10 w-10 h-10 hover:bg-muted transition hidden lg:flex items-center justify-center rounded-full"
+            className="z-10 w-10 h-10 hover:bg-muted transition hidden lg:flex items-center justify-center rounded-full"
             onClick={handleToggleSidebar}
           >
             <VscThreeBars size={24} />
@@ -379,45 +470,35 @@ export default function Home() {
           <div className="p-4 flex justify-center">
             {isSidebarExpanded && <Logo />}
           </div>
-
-          <div className="flex flex-col flex-1 overflow-y-auto p-4">
-            <div className="flex flex-col gap-2">
-              <Button
-                variant="outline"
-                className="flex items-center justify-start bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border-none"
-              >
-                <PlusCircle className="h-5 w-5 mr-2" />
-                {isSidebarExpanded && <span>New Chat</span>}
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center justify-start bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border-none"
-              >
-                {isSidebarExpanded ? (
-                  <span className="ml-[28px]">Tools library</span>
-                ) : (
-                  <span className="sr-only">Tools</span>
+          <div className="flex flex-col flex-1 overflow-y-auto p-4 mt-4">
+            <div className="flex flex-col gap-4">
+              <button className="flex items-center justify-start transition lg:flex bg-transparent border-none">
+                <BiSolidMessageSquareAdd size={24} />
+                {isSidebarExpanded && (
+                  <span className="pl-2 text-lg">New Chat</span>
                 )}
-              </Button>
+              </button>
+              <button className="flex items-center justify-start transition lg:flex bg-transparent border-none">
+                {!isSidebarExpanded && <FaSearch size={24} />}
+                {isSidebarExpanded && (
+                  <div className="relative mt-4">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search chats..."
+                      className="pl-10 bg-gray-100 border-none focus-visible:ring-0"
+                    />
+                  </div>
+                )}
+              </button>
             </div>
 
-            {isSidebarExpanded && (
-              <div className="relative mt-4">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search chats..."
-                  className="pl-10 bg-gray-100 border-none focus-visible:ring-0"
-                />
-              </div>
-            )}
-
             <div className="mt-4 flex-1 overflow-y-auto">
+              {!isSidebarExpanded && <FaHistory size={24} />}
               {isSidebarExpanded && (
                 <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                   Recent Chats
                 </h3>
               )}
-              <ChatHistory />
             </div>
 
             {isSidebarExpanded && (
@@ -446,100 +527,83 @@ export default function Home() {
               />
             </>
           ) : (
-            <div className="flex-1 flex flex-col lg:flex-row gap-6">
-              {/* Summary Area */}
+            <div className="flex-1 flex lg:flex-row gap-6">
               <div
                 className={`${
-                  isChatCollapsed ? "w-full" : "lg:w-2/3"
-                } transition-all`}
+                  isChatCollapsed ? "w-full" : "w-[70%]"
+                } transition-all items-start`}
               >
-                <Collapsible
-                  open={!isInputCollapsed}
-                  onOpenChange={setIsInputCollapsed}
-                  className="mb-6 border rounded-lg overflow-hidden"
-                >
-                  <CollapsibleTrigger asChild>
-                    <div className="flex justify-between items-center p-4 bg-gray-50 cursor-pointer">
-                      <div>
-                        <h3 className="font-medium">Your Input</h3>
-                        <p className="text-sm text-gray-500">
-                          {attachments.length > 0
-                            ? `${attachments.length} document${
-                                attachments.length > 1 ? "s" : ""
-                              } attached`
-                            : "Text input"}
-                        </p>
-                      </div>
-                      <Button variant="ghost" size="icon">
-                        {isInputCollapsed ? (
-                          <PlusCircle className="h-5 w-5" />
-                        ) : (
-                          <X className="h-5 w-5" />
-                        )}
-                      </Button>
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="p-4 border-t">
-                      {messages[0]?.content && (
-                        <div className="mb-4">
-                          <p className="text-sm font-medium mb-1">Question:</p>
-                          <p className="text-sm">{messages[0].content}</p>
-                        </div>
-                      )}
-
-                      {attachments.length > 0 && (
+                {/* Summaries INPUT Section */}
+                <div className="max-w-4xl">
+                  <Collapsible
+                    open={isInputCollapsed}
+                    onOpenChange={setIsInputCollapsed}
+                    className="mb-6 border-none rounded-lg overflow-hidden"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <div className="flex border-none justify-between items-center p-4 pb-0 bg-white cursor-pointer">
                         <div>
-                          <p className="text-sm font-medium mb-2">Documents:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {attachments.map((attachment, i) => (
-                              <div
-                                key={i}
-                                className="flex items-center bg-blue-50 px-3 py-2 rounded"
-                              >
-                                <div className="mr-2">
-                                  {attachment.type === "pdf" ? (
-                                    <FileText className="h-4 w-4 text-red-500" />
-                                  ) : attachment.type === "image" ? (
-                                    <FileImage className="h-4 w-4 text-green-500" />
-                                  ) : (
-                                    <File className="h-4 w-4 text-gray-500" />
-                                  )}
-                                </div>
-                                <span className="text-sm max-w-[160px] truncate">
-                                  {attachment.name}
-                                </span>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 ml-2"
-                                  onClick={() =>
-                                    handleRemoveAttachment(attachment.id)
-                                  }
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
+                          <h2 className="font-medium text-base">Input</h2>
+                          <p className="text-sm text-gray-500">
+                            {attachment.length > 0
+                              ? `${attachment.length} document${
+                                  attachment.length > 1 ? "s" : ""
+                                } attached`
+                              : "Text input"}
+                          </p>
                         </div>
-                      )}
-
-                      <div className="mt-4">
-                        <Button
-                          onClick={handleSend}
-                          disabled={isProcessing}
-                          className="w-full"
-                        >
-                          {isProcessing ? (
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          ) : null}
-                          Process Documents
+                        <Button variant="ghost" size="icon">
+                          {isInputCollapsed ? (
+                            <FaChevronUp size={18} />
+                          ) : (
+                            <FaChevronDown size={18} />
+                          )}
                         </Button>
                       </div>
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="p-4 border-t bg-white dark:bg-gray-900">
+                        {message[0]?.content && (
+                          <div className="mb-2">
+                            <p className="text-sm text-gray-800 dark:text-gray-100">
+                              {message[0].content}
+                            </p>
+                          </div>
+                        )}
+
+                        {attachment.length > 0 && (
+                          <div>
+                            <div className="flex flex-wrap gap-2">
+                              {attachment.map((attachment, i) => (
+                                <div
+                                  key={i}
+                                  className="flex items-center bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded"
+                                >
+                                  <div className="mr-2">
+                                    {attachment.type === "pdf" ? (
+                                      <FaFilePdf className="h-4 w-4 text-red-500" />
+                                    ) : attachment.type === "docs" ? (
+                                      <FaFileWord className="h-4 w-4 text-blue-500" />
+                                    ) : attachment.type === "image" ? (
+                                      <FaFileImage className="h-4 w-4 text-purple-500" />
+                                    ) : attachment.type === "xlsx" ? (
+                                      <FaFileExcel className="h-4 w-4 text-green-500" />
+                                    ) : (
+                                      <FaFile className="h-4 w-4 text-gray-500" />
+                                    )}
+                                  </div>
+                                  <span className="text-sm max-w-[160px] truncate">
+                                    {attachment.name}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
 
                 {summaries.length > 0 && (
                   <div ref={summaryRef}>
@@ -551,34 +615,45 @@ export default function Home() {
                 {isProcessing && (
                   <div className="flex items-center justify-center p-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                    <span className="ml-3">Processing documents...</span>
                   </div>
                 )}
               </div>
 
               {/* Chat Area */}
               {!isChatCollapsed && (
-                <div className="lg:w-1/3 border-l lg:pl-6">
+                <div className="lg:w-[30%]">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-semibold">Chat</h2>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => setIsChatCollapsed(true)}
-                      className="lg:hidden"
+                      className="text-gray-500 hover:text-gray-700"
                     >
-                      <X className="h-5 w-5" />
+                      <X color="black" className="h-5 w-5" />
                     </Button>
                   </div>
-                  <div className="flex-1 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
-                    {messages.map((message) => (
+                  <div className="flex-1 overflow-y-auto p-4">
+                    {chatMessages.map((message) => (
                       <ChatMessage key={message.id} message={message} />
                     ))}
+                    <div ref={messagesEndRef} />
                   </div>
-                  <div className="border-t pt-4 mt-4">
+
+                  <div className="p-4 border-t">
                     <div className="flex gap-2">
-                      <Input placeholder="Ask a follow-up question..." />
-                      <Button size="icon">
+                      <Input
+                        placeholder="Ask a question about your documents..."
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        disabled={isProcessing}
+                      />
+                      <Button
+                        size="icon"
+                        onClick={handleSubmit}
+                        disabled={isProcessing || inputText.trim() === ""}
+                      >
                         <ArrowUp className="h-4 w-4" />
                       </Button>
                     </div>
@@ -589,16 +664,32 @@ export default function Home() {
           )}
         </main>
 
-        {!hasMessages && <Footer />}
+        {hasMessages && <Footer />}
 
         {!hasMessages && isChatCollapsed && (
-          <Button
-            className="fixed right-4 bottom-4 rounded-full shadow-lg flex items-center gap-2"
+          <div
+            className="fixed w-64 bg-white self-center bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border-2 border-gray-600 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
             onClick={() => setIsChatCollapsed(false)}
           >
-            <MessageSquare className="h-5 w-5" />
-            <span>Open Chat</span>
-          </Button>
+            <input
+              type="text"
+              placeholder="Ask a question..."
+              className="flex-1 placeholder:text-lg ml-2 border-none focus:ring-0 text-sm z-10"
+              onFocus={() => setIsChatCollapsed(false)}
+            />
+            <Button
+              size="icon"
+              className="rounded-full h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              disabled={
+                isProcessing ||
+                (inputText.trim() === "" && attachments.length === 0)
+              }
+              onClick={() => setIsChatCollapsed(false)}
+            >
+              <ArrowUp className="h-5 w-5 text-white" />
+              <span className="sr-only">Send</span>
+            </Button>
+          </div>
         )}
       </div>
     </div>
