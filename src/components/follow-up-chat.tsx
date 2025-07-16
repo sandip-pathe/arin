@@ -41,7 +41,7 @@ export const ChatWindow = ({
   };
 
   return (
-    <div className="fixed lg:w-[28%] bg-background flex flex-col h-[100dvh] right-0 bottom-0 border-none z-50">
+    <div className="fixed lg:w-[27%] bg-background flex flex-col h-[100dvh] right-0 bottom-0 border-none z-50">
       <div className="absolute top-4 right-4 z-20">
         <FaXmark
           size={20}

@@ -72,3 +72,23 @@ export type Session = {
   messages: Message[];
   title?: string;
 };
+
+export type SidebarItem = {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  active?: boolean;
+};
+
+export type SidebarProps = {
+  isSheetOpen: boolean;
+  setIsSheetOpen: (open: boolean) => void;
+  isSidebarExpanded: boolean;
+  isManuallyExpanded: boolean;
+  setIsSidebarExpanded: (expanded: boolean) => void;
+  handleToggleSidebar: () => void;
+  sessions: Session[];
+  activeSessionId: string | null;
+  onSelectSession: (sessionId: string) => void;
+  onNewSession: () => void;
+};

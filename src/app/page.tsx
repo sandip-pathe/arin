@@ -3,14 +3,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Search, PlusCircle, MessageSquare, ArrowUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ChatInputArea } from "@/components/chat-input-area";
 import { ChatWelcome } from "@/components/chat-welcome";
 import Logo from "@/components/logo";
 import Footer from "@/components/footer";
-import { UserProfile } from "@/components/user-profile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { extractText } from "@/lib/file-utils";
 import { chunkDocument } from "@/lib/chunk";
@@ -18,22 +16,12 @@ import { processChunks } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { SummaryDisplay } from "@/components/summary-view";
-import { VscThreeBars } from "react-icons/vsc";
-import { BiSolidMessageSquareAdd } from "react-icons/bi";
-import { FaHistory, FaSearch } from "react-icons/fa";
-import { attachment, chunks, message, msgs } from "@/lib/data";
+import { attachment, chunks, message } from "@/lib/data";
 import {
   FaFile,
   FaFileExcel,
@@ -44,7 +32,6 @@ import {
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ChatWindow } from "@/components/follow-up-chat";
 import {
-  getFirestore,
   collection,
   doc,
   setDoc,
@@ -63,6 +50,7 @@ import {
 } from "@/types/page";
 import { db } from "@/lib/firebase";
 import { summaries } from "@/lib/data";
+import { Sidebar } from "@/components/sidebar";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -105,6 +93,23 @@ export default function Home() {
     }
   }, [user, loading]);
 
+  const handleSelectSession = async (sessionId: string) => {
+    const docRef = doc(db, "sessions", sessionId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const session = docSnap.data() as Session;
+      setActiveSession(session);
+      setMessages(session.messages ?? []);
+      setChatMessages(session.messages ?? []);
+      setSummaries(session.summaries ?? []);
+      setInputText("");
+      setMessages(session.messages);
+    } else {
+      console.error("Session not found");
+    }
+  };
+
   const createNewSession = async () => {
     if (!user) return;
 
@@ -136,7 +141,10 @@ export default function Home() {
     }
   };
 
-  // Load user sessions
+  const handleNewSession = async () => {
+    await createNewSession();
+  };
+
   const loadSessions = async () => {
     if (!user) return;
     // mock data for demonstration purposes
@@ -167,7 +175,6 @@ export default function Home() {
     }
   };
 
-  // Reset session state
   const resetSessionState = () => {
     setMessages([]);
     setChatMessages([]);
@@ -178,7 +185,6 @@ export default function Home() {
     setIsInputCollapsed(false);
   };
 
-  // Save session to Firestore
   const saveSession = async () => {
     if (!activeSession) return;
 
@@ -211,7 +217,6 @@ export default function Home() {
     }
   };
 
-  // Save message to Firestore
   const saveMessage = async (message: Message, sessionId: string) => {
     try {
       await addDoc(collection(db, "sessions", sessionId, "messages"), {
@@ -223,7 +228,6 @@ export default function Home() {
     }
   };
 
-  // Save summary to Firestore
   const saveSummary = async (summary: SummaryItem, sessionId: string) => {
     try {
       await addDoc(collection(db, "sessions", sessionId, "summaries"), summary);
@@ -508,113 +512,19 @@ export default function Home() {
 
   return (
     <div className="flex flex-auto min-h-screen bg-background">
-      {/* 🟢 Mobile Sidebar (Sheet) */}
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" className="absolute top-4 left-4 md:hidden">
-            <MessageSquare className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle>
-              <Logo />
-            </SheetTitle>
-          </SheetHeader>
-          <div className="p-4 flex flex-col gap-4 h-[calc(100vh-120px)]">
-            <div className="flex flex-col gap-2">
-              <Button
-                variant="outline"
-                className="justify-start"
-                onClick={() => {
-                  setIsSheetOpen(false);
-                }}
-              >
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New Chat
-              </Button>
-              <Button variant="outline" className="justify-start">
-                Tools library
-              </Button>
-            </div>
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search chats..." className="pl-10" />
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-                Recent Chats
-              </h3>
-            </div>
-            <div className="border-t pt-4">
-              <UserProfile />
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* 🖥️ Desktop Sidebar (Hover + Toggle) */}
-      <div
-        className={`hidden md:flex h-svh border-r transition-all duration-300 ease-in-out bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 ${
-          isSidebarExpanded ? "w-64" : "w-16"
-        }`}
-        onMouseEnter={() => {
-          if (!isManuallyExpanded) setIsSidebarExpanded(true);
-        }}
-        onMouseLeave={() => {
-          if (!isManuallyExpanded) setIsSidebarExpanded(false);
-        }}
-      >
-        <div className="flex flex-col w-full relative">
-          <button
-            className="z-10 w-10 h-10 hover:bg-muted transition hidden lg:flex items-center justify-center rounded-full"
-            onClick={handleToggleSidebar}
-          >
-            <VscThreeBars size={24} />
-          </button>
-
-          <div className="p-4 flex justify-center">
-            {isSidebarExpanded && <Logo />}
-          </div>
-          <div className="flex flex-col flex-1 overflow-y-auto p-4 mt-4">
-            <div className="flex flex-col gap-4">
-              <button className="flex items-center justify-start transition lg:flex bg-transparent border-none">
-                <BiSolidMessageSquareAdd size={24} />
-                {isSidebarExpanded && (
-                  <span className="pl-2 text-lg">New Chat</span>
-                )}
-              </button>
-              <button className="flex items-center justify-start transition lg:flex bg-transparent border-none">
-                {!isSidebarExpanded && <FaSearch size={24} />}
-                {isSidebarExpanded && (
-                  <div className="relative mt-4">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search chats..."
-                      className="pl-10 bg-gray-100 border-none focus-visible:ring-0"
-                    />
-                  </div>
-                )}
-              </button>
-            </div>
-
-            <div className="mt-4 flex-1 overflow-y-auto">
-              {!isSidebarExpanded && <FaHistory size={24} />}
-              {isSidebarExpanded && (
-                <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-                  Recent Chats
-                </h3>
-              )}
-            </div>
-
-            {isSidebarExpanded && (
-              <div className="border-t pt-4 mt-auto">
-                <UserProfile />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* 🔵 Sidebar */}
+      <Sidebar
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        isSidebarExpanded={isSidebarExpanded}
+        isManuallyExpanded={isManuallyExpanded}
+        setIsSidebarExpanded={setIsSidebarExpanded}
+        handleToggleSidebar={handleToggleSidebar}
+        sessions={sessions}
+        activeSessionId={activeSession?.id || null}
+        onSelectSession={handleSelectSession}
+        onNewSession={handleNewSession}
+      />
 
       {/* 🔵 Main Content */}
       <div className="flex-1 flex flex-col h-svh">
@@ -741,7 +651,7 @@ export default function Home() {
 
         {hasMessages && isChatCollapsed && (
           <div
-            className="fixed w-64 bg-white self-center bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
+            className="fixed w-64 bg-white right-4 bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
             onClick={() => setIsChatCollapsed(false)}
           >
             <input
