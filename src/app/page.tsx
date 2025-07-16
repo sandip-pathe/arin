@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Search, PlusCircle, MessageSquare, X, ArrowUp } from "lucide-react";
+import { Search, PlusCircle, MessageSquare, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChatInputArea } from "@/components/chat-input-area";
@@ -29,13 +29,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChatMessage } from "@/components/chat-messages";
 import { SummaryDisplay } from "@/components/summary-view";
 import { VscThreeBars } from "react-icons/vsc";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { FaHistory, FaSearch } from "react-icons/fa";
-import { chunks } from "@/lib/data";
-import { summaries } from "@/lib/data";
+import { attachment, chunks, message, msgs } from "@/lib/data";
 import {
   FaFile,
   FaFileExcel,
@@ -44,142 +42,222 @@ import {
   FaFileWord,
 } from "react-icons/fa6";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-
-const attachment = [
-  {
-    id: "doc-1",
-    name: "Service_Agreement.pdf",
-    type: "pdf",
-  },
-  {
-    id: "doc-2",
-    name: "Client_ID_Verification.png",
-    type: "image",
-  },
-  {
-    id: "doc-3",
-    name: "Terms_and_Conditions.txt",
-    type: "text",
-  },
-  {
-    id: "doc-4",
-    name: "Terms_and_Conditions.docs",
-    type: "docs",
-  },
-  {
-    id: "doc-5",
-    name: "Terms_and_Conditions.xlsx",
-    type: "xlsx",
-  },
-];
-
-const message = [
-  {
-    role: "user",
-    content:
-      "Summarize this contract and extract any obligations, rights, and important clauses.",
-  },
-];
-
-export type Message = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  attachments?: Array<{ name: string; type: string }>;
-  summaries?: SummaryItem[]; // Changed from summary
-  timestamp: Date;
-};
-
-export type SummaryItem = {
-  summary: string;
-  legalOntology: Ontology;
-  chunkIds: string;
-};
-
-export type Ontology = {
-  definitions: string[];
-  obligations: string[];
-  rights: string[];
-  conditions: string[];
-  clauses: string[];
-  dates: string[];
-  parties: string[];
-};
-
-export type Attachment = {
-  id: string;
-  file: File;
-  name: string;
-  type: string;
-  status: "uploading" | "extracted" | "error";
-  text?: string;
-  error?: string;
-};
-
-export type DocumentChunk = {
-  id: string;
-  content: string;
-  sectionTitle?: string;
-  tokenEstimate: number;
-  documentId: string;
-  documentName: string;
-};
+import { ChatWindow } from "@/components/follow-up-chat";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  serverTimestamp,
+  Timestamp,
+  getDoc,
+} from "firebase/firestore";
+import {
+  Attachment,
+  ChatMessages,
+  DocumentChunk,
+  Message,
+  Session,
+  SummaryItem,
+} from "@/types/page";
+import { db } from "@/lib/firebase";
+import { summaries } from "@/lib/data";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+
+  // State
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [activeSession, setActiveSession] = useState<Session | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
+  const [isProcessingDocument, setIsProcessingDocument] = useState(false);
+  const [isProcessingChat, setIsProcessingChat] = useState(false);
   const [inputText, setInputText] = useState("");
+  const [inputMessageText, setInputMessageText] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [chunk, setChunks] = useState<DocumentChunk[]>([]);
+  const [summarie, setSummaries] = useState<SummaryItem[]>([]);
+
+  // UI state
   const [isInputCollapsed, setIsInputCollapsed] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<Message[]>([]);
-  const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(true);
+  const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
+
+  // Refs
   const summaryRef = useRef<HTMLDivElement>(null);
-  const hasMessages = chatMessages.length > 0;
-  const [summarie, setSummaries] = useState<SummaryItem[]>([]);
-  const summaryMessage = messages.find(
-    (msg) => msg.role === "assistant" && msg.summaries
-  );
-  const [inputMessageText, setInputMessageText] = useState("");
-  const [isProcessing2, setIsProcessing2] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [chatMessages]);
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    if (user && !loading) {
+      loadSessions();
+    }
+  }, [user, loading]);
+
+  const createNewSession = async () => {
+    if (!user) return;
+
+    const sessionId = uuidv4();
+    const newSession: Session = {
+      id: sessionId,
+      userId: user.uid,
+      createdAt: serverTimestamp() as Timestamp,
+      updatedAt: serverTimestamp() as Timestamp,
+      attachments: [],
+      messages: [],
+      title: "New Session",
+    };
+
+    try {
+      await setDoc(doc(db, "sessions", sessionId), newSession);
+      setActiveSession(newSession);
+      setSessions((prev) => [newSession, ...prev]);
+      resetSessionState();
+      return sessionId;
+    } catch (error) {
+      console.error("Error creating session:", error);
+      toast({
+        variant: "destructive",
+        title: "Session Error",
+        description: "Failed to create new session",
+      });
+      return null;
+    }
   };
 
-  const handleSubmit = async () => {
-    if (inputText.trim() === "" || isProcessing) return;
+  // Load user sessions
+  const loadSessions = async () => {
+    if (!user) return;
+    // mock data for demonstration purposes
+    const mockSessions: Session[] = [
+      {
+        id: "session-1",
+        userId: user.uid,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        attachments: [],
+        messages: [],
+        title: "Contract Review",
+      },
+      {
+        id: "session-2",
+        userId: user.uid,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        attachments: [],
+        messages: [],
+        title: "Legal Analysis",
+      },
+    ];
+
+    setSessions(mockSessions);
+    if (mockSessions.length > 0) {
+      setActiveSession(mockSessions[0]);
+    }
+  };
+
+  // Reset session state
+  const resetSessionState = () => {
+    setMessages([]);
+    setChatMessages([]);
+    setAttachments([]);
+    setChunks([]);
+    setSummaries([]);
+    setInputText("");
+    setIsInputCollapsed(false);
+  };
+
+  // Save session to Firestore
+  const saveSession = async () => {
+    if (!activeSession) return;
+
+    const sessionData: Session = {
+      ...activeSession,
+      updatedAt: serverTimestamp() as Timestamp,
+      attachments: attachments.map((a) => ({
+        id: a.id,
+        name: a.name,
+        type: a.type,
+        status: a.status,
+      })),
+      summaries,
+      messages: [...messages],
+    };
+
+    try {
+      await setDoc(doc(db, "sessions", activeSession.id), sessionData);
+      toast({
+        title: "Session Saved",
+        description: "Your session has been saved successfully",
+      });
+    } catch (error) {
+      console.error("Error saving session:", error);
+      toast({
+        variant: "destructive",
+        title: "Save Error",
+        description: "Failed to save session to database",
+      });
+    }
+  };
+
+  // Save message to Firestore
+  const saveMessage = async (message: Message, sessionId: string) => {
+    try {
+      await addDoc(collection(db, "sessions", sessionId, "messages"), {
+        ...message,
+        timestamp: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
+  };
+
+  // Save summary to Firestore
+  const saveSummary = async (summary: SummaryItem, sessionId: string) => {
+    try {
+      await addDoc(collection(db, "sessions", sessionId, "summaries"), summary);
+    } catch (error) {
+      console.error("Error saving summary:", error);
+    }
+  };
+
+  const handleChatSubmit = async () => {
+    if (!activeSession) {
+      const sessionId = await createNewSession();
+      if (!sessionId) return;
+    }
+
+    if (inputMessageText.trim() === "" || isProcessingChat) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       role: "user",
-      content: inputText,
+      content: inputMessageText,
       timestamp: new Date(),
     };
 
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
     setChatMessages((prev) => [...prev, userMessage]);
-    setInputText("");
-    setIsProcessing2(true);
+    if (activeSession) {
+      saveMessage(userMessage, activeSession.id);
+    }
+    setInputMessageText("");
+    setIsProcessingChat(true);
 
     try {
-      // Construct context from summaries and chunks
+      // Construct context from summaries
       const context = summaries.map((summary) => summary.summary).join("\n\n");
 
-      // Make API call to ChatGPT
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -191,10 +269,10 @@ export default function Home() {
               role: "system",
               content: `You are a legal assistant. Use this context to answer questions: ${context}`,
             },
-            ...newMessages.map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            })),
+            {
+              role: "user",
+              content: inputMessageText,
+            },
           ],
         }),
       });
@@ -206,14 +284,19 @@ export default function Home() {
       const data = await response.json();
 
       const aiMessage: Message = {
-        id: Date.now().toString(),
+        id: uuidv4(),
         role: "assistant",
         content: data.message,
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
       setChatMessages((prev) => [...prev, aiMessage]);
+      if (activeSession) {
+        saveMessage(aiMessage, activeSession.id);
+      }
+
+      // Save the session after chat interaction
+      saveSession();
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -222,30 +305,16 @@ export default function Home() {
         description: "Failed to get response from AI",
       });
     } finally {
-      setIsProcessing2(false);
+      setIsProcessingChat(false);
     }
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [user, loading, router]);
-
-  useEffect(() => {
-    if (summaryMessage && summaryRef.current) {
-      summaryRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [summaryMessage]);
 
   const handleFileAdded = async (file: File) => {
+    if (!activeSession) {
+      const sessionId = await createNewSession();
+      if (!sessionId) return;
+    }
+
     const newAttachment: Attachment = {
       id: uuidv4(),
       file,
@@ -298,7 +367,16 @@ export default function Home() {
         })
       );
 
-      await saveChunksToFirebase(documentChunks);
+      // Save chunks to Firestore
+      if (activeSession) {
+        for (const chunk of documentChunks) {
+          await addDoc(
+            collection(db, "sessions", activeSession.id, "chunks"),
+            chunk
+          );
+        }
+      }
+
       setChunks((prev) => [...prev, ...documentChunks]);
     } catch (error: any) {
       toast({
@@ -307,10 +385,6 @@ export default function Home() {
         description: `Failed to process ${documentName}: ${error.message}`,
       });
     }
-  };
-
-  const saveChunksToFirebase = async (chunks: DocumentChunk[]) => {
-    console.log("Saving chunks to Firebase:", chunks);
   };
 
   const removeDocumentChunks = async (documentId: string) => {
@@ -334,10 +408,19 @@ export default function Home() {
   };
 
   const handleSend = async () => {
-    if ((inputText.trim() === "" && attachments.length === 0) || isProcessing)
+    if (!activeSession) {
+      const sessionId = await createNewSession();
+      if (!sessionId) return;
+    }
+
+    if (
+      (inputText.trim() === "" && attachments.length === 0) ||
+      isProcessingDocument
+    )
       return;
+
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       role: "user",
       content: inputText,
       attachments: attachments.map((a) => ({ name: a.name, type: a.type })),
@@ -345,8 +428,11 @@ export default function Home() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    if (activeSession) {
+      saveMessage(userMessage, activeSession.id);
+    }
     setInputText("");
-    setIsProcessing(true);
+    setIsProcessingDocument(true);
 
     try {
       const results = await processChunks(chunks);
@@ -366,20 +452,38 @@ export default function Home() {
 
       setSummaries(newSummaries);
 
+      // Save summaries to Firestore
+      if (activeSession) {
+        for (const summary of newSummaries) {
+          saveSummary(summary, activeSession.id);
+        }
+      }
+
       const assistantMessage: Message = {
-        id: Date.now().toString(),
+        id: uuidv4(),
         role: "assistant",
-        content: "New",
+        content: "I've processed your documents. Here's the summary:",
         summaries: newSummaries,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      if (activeSession) {
+        saveMessage(assistantMessage, activeSession.id);
+      }
       setIsInputCollapsed(true);
+
+      // Save the session after processing
+      saveSession();
     } catch (err) {
       console.error("Error processing documents:", err);
+      toast({
+        variant: "destructive",
+        title: "Processing Error",
+        description: "Failed to process documents",
+      });
     } finally {
-      setIsProcessing(false);
+      setIsProcessingDocument(false);
     }
   };
 
@@ -388,11 +492,13 @@ export default function Home() {
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
           <Logo />
-          <Skeleton className="h-8 w-48 mt-2" />
+          <Skeleton className="h-8 w-48 mt-2 bg-gray-300" />
         </div>
       </div>
     );
   }
+
+  const hasMessages = true;
 
   const handleToggleSidebar = () => {
     const newState = !isSidebarExpanded;
@@ -523,10 +629,10 @@ export default function Home() {
                 onFileAdded={handleFileAdded}
                 onRemoveAttachment={handleRemoveAttachment}
                 onSend={handleSend}
-                isProcessing={isProcessing}
+                isProcessing={isProcessingDocument}
               />
             </>
-          ) : (
+          ) : hasMessages && !isProcessingDocument ? (
             <div className="flex-1 flex lg:flex-row gap-6">
               <div
                 className={`${
@@ -610,65 +716,32 @@ export default function Home() {
                     <SummaryDisplay chunks={chunks} summaries={summaries} />
                   </div>
                 )}
-
-                {/* Processing Indicator */}
-                {isProcessing && (
-                  <div className="flex items-center justify-center p-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                  </div>
-                )}
               </div>
 
-              {/* Chat Area */}
+              {/* Chat Area*/}
               {!isChatCollapsed && (
-                <div className="lg:w-[30%]">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Chat</h2>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsChatCollapsed(true)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <X color="black" className="h-5 w-5" />
-                    </Button>
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-4">
-                    {chatMessages.map((message) => (
-                      <ChatMessage key={message.id} message={message} />
-                    ))}
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  <div className="p-4 border-t">
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Ask a question about your documents..."
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        disabled={isProcessing}
-                      />
-                      <Button
-                        size="icon"
-                        onClick={handleSubmit}
-                        disabled={isProcessing || inputText.trim() === ""}
-                      >
-                        <ArrowUp className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                <ChatWindow
+                  chatMessages={chatMessages}
+                  inputText={inputMessageText}
+                  isProcessing={isProcessingChat}
+                  handleSubmit={handleChatSubmit}
+                  setInputText={setInputMessageText}
+                  setIsChatCollapsed={setIsChatCollapsed}
+                />
               )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           )}
         </main>
 
-        {hasMessages && <Footer />}
+        {!hasMessages && <Footer />}
 
-        {!hasMessages && isChatCollapsed && (
+        {hasMessages && isChatCollapsed && (
           <div
-            className="fixed w-64 bg-white self-center bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border-2 border-gray-600 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
+            className="fixed w-64 bg-white self-center bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
             onClick={() => setIsChatCollapsed(false)}
           >
             <input
@@ -680,11 +753,7 @@ export default function Home() {
             <Button
               size="icon"
               className="rounded-full h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              disabled={
-                isProcessing ||
-                (inputText.trim() === "" && attachments.length === 0)
-              }
-              onClick={() => setIsChatCollapsed(false)}
+              disabled={isProcessingDocument || isProcessingChat}
             >
               <ArrowUp className="h-5 w-5 text-white" />
               <span className="sr-only">Send</span>

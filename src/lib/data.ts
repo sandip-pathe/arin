@@ -1,109 +1,73 @@
+// summaries.ts
 export const summaries = [
   {
-    summary: "The agreement starts in 2025 and is valid for two years.",
+    summary:
+      "This clause outlines the provider's responsibility to deliver monthly reports. The reports must include detailed service usage metrics and uptime statistics. Any failure to comply can lead to penalties or service credit issuance. The provider must maintain accurate logs for at least 12 months.",
     chunkIds: "chunk-001",
     legalOntology: {
-      definitions: [],
-      obligations: [],
-      rights: [],
-      conditions: [],
-      clauses: [],
-      dates: ["January 1, 2025"],
-      parties: [],
+      definitions: [
+        "Monthly Report: A document summarizing service performance.",
+      ],
+      obligations: ["Provider must deliver monthly performance reports."],
+      rights: ["Client has the right to audit the report contents."],
+      conditions: [
+        "Reports must be delivered within 5 business days of month end.",
+      ],
+      clauses: ["Service Performance Reporting", "Non-compliance Remedies"],
+      dates: ["Every month, end of period reporting"],
+      parties: ["Provider", "Client"],
     },
   },
   {
-    summary: "Monthly reports must be submitted by the provider.",
+    summary:
+      "The agreement commences on January 1, 2025 and will be valid for a two-year term. Either party may terminate the agreement with a 60-day prior written notice. Renewal is automatic unless a termination notice is received. Obligations and liabilities during the term remain active post-termination until settled.",
     chunkIds: "chunk-002",
     legalOntology: {
-      definitions: [],
-      obligations: ["submit monthly reports"],
-      rights: [],
-      conditions: [],
-      clauses: [],
-      dates: [],
-      parties: ["provider"],
+      definitions: [
+        "Effective Date: The date when the agreement comes into force.",
+      ],
+      obligations: [
+        "Each party must adhere to the contract terms during the active period.",
+      ],
+      rights: ["Right to terminate with 60 days’ notice."],
+      conditions: ["Auto-renewal unless notice of termination is given."],
+      clauses: ["Term & Termination", "Renewal Policy"],
+      dates: ["January 1, 2025", "60 days prior to renewal date"],
+      parties: ["Service Provider", "Recipient"],
     },
   },
   {
-    summary: "The client may terminate the agreement with 30 days’ notice.",
+    summary:
+      "Confidentiality must be maintained for a period of five years post-termination. The receiving party shall not disclose any confidential information except to employees with a need-to-know basis. A breach of this clause can lead to immediate termination and legal action. Certain disclosures are allowed by law or with written consent.",
     chunkIds: "chunk-003",
     legalOntology: {
-      definitions: [],
-      obligations: [],
-      rights: ["termination by client"],
-      conditions: [],
-      clauses: [],
-      dates: [],
-      parties: ["client"],
+      definitions: [
+        "Confidential Information: Non-public data shared during the term.",
+      ],
+      obligations: [
+        "Receiving party must keep shared information confidential.",
+      ],
+      rights: ["Disclosing party may seek legal remedies upon breach."],
+      conditions: ["Disclosure allowed only to essential employees or by law."],
+      clauses: ["Confidentiality", "Post-Termination Restrictions"],
+      dates: ["5 years post termination"],
+      parties: ["Disclosing Party", "Receiving Party"],
     },
   },
   {
     summary:
-      "All information shared between the parties must remain confidential.",
+      "All payments must be made within 30 days of invoice receipt. Late payments incur a penalty of 1.5% per month. Payment disputes must be communicated within 10 business days. The provider reserves the right to suspend services for non-payment beyond 45 days.",
     chunkIds: "chunk-004",
     legalOntology: {
-      definitions: [],
-      obligations: ["maintain confidentiality"],
-      rights: [],
-      conditions: [],
-      clauses: ["confidentiality"],
-      dates: [],
-      parties: ["provider", "client"],
-    },
-  },
-  {
-    summary: "SLA violations lead to financial penalties.",
-    chunkIds: "chunk-005",
-    legalOntology: {
-      definitions: [],
-      obligations: [],
-      rights: [],
-      conditions: ["SLA violation"],
-      clauses: [],
-      dates: [],
-      parties: [],
-    },
-  },
-  {
-    summary:
-      "Uptime is defined as the total operational availability of service.",
-    chunkIds: "chunk-006",
-    legalOntology: {
-      definitions: ["Service Uptime"],
-      obligations: [],
-      rights: [],
-      conditions: [],
-      clauses: [],
-      dates: [],
-      parties: [],
-    },
-  },
-  {
-    summary: "The contract terms may be renegotiated after one year.",
-    chunkIds: "chunk-007",
-    legalOntology: {
-      definitions: [],
-      obligations: [],
-      rights: ["renegotiation"],
-      conditions: ["after one year"],
-      clauses: [],
-      dates: [],
-      parties: [],
-    },
-  },
-  {
-    summary:
-      "Provider agrees to follow data protection standards under ISO 27001.",
-    chunkIds: "chunk-008",
-    legalOntology: {
-      definitions: [],
-      obligations: ["follow data protection standards"],
-      rights: [],
-      conditions: [],
-      clauses: ["data security"],
-      dates: [],
-      parties: ["provider"],
+      definitions: [
+        "Invoice: A financial statement issued for services rendered.",
+      ],
+      obligations: ["Client must pay invoices within 30 days."],
+      rights: ["Provider can suspend service for non-payment."],
+      conditions: ["Penalty applied for late payments."],
+      clauses: ["Payment Terms", "Late Fee Policy"],
+      dates: ["Within 30 days of invoice", "45-day grace period"],
+      parties: ["Client", "Service Provider"],
     },
   },
 ];
@@ -111,85 +75,227 @@ export const summaries = [
 export const chunks = [
   {
     id: "chunk-001",
-    content: `Barney Stinson is a fictional character portrayed by Neil Patrick Harris and created by Carter Bays and Craig Thomas for the CBS television series How I Met Your Mother (2005–2014).
-
-One of the show's main characters, Barney is known for his brash, manipulative and opinionated personality. He is a womanizer known for his love of expensive suits, laser tag, and Scotch whisky. The character uses many 'plays' in his 'playbook' to help him have sex with women. In later seasons, he has a few serious relationships, then marries, divorces, and has a child with an unnamed woman from a one-night stand, and then marries the same woman again (as implied in the alternate ending). Barney's catchphrases included "Suit up!", “Go for Barney”, "What up?!", "Stinson out", "Legendary", "Wait for it" (often combining the two as "legen—wait for it—dary!"), "Daddy's home", "Haaaaave you met Ted", “True story”, “That’s the dream!”, "Challenge accepted", "Just.. just... okay?", and "I only have one rule." (that one rule is constantly changing).
-
-Critics have praised the character and credited Harris’ performance for much of the show's success. Barney is considered the show's breakout character.[3]
-
-Development
-The show's creators envisioned Barney as what Bays later described as a "large, John Belushi-type character";[4] nonetheless, Megan Branman, the casting director for How I Met Your Mother, invited Harris to audition. He assumed that he was invited solely because the two were friends and did not believe he had a chance of winning the role. Harris later said: "Since I considered myself in the long shot, I didn't care that much, and I think that allowed a freedom." His audition centered on a scene playing laser tag, and Harris attempted a dive roll, accidentally knocking over a chair and slamming into a wall in the process. CBS executives enjoyed his playing and soon offered Harris the part.[5] The character is named for a heroin dealer in the James Ellroy novel L.A. Confidential.[citation needed]
-
-Character
-Barney Stinson is one of five main characters on How I Met Your Mother. He is a manipulative, oversexed businessman in his thirties who always wears a suit, likes women with "daddy issues" and is frequently willing to offer his (sometimes hypocritical) opinion.[5] Throughout the earlier seasons, Barney is a huge womanizer, and has been described as a "high-functioning sociopath" by his best friend, Ted Mosby (Josh Radnor). Barney has a plethora of strategies and rules designed to meet women, sleep with them, and discard them.[5] Through several seasons of the show, four of the main characters are couples, as Ted began dating Robin Scherbatsky (Cobie Smulders) and Ted's roommate Marshall Eriksen (Jason Segel) becomes engaged and later married to Lily Aldrin (Alyson Hannigan). This leaves Barney the only single character, and, according to Harris, Barney is "resentful" that the other characters have paired up. Later on, in season 5, he dates Robin. They end up breaking up not long after, once they both realize they are making one another miserable.
-
-Harris describes Barney as a man who "likes to create crazy situations and then sit back and watch it all go down."[6] He is an opportunist who manipulates any situation so that it goes his way. He is also highly competitive, and will take on "challenges" to complete outlandish tasks in order to prove his worth by often announcing "Challenge Accepted". He is proud and stubborn, and attempts to stand by his word no matter what. In "I Heart NJ", for example, he refuses to put down his fist unless someone offers him a fist bump. By the end of the episode, he has the same fist elevated in a sling after struggling to keep his fist up throughout the episode. In "Lucky Penny", when the others do not believe that he can run the New York City Marathon the next day without training, Barney immediately agrees to do so. Although he succeeds, he is unable to walk afterwards. Although he thinks of himself as worldly, Barney is sometimes extremely naive, believing many lies his mother told him well into adulthood, such as believing that Bob Barker is his father.
-
-Barney, like Harris himself, is an illusionist. His favorite types of magic tricks involve fire, as seen in the tenth episode of the second season, "Single Stamina" and in the fourth episode of the fourth season, "Intervention". Barney uses magic tricks mostly to pick up women. His most common method of picking up women is telling them elaborate lies about himself, often using an alias. Many of his schemes for picking up women are in a book he has written called "The Playbook", which is exposed in the episode "The Playbook". He has commitment issues, as evidenced in his reluctance to put a label on his relationship with Robin and the fact that she is one of the few women he has actually dated since the show started.`,
     documentId: "doc-001",
     documentName: "Service Agreement",
+    content: `
+      The service provider agrees to submit a monthly report detailing all relevant performance metrics. This report shall include but not be limited to: total system uptime percentage, average response time, frequency and duration of outages, user session analytics, and error logs encountered during the reporting period. These reports are intended to verify compliance with the Service Level Agreement (SLA) and will serve as the basis for SLA credits or penalties.
+
+      Reports must be submitted within five (5) business days following the end of each calendar month. They should be delivered in a standardized format as agreed upon during onboarding. Any deviations from this format must be communicated in advance and justified with valid operational reasons.
+
+      The client shall maintain the right to audit these reports at any time within twelve (12) months of their delivery. The provider is required to store archived reports and associated logs securely during this period. In case of discrepancies, the provider must respond to audit queries within seven (7) business days.
+
+      A failure to deliver reports within the defined timeline on more than two occasions in a quarter may constitute a material breach. In such cases, the client may choose to suspend services temporarily or terminate the agreement with cause, subject to the terms defined in the breach clause.
+    `,
   },
   {
     id: "chunk-002",
-    content:
-      "The provider must deliver monthly reports detailing the usage metrics and service uptime.",
     documentId: "doc-001",
     documentName: "Service Agreement",
+    content: `
+      This Agreement becomes effective on January 1, 2025, and remains in force for two years unless terminated earlier as permitted herein. The initial term may be extended automatically for subsequent one-year periods, provided neither party submits a notice of termination at least sixty (60) days prior to the expiration of the then-current term.
+
+      During the term, each party shall fulfill all contractual obligations in good faith and continue to provide any deliverables agreed upon in the schedule. Termination does not absolve either party from previously accrued liabilities, such as payment obligations or confidentiality provisions.
+
+      In the event of early termination, the terminating party must provide a written explanation outlining the cause and allow a minimum of fifteen (15) days to resolve the issue, unless the breach is deemed irreparable. Either party reserves the right to seek equitable relief if continued performance could result in substantial harm or liability.
+
+      If no termination notice is served, the agreement shall renew automatically. At each renewal point, the parties may renegotiate pricing, SLA benchmarks, or other commercial terms upon mutual consent.
+    `,
   },
   {
     id: "chunk-003",
-    content:
-      "The client has the right to terminate the agreement with 30 days’ written notice.",
     documentId: "doc-001",
     documentName: "Service Agreement",
+    content: `
+      Both parties acknowledge that sensitive information may be exchanged during the term of this Agreement. This includes but is not limited to financial data, source code, customer lists, and internal documentation. All such data shall be deemed Confidential Information under this clause.
+
+      The receiving party shall take commercially reasonable steps to protect the confidentiality of the information, including limiting access to employees or agents with a strict need-to-know and ensuring that such personnel are under confidentiality obligations of equal or greater stringency.
+
+      This obligation shall survive the termination of the Agreement for a period of five (5) years. During this period, the receiving party shall not disclose, publish, or disseminate any Confidential Information without the disclosing party’s prior written consent. If legally compelled to disclose such information, the receiving party must provide prior notice, if permissible by law.
+
+      Breaches of this clause may result in immediate termination of the agreement and pursuit of legal remedies including but not limited to injunctive relief, damages, and cost recovery.
+    `,
   },
   {
     id: "chunk-004",
-    content:
-      "All parties agree to maintain confidentiality of all shared documents and communications.",
-    documentId: "doc-002",
-    documentName: "Confidentiality Clause",
-  },
-  {
-    id: "chunk-005",
-    content:
-      "Failure to meet SLA commitments will result in a 10% fee deduction from the monthly invoice.",
-    documentId: "doc-003",
-    documentName: "SLA Agreement",
-  },
-  {
-    id: "chunk-006",
-    content:
-      "Definitions: 'Service Uptime' means the percentage of time the service is fully operational.",
-    documentId: "doc-004",
-    documentName: "Definitions",
-  },
-  {
-    id: "chunk-007",
-    content:
-      "Either party may renegotiate the terms upon mutual agreement after one year.",
     documentId: "doc-001",
     documentName: "Service Agreement",
+    content: `
+      The client agrees to remit payment within thirty (30) calendar days of the invoice issuance date. Each invoice will itemize services provided, the applicable rate, and a summary of activities performed during the billing period. The service provider reserves the right to adjust pricing with a 60-day written notice prior to the new rate’s effective date.
+
+      If the client believes any portion of an invoice is inaccurate, they must notify the provider in writing within ten (10) business days. The undisputed portion of the invoice must still be paid by the due date. The provider shall resolve the dispute within fifteen (15) business days of receiving written notice.
+
+      Any outstanding balance unpaid after the 30-day window will accrue interest at a rate of 1.5% per month until full payment is received. The provider also reserves the right to suspend services if payment is not received within forty-five (45) days of the invoice date, notwithstanding ongoing dispute resolution.
+
+      The client is responsible for all reasonable costs associated with the collection of unpaid invoices, including attorney’s fees, court costs, and other related expenses.
+    `,
+  },
+];
+
+export const msgs = [
+  {
+    id: "1",
+    role: "user",
+    content: "What are the main obligations in this contract?",
+    timestamp: new Date(),
   },
   {
-    id: "chunk-008",
+    id: "2",
+    role: "assistant",
     content:
-      "The provider agrees to use best practices in data protection as per ISO 27001 standards.",
-    documentId: "doc-005",
-    documentName: "Data Security Policy",
+      "The main obligations include providing services as outlined in Section 2, maintaining confidentiality as per Section 5, and ensuring compliance with applicable laws.",
+    timestamp: new Date(),
   },
   {
-    id: "chunk-009",
-    content:
-      "The provider and client are collectively referred to as 'The Parties'.",
-    documentId: "doc-004",
-    documentName: "Definitions",
+    id: "3",
+    role: "user",
+    content: "Can you explain the confidentiality clause in more detail?",
+    timestamp: new Date(),
   },
   {
-    id: "chunk-010",
+    id: "4",
+    role: "assistant",
     content:
-      "Dates and deadlines may be extended upon written agreement between the parties.",
-    documentId: "doc-006",
-    documentName: "Addendum",
+      "Certainly. Section 5 states that both parties must not disclose any confidential information received during the term of the agreement, except as required by law.",
+    timestamp: new Date(),
+  },
+  {
+    id: "5",
+    role: "user",
+    content: "Is there any penalty for breach of confidentiality?",
+    timestamp: new Date(),
+  },
+  {
+    id: "6",
+    role: "assistant",
+    content:
+      "Yes. A breach of confidentiality may result in immediate termination of the contract and liability for any resulting damages or legal fees.",
+    timestamp: new Date(),
+  },
+  {
+    id: "7",
+    role: "user",
+    content: "What does Section 7 say about dispute resolution?",
+    timestamp: new Date(),
+  },
+  {
+    id: "8",
+    role: "assistant",
+    content:
+      "Section 7 specifies that disputes must first be resolved through mediation. If unresolved, they will proceed to arbitration under the Indian Arbitration and Conciliation Act, 1996.",
+    timestamp: new Date(),
+  },
+  {
+    id: "9",
+    role: "user",
+    content: "Where would the arbitration take place?",
+    timestamp: new Date(),
+  },
+  {
+    id: "10",
+    role: "assistant",
+    content:
+      "The arbitration will take place in Mumbai, India, unless both parties mutually agree to an alternate location.",
+    timestamp: new Date(),
+  },
+  {
+    id: "11",
+    role: "user",
+    content: "Does the contract automatically renew?",
+    timestamp: new Date(),
+  },
+  {
+    id: "12",
+    role: "assistant",
+    content:
+      "According to Section 9, the contract does not automatically renew. It terminates after 12 months unless a renewal is executed in writing by both parties.",
+    timestamp: new Date(),
+  },
+  {
+    id: "13",
+    role: "user",
+    content: "Are there any early termination conditions?",
+    timestamp: new Date(),
+  },
+  {
+    id: "14",
+    role: "assistant",
+    content:
+      "Yes. Either party may terminate the agreement with 30 days' written notice or immediately in case of breach, insolvency, or force majeure events.",
+    timestamp: new Date(),
+  },
+  {
+    id: "15",
+    role: "user",
+    content: "What's the payment structure defined in the agreement?",
+    timestamp: new Date(),
+  },
+  {
+    id: "16",
+    role: "assistant",
+    content:
+      "The payment terms in Section 3 specify a monthly retainer of ₹50,000, payable within 10 business days of invoice receipt.",
+    timestamp: new Date(),
+  },
+  {
+    id: "17",
+    role: "user",
+    content: "Are there any late payment penalties?",
+    timestamp: new Date(),
+  },
+  {
+    id: "18",
+    role: "assistant",
+    content:
+      "Yes. A 2% monthly interest applies to late payments beyond 15 days, as per Section 3.2.",
+    timestamp: new Date(),
+  },
+  {
+    id: "19",
+    role: "user",
+    content: "Does this agreement bind subcontractors as well?",
+    timestamp: new Date(),
+  },
+  {
+    id: "20",
+    role: "assistant",
+    content:
+      "Section 6 mentions that subcontractors must also adhere to the same confidentiality and performance standards as the primary service provider.",
+    timestamp: new Date(),
+  },
+];
+
+export const attachment = [
+  {
+    id: "doc-1",
+    name: "Service_Agreement.pdf",
+    type: "pdf",
+  },
+  {
+    id: "doc-2",
+    name: "Client_ID_Verification.png",
+    type: "image",
+  },
+  {
+    id: "doc-3",
+    name: "Terms_and_Conditions.txt",
+    type: "text",
+  },
+  {
+    id: "doc-4",
+    name: "Terms_and_Conditions.docs",
+    type: "docs",
+  },
+  {
+    id: "doc-5",
+    name: "Terms_and_Conditions.xlsx",
+    type: "xlsx",
+  },
+];
+
+export const message = [
+  {
+    role: "user",
+    content:
+      "Summarize this contract and extract any obligations, rights, and important clauses.",
   },
 ];

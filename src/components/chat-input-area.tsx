@@ -24,7 +24,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { Attachment } from "@/app/page";
+import { Attachment } from "@/types/page";
 
 interface ChatInputAreaProps {
   inputText: string;
@@ -125,7 +125,7 @@ export function ChatInputArea({
               <Textarea
                 autoFocus
                 placeholder="Type your message or question here..."
-                className={`bg-white border-none overflow-auto max-h-64 h-24 w-full resize-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none`}
+                className={`bg-white border-none overflow-auto max-h-64 h-24 w-full focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none`}
                 value={inputText}
                 onChange={(e) => onInputTextChange(e.target.value)}
                 onKeyDown={(e) => {

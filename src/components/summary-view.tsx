@@ -2,21 +2,9 @@
 
 import React from "react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { Card, CardContent } from "@/components/ui/card";
-import { Ontology } from "@/app/page";
-
-type Chunk = {
-  id: string;
-  content: string;
-  documentId: string;
-  documentName: string;
-};
-
-type SummaryItem = {
-  summary: string;
-  legalOntology: Ontology;
-  chunkIds: string;
-};
+import fuzzysort from "fuzzysort";
+import { Card, CardContent } from "./ui/card";
+import { Chunk, Ontology, SummaryItem } from "@/types/page";
 
 type Props = {
   chunks: Chunk[];
@@ -50,41 +38,85 @@ const SUMMARY_COLORS = [
 ];
 
 export const SummaryDisplay: React.FC<Props> = ({ chunks, summaries }) => {
-  const getChunkById = (id: string) => {
-    return chunks.find((chunk) => chunk.id === id);
-  };
+  const getChunkById = (id: string) => chunks.find((chunk) => chunk.id === id);
 
-  console.log("Chunks:", chunks);
-  console.log("Summaries:", summaries);
   const getReferenceNumber = (chunkId: string) => {
     const index = chunks.findIndex((chunk) => chunk.id === chunkId);
     return index !== -1 ? index + 1 : "?";
   };
 
-  const renderSummaryWithCitations = (summary: string, chunkId: string) => {
+  const splitIntoSentences = (text: string): string[] =>
+    text.match(/[^.!?]+[.!?]+[\])'"`’”]*|\s*$/g)?.map((s) => s.trim()) || [];
+
+  const splitIntoParagraphs = (text: string): string[] =>
+    text
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+
+  const matchSummaryToParagraphs = (
+    sentence: string,
+    paragraphs: string[],
+    threshold = -100
+  ): { bestMatch: string; index: number | null } => {
+    const results = fuzzysort.go(sentence, paragraphs);
+    const best = results[0];
+    if (!best || best.score < threshold) {
+      return { bestMatch: "", index: null };
+    }
+    return { bestMatch: best.target, index: results.indexOf(best) };
+  };
+
+  const renderSummaryWithCitations = (
+    summary: string,
+    chunkId: string
+  ): React.ReactNode => {
     const refNumber = getReferenceNumber(chunkId);
     const chunk = getChunkById(chunkId);
+    const chunkParagraphs = splitIntoParagraphs(chunk?.content || "");
+    const sentences = splitIntoSentences(summary);
 
     return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <span className="cursor-pointer break-words text-lg text-start hover:underline mr-1">
-            {summary}
-            <sup className="ml-0.5 text-xs text-blue-500">[{refNumber}]</sup>
-          </span>
-        </SheetTrigger>
-        <SheetContent side="right" className="overflow-y-auto p-6 sm:max-w-xl">
-          <div className="prose dark:prose-invert max-w-none">
-            <h2 className="text-xl font-bold mb-2">Reference {refNumber}</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {chunk?.documentName || "Unknown Document"}
-            </p>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {chunk?.content || "Content not found"}
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <div key={chunkId} className="space-y-2">
+        {sentences.map((sentence, i) => {
+          const { index } = matchSummaryToParagraphs(sentence, chunkParagraphs);
+
+          return (
+            <Sheet key={`${chunkId}-${i}`}>
+              <SheetTrigger asChild>
+                <span className="cursor-pointer hover:underline break-words text-lg text-start mr-1">
+                  {sentence}
+                </span>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="overflow-y-auto p-6 sm:max-w-xl"
+              >
+                <div className="prose dark:prose-invert max-w-none">
+                  <h2 className="text-xl font-bold mb-2">
+                    {chunk?.documentName || "Unknown Document"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Reference {refNumber}.{i + 1}
+                  </p>
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {chunkParagraphs.map((para, idx) => (
+                      <p
+                        key={idx}
+                        className={
+                          idx === index ? "bg-purple-200 px-1 transition" : ""
+                        }
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          );
+        })}
+      </div>
     );
   };
 
@@ -131,8 +163,8 @@ export const SummaryDisplay: React.FC<Props> = ({ chunks, summaries }) => {
     <div className="space-y-6">
       <Card className="bg-white max-w-4xl border-none">
         <CardContent>
-          <div className="prose max-w-none dark:prose-invert">
-            <p className="text-start text-gray-900 dark:text-gray-100 leading-relaxed break-words">
+          <div className="prose max-w-none dark:prose-invert pt-4">
+            <div className="text-start text-gray-900 dark:text-gray-100 leading-relaxed break-words">
               {summaries.map((summary, idx) => (
                 <React.Fragment key={idx}>
                   {renderSummaryWithCitations(
@@ -142,7 +174,7 @@ export const SummaryDisplay: React.FC<Props> = ({ chunks, summaries }) => {
                   {idx !== summaries.length - 1 && " "}
                 </React.Fragment>
               ))}
-            </p>
+            </div>
           </div>
         </CardContent>
       </Card>
