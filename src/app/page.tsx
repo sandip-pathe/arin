@@ -10,7 +10,7 @@ import { ChatWelcome } from "@/components/chat-welcome";
 import Logo from "@/components/logo";
 import Footer from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { extractText } from "@/lib/file-utils";
+import { extractText } from "@/lib/extraction";
 import { chunkDocument } from "@/lib/chunk";
 import { processChunks } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +21,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { SummaryDisplay } from "@/components/summary-view";
-import { attachment, chunks, message } from "@/lib/data";
 import {
   FaFile,
   FaFileExcel,
@@ -35,51 +34,76 @@ import {
   collection,
   doc,
   setDoc,
-  addDoc,
   serverTimestamp,
   Timestamp,
   getDoc,
+  getDocs,
+  query,
+  where,
+  limit,
+  orderBy,
 } from "firebase/firestore";
 import {
   Attachment,
   ChatMessages,
   DocumentChunk,
-  Message,
+  MinimalSession,
   Session,
   SummaryItem,
 } from "@/types/page";
 import { db } from "@/lib/firebase";
-import { summaries } from "@/lib/data";
 import { Sidebar } from "@/components/sidebar";
+import {
+  loadChatMessages,
+  loadChunks,
+  saveChatMessage,
+  saveChunksToFirestore,
+} from "@/lib/functions";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
-  // State
-  const [sessions, setSessions] = useState<Session[]>([]);
+  // State management
+  const [Msessions, setMSessions] = useState<MinimalSession[]>([]);
+  const allowChunksToFirestore = true;
   const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [isProcessingDocument, setIsProcessingDocument] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({
+    chunks: false,
+    chats: false,
+  });
   const [isProcessingChat, setIsProcessingChat] = useState(false);
   const [inputText, setInputText] = useState("");
+  const [userInput, setUserInput] = useState("");
   const [inputMessageText, setInputMessageText] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [chunk, setChunks] = useState<DocumentChunk[]>([]);
-  const [summarie, setSummaries] = useState<SummaryItem[]>([]);
+  const [chunks, setChunks] = useState<DocumentChunk[]>([]);
+  const [summaries, setSummaries] = useState<SummaryItem[]>([]);
 
   // UI state
   const [isInputCollapsed, setIsInputCollapsed] = useState(false);
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isChatCollapsed, setIsChatCollapsed] = useState(true);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
 
   // Refs
   const summaryRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleProcessingError = (context: string, error: unknown) => {
+    console.error(`[${context}]`, error);
+
+    toast({
+      title: `${context} Failed`,
+      description:
+        error instanceof Error ? error.message : "Unexpected error occurred",
+      variant: "destructive",
+    });
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -89,25 +113,56 @@ export default function Home() {
 
   useEffect(() => {
     if (user && !loading) {
-      loadSessions();
+      const sessionId = new URLSearchParams(window.location.search).get(
+        "sessionId"
+      );
+      if (sessionId) {
+        loadSessionData(sessionId);
+      } else {
+        resetSessionState();
+      }
+      loadSessionHistory();
     }
   }, [user, loading]);
 
-  const handleSelectSession = async (sessionId: string) => {
-    const docRef = doc(db, "sessions", sessionId);
-    const docSnap = await getDoc(docRef);
+  const loadSessionHistory = async () => {
+    if (!user) return;
 
-    if (docSnap.exists()) {
-      const session = docSnap.data() as Session;
-      setActiveSession(session);
-      setMessages(session.messages ?? []);
-      setChatMessages(session.messages ?? []);
-      setSummaries(session.summaries ?? []);
-      setInputText("");
-      setMessages(session.messages);
-    } else {
-      console.error("Session not found");
+    // Load from localStorage first
+
+    if (typeof window !== "undefined") {
+      const cachedSessions = localStorage.getItem("sessionHistory");
+      if (cachedSessions) {
+        const parsedSessions: MinimalSession[] = JSON.parse(cachedSessions);
+        setMSessions(parsedSessions);
+        return;
+      }
     }
+
+    try {
+      const sessionsRef = collection(db, "sessions");
+      const q = query(
+        sessionsRef,
+        where("userId", "==", user.uid),
+        orderBy("updatedAt", "desc"),
+        limit(10)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const minimalSessions = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title || "Untitled",
+        updatedAt: doc.data().updatedAt?.toMillis() || Date.now(),
+      }));
+
+      setMSessions(minimalSessions);
+    } catch (error) {
+      handleProcessingError("Load Session History", error);
+    }
+  };
+
+  const cacheSessionHistory = (sessions: MinimalSession[]) => {
+    localStorage.setItem("sessionHistory", JSON.stringify(sessions));
   };
 
   const createNewSession = async () => {
@@ -120,63 +175,41 @@ export default function Home() {
       createdAt: serverTimestamp() as Timestamp,
       updatedAt: serverTimestamp() as Timestamp,
       attachments: [],
-      messages: [],
+      summaries: [],
       title: "New Session",
     };
 
     try {
+      if (newSession.id) {
+        router.replace(`/?sessionId=${newSession.id}`);
+      }
       await setDoc(doc(db, "sessions", sessionId), newSession);
       setActiveSession(newSession);
-      setSessions((prev) => [newSession, ...prev]);
-      resetSessionState();
+      setMSessions((prev) => [
+        {
+          id: newSession.id,
+          title: newSession.title ?? "Untitled",
+          updatedAt:
+            typeof newSession.updatedAt === "object" &&
+            typeof (newSession.updatedAt as any).toMillis === "function"
+              ? (newSession.updatedAt as any).toMillis()
+              : Date.now(),
+        },
+        ...prev,
+      ]);
       return sessionId;
     } catch (error) {
-      console.error("Error creating session:", error);
-      toast({
-        variant: "destructive",
-        title: "Session Error",
-        description: "Failed to create new session",
-      });
+      handleProcessingError("Create Session", error);
       return null;
     }
   };
 
-  const handleNewSession = async () => {
+  const AddNewSessionButton = async () => {
+    resetSessionState();
     await createNewSession();
   };
 
-  const loadSessions = async () => {
-    if (!user) return;
-    // mock data for demonstration purposes
-    const mockSessions: Session[] = [
-      {
-        id: "session-1",
-        userId: user.uid,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        attachments: [],
-        messages: [],
-        title: "Contract Review",
-      },
-      {
-        id: "session-2",
-        userId: user.uid,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        attachments: [],
-        messages: [],
-        title: "Legal Analysis",
-      },
-    ];
-
-    setSessions(mockSessions);
-    if (mockSessions.length > 0) {
-      setActiveSession(mockSessions[0]);
-    }
-  };
-
   const resetSessionState = () => {
-    setMessages([]);
     setChatMessages([]);
     setAttachments([]);
     setChunks([]);
@@ -188,8 +221,9 @@ export default function Home() {
   const saveSession = async () => {
     if (!activeSession) return;
 
-    const sessionData: Session = {
-      ...activeSession,
+    const { chunks, chats, ...rest } = activeSession;
+    const sessionData: Omit<Session, "chunks" | "messages"> = {
+      ...rest,
       updatedAt: serverTimestamp() as Timestamp,
       attachments: attachments.map((a) => ({
         id: a.id,
@@ -198,7 +232,7 @@ export default function Home() {
         status: a.status,
       })),
       summaries,
-      messages: [...messages],
+      userInput,
     };
 
     try {
@@ -207,117 +241,22 @@ export default function Home() {
         title: "Session Saved",
         description: "Your session has been saved successfully",
       });
-    } catch (error) {
-      console.error("Error saving session:", error);
-      toast({
-        variant: "destructive",
-        title: "Save Error",
-        description: "Failed to save session to database",
-      });
-    }
-  };
 
-  const saveMessage = async (message: Message, sessionId: string) => {
-    try {
-      await addDoc(collection(db, "sessions", sessionId, "messages"), {
-        ...message,
-        timestamp: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("Error saving message:", error);
-    }
-  };
-
-  const saveSummary = async (summary: SummaryItem, sessionId: string) => {
-    try {
-      await addDoc(collection(db, "sessions", sessionId, "summaries"), summary);
-    } catch (error) {
-      console.error("Error saving summary:", error);
-    }
-  };
-
-  const handleChatSubmit = async () => {
-    if (!activeSession) {
-      const sessionId = await createNewSession();
-      if (!sessionId) return;
-    }
-
-    if (inputMessageText.trim() === "" || isProcessingChat) return;
-
-    const userMessage: Message = {
-      id: uuidv4(),
-      role: "user",
-      content: inputMessageText,
-      timestamp: new Date(),
-    };
-
-    setChatMessages((prev) => [...prev, userMessage]);
-    if (activeSession) {
-      saveMessage(userMessage, activeSession.id);
-    }
-    setInputMessageText("");
-    setIsProcessingChat(true);
-
-    try {
-      // Construct context from summaries
-      const context = summaries.map((summary) => summary.summary).join("\n\n");
-
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: `You are a legal assistant. Use this context to answer questions: ${context}`,
-            },
-            {
-              role: "user",
-              content: inputMessageText,
-            },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get AI response");
+      // Save chunks to Firestore
+      if (allowChunksToFirestore) {
+        await saveChunksToFirestore(activeSession.id, chunks!).catch(
+          (error) => {
+            handleProcessingError("saveChunkToFirebase", error);
+          }
+        );
       }
-
-      const data = await response.json();
-
-      const aiMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: data.message,
-        timestamp: new Date(),
-      };
-
-      setChatMessages((prev) => [...prev, aiMessage]);
-      if (activeSession) {
-        saveMessage(aiMessage, activeSession.id);
-      }
-
-      // Save the session after chat interaction
-      saveSession();
     } catch (error) {
-      console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "Chat Error",
-        description: "Failed to get response from AI",
-      });
-    } finally {
-      setIsProcessingChat(false);
+      handleProcessingError("Save Session", error);
     }
   };
 
   const handleFileAdded = async (file: File) => {
-    if (!activeSession) {
-      const sessionId = await createNewSession();
-      if (!sessionId) return;
-    }
+    setIsProcessingDocument(true);
 
     const newAttachment: Attachment = {
       id: uuidv4(),
@@ -361,7 +300,7 @@ export default function Home() {
     documentId: string,
     text: string,
     documentName: string
-  ) => {
+  ): Promise<DocumentChunk[]> => {
     try {
       const documentChunks = chunkDocument(text, { maxChunkSize: 4000 }).map(
         (chunk) => ({
@@ -371,75 +310,48 @@ export default function Home() {
         })
       );
 
-      // Save chunks to Firestore
-      if (activeSession) {
-        for (const chunk of documentChunks) {
-          await addDoc(
-            collection(db, "sessions", activeSession.id, "chunks"),
-            chunk
-          );
-        }
-      }
-
-      setChunks((prev) => [...prev, ...documentChunks]);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error chunking document",
-        description: `Failed to process ${documentName}: ${error.message}`,
+      setChunks((prev) => {
+        const seen = new Set(documentChunks.map((c) => c.id));
+        return [...prev.filter((c) => !seen.has(c.id)), ...documentChunks];
       });
-    }
-  };
 
-  const removeDocumentChunks = async (documentId: string) => {
-    try {
-      setChunks((prev) =>
-        prev.filter((chunk) => chunk.documentId !== documentId)
-      );
+      setIsProcessingDocument(false);
+      return documentChunks;
     } catch (error) {
-      console.error("Error removing document chunks:", error);
-      toast({
-        variant: "destructive",
-        title: "Error removing document",
-        description: "Failed to remove document chunks from storage",
-      });
+      setIsProcessingDocument(false);
+      return [];
     }
-  };
-
-  const handleRemoveAttachment = async (id: string) => {
-    await removeDocumentChunks(id);
-    setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
   const handleSend = async () => {
-    if (!activeSession) {
+    if (isProcessingDocument || isLoading) return;
+
+    let targetSession = activeSession?.id;
+    if (!targetSession) {
       const sessionId = await createNewSession();
       if (!sessionId) return;
+      targetSession = Msessions.find((s) => s.id === sessionId)?.id;
+      if (!targetSession) return;
     }
 
-    if (
-      (inputText.trim() === "" && attachments.length === 0) ||
-      isProcessingDocument
-    )
-      return;
+    const inputTextTrimmed = inputText.trim();
+    setUserInput(inputTextTrimmed);
+    let newChunks: DocumentChunk[] = [];
 
-    const userMessage: Message = {
-      id: uuidv4(),
-      role: "user",
-      content: inputText,
-      attachments: attachments.map((a) => ({ name: a.name, type: a.type })),
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    if (activeSession) {
-      saveMessage(userMessage, activeSession.id);
+    if (inputTextTrimmed !== "") {
+      newChunks = await processDocument(
+        targetSession,
+        inputTextTrimmed,
+        "Input Text"
+      );
     }
-    setInputText("");
-    setIsProcessingDocument(true);
+
+    const allChunks = [...chunks, ...newChunks];
+
+    setIsLoading(true);
 
     try {
-      const results = await processChunks(chunks);
+      const results = await processChunks(allChunks);
       const newSummaries: SummaryItem[] = results.map((result) => ({
         summary: result.data.summary,
         legalOntology: result.data.legalOntology || {
@@ -451,43 +363,132 @@ export default function Home() {
           dates: [],
           parties: [],
         },
-        chunkIds: result.data.chunkIds || [],
+        chunkIds: result.chunkId,
       }));
 
       setSummaries(newSummaries);
+      setIsInputCollapsed(true);
+      setInputText("");
+      saveSession();
+    } catch (err) {
+      handleProcessingError("Send Document", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      // Save summaries to Firestore
-      if (activeSession) {
-        for (const summary of newSummaries) {
-          saveSummary(summary, activeSession.id);
-        }
+  const loadSessionData = async (sessionId: string) => {
+    setLoadingStates({ chunks: true, chats: true });
+    try {
+      const sessionDoc = await getDoc(doc(db, "sessions", sessionId));
+      setActiveSession({
+        id: sessionDoc.id,
+        ...sessionDoc.data(),
+      } as Session);
+
+      await Promise.allSettled([
+        loadChunks(sessionId).then((chunks) => {
+          setChunks(chunks);
+          setLoadingStates((prev) => ({ ...prev, chunks: false }));
+        }),
+        loadChatMessages(sessionId).then((chats) => {
+          setChatMessages(chats);
+          setLoadingStates((prev) => ({ ...prev, chats: false }));
+        }),
+      ]);
+    } catch (error) {
+      handleProcessingError("Load Session Data", error);
+    }
+  };
+
+  const handleSelectSession = async (sessionId: string) => {
+    await loadSessionData(sessionId);
+    router.replace(`/?sessionId=${sessionId}`); // Update URL
+  };
+
+  const removeDocumentChunks = async (documentId: string) => {
+    try {
+      setChunks((prev) =>
+        prev.filter((chunk) => chunk.documentId !== documentId)
+      );
+    } catch (error) {
+      handleProcessingError("Remove Document Chunks", error);
+    }
+  };
+
+  const handleRemoveAttachment = async (id: string) => {
+    await removeDocumentChunks(id);
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const handleChatSubmit = async () => {
+    if (!activeSession) {
+      const sessionId = await createNewSession();
+      if (!sessionId) return;
+    }
+
+    if (inputMessageText.trim() === "" || isProcessingChat) return;
+
+    const userMessage: ChatMessages = {
+      id: uuidv4(),
+      role: "user",
+      content: inputMessageText,
+      timestamp: new Date(),
+    };
+
+    setChatMessages((prev) => [...prev, userMessage]);
+    setInputMessageText("");
+    if (activeSession) {
+      saveChatMessage(userMessage, activeSession.id);
+    }
+    setIsProcessingChat(true);
+
+    try {
+      // Construct context from summaries
+      const context = summaries.map((summary) => summary.summary).join("\n\n");
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: `You are a legal assistant. Use this context to answer questions: ${context}`,
+            },
+            {
+              role: "user",
+              content: inputMessageText,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
       }
 
-      const assistantMessage: Message = {
+      const data = await response.json();
+
+      const aiMessage: ChatMessages = {
         id: uuidv4(),
         role: "assistant",
-        content: "I've processed your documents. Here's the summary:",
-        summaries: newSummaries,
+        content: data.message,
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      setChatMessages((prev) => [...prev, aiMessage]);
       if (activeSession) {
-        saveMessage(assistantMessage, activeSession.id);
+        saveChatMessage(aiMessage, activeSession.id);
       }
-      setIsInputCollapsed(true);
 
-      // Save the session after processing
       saveSession();
-    } catch (err) {
-      console.error("Error processing documents:", err);
-      toast({
-        variant: "destructive",
-        title: "Processing Error",
-        description: "Failed to process documents",
-      });
+    } catch (error) {
+      handleProcessingError("Chat Processing", error);
     } finally {
-      setIsProcessingDocument(false);
+      setIsProcessingChat(false);
     }
   };
 
@@ -502,7 +503,7 @@ export default function Home() {
     );
   }
 
-  const hasMessages = true;
+  const hasMessages = summaries.length > 0;
 
   const handleToggleSidebar = () => {
     const newState = !isSidebarExpanded;
@@ -512,7 +513,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-auto min-h-screen bg-background">
-      {/* 🔵 Sidebar */}
       <Sidebar
         isSheetOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
@@ -520,10 +520,10 @@ export default function Home() {
         isManuallyExpanded={isManuallyExpanded}
         setIsSidebarExpanded={setIsSidebarExpanded}
         handleToggleSidebar={handleToggleSidebar}
-        sessions={sessions}
+        sessions={Msessions}
         activeSessionId={activeSession?.id || null}
         onSelectSession={handleSelectSession}
-        onNewSession={handleNewSession}
+        onNewSession={AddNewSessionButton}
       />
 
       {/* 🔵 Main Content */}
@@ -561,9 +561,9 @@ export default function Home() {
                         <div>
                           <h2 className="font-medium text-base">Input</h2>
                           <p className="text-sm text-gray-500">
-                            {attachment.length > 0
-                              ? `${attachment.length} document${
-                                  attachment.length > 1 ? "s" : ""
+                            {attachments.length > 0
+                              ? `${attachments.length} document${
+                                  attachments.length > 1 ? "s" : ""
                                 } attached`
                               : "Text input"}
                           </p>
@@ -579,18 +579,18 @@ export default function Home() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <div className="p-4 border-t bg-white dark:bg-gray-900">
-                        {message[0]?.content && (
+                        {activeSession?.userInput && (
                           <div className="mb-2">
                             <p className="text-sm text-gray-800 dark:text-gray-100">
-                              {message[0].content}
+                              {activeSession?.userInput}
                             </p>
                           </div>
                         )}
 
-                        {attachment.length > 0 && (
+                        {attachments.length > 0 && (
                           <div>
                             <div className="flex flex-wrap gap-2">
-                              {attachment.map((attachment, i) => (
+                              {attachments.map((attachment, i) => (
                                 <div
                                   key={i}
                                   className="flex items-center bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded"
@@ -623,7 +623,11 @@ export default function Home() {
 
                 {summaries.length > 0 && (
                   <div ref={summaryRef}>
-                    <SummaryDisplay chunks={chunks} summaries={summaries} />
+                    <SummaryDisplay
+                      chunks={chunks}
+                      summaries={summaries}
+                      loading={loadingStates.chunks}
+                    />
                   </div>
                 )}
               </div>

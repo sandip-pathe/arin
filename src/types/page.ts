@@ -1,18 +1,10 @@
 import { Timestamp } from "firebase/firestore";
 
-export type Message = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  attachments?: Array<{ name: string; type: string }>;
-  summaries?: SummaryItem[]; // Changed from summary
-  timestamp: Date;
-};
-
 export type ChatMessages = {
   id: string;
   role: string;
   content: string;
+  timestamp: Date;
 };
 
 export type SummaryItem = {
@@ -45,7 +37,7 @@ export type DocumentChunk = {
   id: string;
   content: string;
   sectionTitle?: string;
-  tokenEstimate: number;
+  tokenEstimate?: number;
   documentId: string;
   documentName: string;
 };
@@ -69,8 +61,10 @@ export type Session = {
     status: string;
   }>;
   summaries?: SummaryItem[];
-  messages: Message[];
+  chunks?: DocumentChunk[];
+  chats?: ChatMessages[];
   title?: string;
+  userInput?: string;
 };
 
 export type SidebarItem = {
@@ -87,8 +81,14 @@ export type SidebarProps = {
   isManuallyExpanded: boolean;
   setIsSidebarExpanded: (expanded: boolean) => void;
   handleToggleSidebar: () => void;
-  sessions: Session[];
+  sessions: MinimalSession[];
   activeSessionId: string | null;
   onSelectSession: (sessionId: string) => void;
   onNewSession: () => void;
+};
+
+export type MinimalSession = {
+  id: string;
+  title: string;
+  updatedAt: Date;
 };

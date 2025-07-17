@@ -9,6 +9,7 @@ import { Chunk, Ontology, SummaryItem } from "@/types/page";
 type Props = {
   chunks: Chunk[];
   summaries: SummaryItem[];
+  loading?: boolean;
 };
 
 // Improved color mapping
@@ -37,7 +38,11 @@ const SUMMARY_COLORS = [
   "bg-gradient-to-r from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20",
 ];
 
-export const SummaryDisplay: React.FC<Props> = ({ chunks, summaries }) => {
+export const SummaryDisplay: React.FC<Props> = ({
+  chunks,
+  summaries,
+  loading,
+}) => {
   const getChunkById = (id: string) => chunks.find((chunk) => chunk.id === id);
 
   const getReferenceNumber = (chunkId: string) => {

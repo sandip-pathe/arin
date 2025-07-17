@@ -6,9 +6,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
 import {
   MessageSquare,
   PlusCircle,
@@ -16,6 +13,8 @@ import {
   History,
   BookOpen,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { VscThreeBars } from "react-icons/vsc";
 import Logo from "./logo";
 import { UserProfile } from "./user-profile";
@@ -51,11 +50,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   sessions,
   activeSessionId,
   onSelectSession,
-  onNewSession,
 }) => {
   return (
-    <>
-      {/* 📱 Mobile Sidebar */}
+    <div className="flex bg-white">
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" className="absolute top-4 left-4 md:hidden">
@@ -101,9 +98,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }`}
                     onClick={() => onSelectSession(session.id)}
                   >
-                    <MessageSquare className="w-4 h-4 mr-2" />
                     {isSidebarExpanded && (
-                      <span className="truncate text-sm">{session.title}</span>
+                      <>
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        <span className="truncate text-sm">
+                          {session.title}
+                        </span>
+                      </>
                     )}
                   </button>
                 ))}
@@ -119,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* 💻 Desktop Sidebar */}
       <div
-        className={`hidden md:flex h-svh border-r transition-all duration-300 ease-in-out bg-background ${
+        className={`bg-white hidden md:flex h-svh border-r transition-all duration-300 ease-in-out bg-background ${
           isSidebarExpanded ? "w-64" : "w-16"
         }`}
         onMouseEnter={() => {
@@ -167,29 +168,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 )}
               </button>
             ))}
-          </div>
-
-          <div className="mt-4">
-            {sessions.map((session) => (
-              <button
-                key={session.id}
-                className={`flex items-center w-full px-3 py-2 rounded-md transition ${
-                  activeSessionId === session.id
-                    ? "bg-muted text-primary"
-                    : "hover:bg-muted text-muted-foreground"
-                }`}
-                onClick={() => onSelectSession(session.id)}
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                {isSidebarExpanded && (
-                  <span className="truncate text-sm">{session.title}</span>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Spacer + Search + Profile */}
-          <div className="flex-1 mt-4 px-4 overflow-y-auto">
             {isSidebarExpanded && (
               <div className="relative mt-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -201,6 +179,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </div>
 
+          <div className="flex-1 mt-4 px-4 overflow-y-auto">
+            {sessions.map((session) => (
+              <button
+                key={session.id}
+                className={`flex items-center w-full px-3 py-1 rounded-md transition ${
+                  activeSessionId === session.id
+                    ? "bg-muted text-primary"
+                    : "hover:bg-muted text-muted-foreground"
+                }`}
+                onClick={() => onSelectSession(session.id)}
+              >
+                {isSidebarExpanded && (
+                  <>
+                    <span className="truncate text-sm ml-2">
+                      {session.title}
+                    </span>
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
+
           {isSidebarExpanded && (
             <div className="mt-auto border-t p-4">
               <UserProfile />
@@ -208,6 +208,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };

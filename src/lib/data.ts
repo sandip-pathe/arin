@@ -1,3 +1,5 @@
+import { DocumentChunk } from "@/types/page";
+
 // summaries.ts
 export const summaries = [
   {
@@ -72,7 +74,7 @@ export const summaries = [
   },
 ];
 
-export const chunks = [
+export const chunks: DocumentChunk[] = [
   {
     id: "chunk-001",
     documentId: "doc-001",
