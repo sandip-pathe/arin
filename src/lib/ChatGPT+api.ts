@@ -78,7 +78,29 @@ async function callModel(chunk: string, model: "gpt-4o" | "gpt-3.5-turbo") {
   const output = response.choices[0]?.message?.content;
   if (!output) throw new Error("No response from OpenAI");
 
-  return JSON.parse(output); // use try/catch in production
+  return JSON.parse(output);
+}
+
+export async function ChatWithOpenAI(context: string, inputText: string) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content: `You are a legal assistant. Use this context to answer questions: ${context}`,
+      },
+      {
+        role: "user",
+        content: inputText,
+      },
+    ],
+    temperature: 0.3,
+  });
+
+  const output = response.choices[0]?.message?.content;
+  if (!output) throw new Error("No response from OpenAI");
+
+  return JSON.parse(output);
 }
 
 export async function processChunks(

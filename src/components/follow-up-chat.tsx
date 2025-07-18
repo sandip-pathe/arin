@@ -1,29 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatMessages } from "@/types/page";
+import { v4 as uuidv4 } from "uuid";
+import { saveChatMessage } from "@/lib/functions";
+import { ChatWithOpenAI } from "@/lib/ChatGPT+api";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatWindowProps {
-  chatMessages: ChatMessages[];
-  inputText: string;
-  isProcessing: boolean;
-  setInputText: (text: string) => void;
-  handleSubmit: () => void;
+  sessionId: string;
+  userId: string;
+  context: string;
   setIsChatCollapsed: (val: boolean) => void;
 }
 
 export const ChatWindow = ({
-  chatMessages,
-  inputText,
-  isProcessing,
-  setInputText,
-  handleSubmit,
+  sessionId,
+  userId,
+  context,
   setIsChatCollapsed,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [inputMessageText, setInputMessageText] = useState("");
+  const [isProcessingChat, setIsProcessingChat] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     scrollToBottom();
@@ -33,10 +37,57 @@ export const ChatWindow = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const LoadMessages = () => {};
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      handleChatSubmit();
+    }
+  };
+
+  const handleChatSubmit = async () => {
+    if (inputMessageText.trim() === "" || isProcessingChat) return;
+
+    const userMessage: ChatMessages = {
+      id: uuidv4(),
+      role: "user",
+      content: inputMessageText,
+      timestamp: new Date(),
+    };
+
+    setChatMessages((prev) => [...prev, userMessage]);
+    setInputMessageText("");
+    if (inputMessageText.trim() !== "") {
+      saveChatMessage(userMessage, sessionId);
+    }
+    setIsProcessingChat(true);
+
+    try {
+      const data = await ChatWithOpenAI(context, inputMessageText);
+
+      const aiMessage: ChatMessages = {
+        id: uuidv4(),
+        role: "assistant",
+        content: data.message,
+        timestamp: new Date(),
+      };
+
+      setChatMessages((prev) => [...prev, aiMessage]);
+      if (aiMessage.content !== "") {
+        saveChatMessage(aiMessage, sessionId);
+      }
+    } catch (error) {
+      console.error(`[${context}]`, error);
+
+      toast({
+        title: `${context} Failed`,
+        description:
+          error instanceof Error ? error.message : "Unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessingChat(false);
     }
   };
 
@@ -75,23 +126,22 @@ export const ChatWindow = ({
         </div>
       )}
 
-      {/* Input Box */}
       <div className="p-3">
         <div className="bg-white dark:bg-gray-800 rounded-full flex items-center gap-2 border border-gray-300 dark:border-gray-700 px-4 py-2 transition-all">
           <input
             type="text"
             placeholder="Ask a question..."
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-400"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            value={inputMessageText}
+            onChange={(e) => setInputMessageText(e.target.value)}
             onKeyDown={handleKeyDown}
             autoFocus
           />
           <Button
             size="icon"
             className="rounded-full h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-            disabled={isProcessing || inputText.trim() === ""}
-            onClick={handleSubmit}
+            disabled={isProcessingChat || inputMessageText.trim() === ""}
+            onClick={handleChatSubmit}
           >
             <ArrowUp className="h-5 w-5 text-white" />
             <span className="sr-only">Send</span>

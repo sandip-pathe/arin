@@ -53,12 +53,7 @@ import {
 } from "@/types/page";
 import { db } from "@/lib/firebase";
 import { Sidebar } from "@/components/sidebar";
-import {
-  loadChatMessages,
-  loadChunks,
-  saveChatMessage,
-  saveChunksToFirestore,
-} from "@/lib/functions";
+import { loadChunks, saveChunksToFirestore } from "@/lib/functions";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -67,9 +62,10 @@ export default function Home() {
 
   // State management
   const [Msessions, setMSessions] = useState<MinimalSession[]>([]);
+  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
+  const [context, setContext] = useState<string | "">("");
   const allowChunksToFirestore = true;
   const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessingDocument, setIsProcessingDocument] = useState(false);
   const [loadingStates, setLoadingStates] = useState({
@@ -210,7 +206,6 @@ export default function Home() {
   };
 
   const resetSessionState = () => {
-    setChatMessages([]);
     setAttachments([]);
     setChunks([]);
     setSummaries([]);
@@ -391,11 +386,8 @@ export default function Home() {
           setChunks(chunks);
           setLoadingStates((prev) => ({ ...prev, chunks: false }));
         }),
-        loadChatMessages(sessionId).then((chats) => {
-          setChatMessages(chats);
-          setLoadingStates((prev) => ({ ...prev, chats: false }));
-        }),
       ]);
+      setContext(summaries.map((summary) => summary.summary).join("\n\n"));
     } catch (error) {
       handleProcessingError("Load Session Data", error);
     }
@@ -419,77 +411,6 @@ export default function Home() {
   const handleRemoveAttachment = async (id: string) => {
     await removeDocumentChunks(id);
     setAttachments((prev) => prev.filter((a) => a.id !== id));
-  };
-
-  const handleChatSubmit = async () => {
-    if (!activeSession) {
-      const sessionId = await createNewSession();
-      if (!sessionId) return;
-    }
-
-    if (inputMessageText.trim() === "" || isProcessingChat) return;
-
-    const userMessage: ChatMessages = {
-      id: uuidv4(),
-      role: "user",
-      content: inputMessageText,
-      timestamp: new Date(),
-    };
-
-    setChatMessages((prev) => [...prev, userMessage]);
-    setInputMessageText("");
-    if (activeSession) {
-      saveChatMessage(userMessage, activeSession.id);
-    }
-    setIsProcessingChat(true);
-
-    try {
-      // Construct context from summaries
-      const context = summaries.map((summary) => summary.summary).join("\n\n");
-
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: `You are a legal assistant. Use this context to answer questions: ${context}`,
-            },
-            {
-              role: "user",
-              content: inputMessageText,
-            },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get AI response");
-      }
-
-      const data = await response.json();
-
-      const aiMessage: ChatMessages = {
-        id: uuidv4(),
-        role: "assistant",
-        content: data.message,
-        timestamp: new Date(),
-      };
-
-      setChatMessages((prev) => [...prev, aiMessage]);
-      if (activeSession) {
-        saveChatMessage(aiMessage, activeSession.id);
-      }
-
-      saveSession();
-    } catch (error) {
-      handleProcessingError("Chat Processing", error);
-    } finally {
-      setIsProcessingChat(false);
-    }
   };
 
   if (loading || !user) {
@@ -635,11 +556,9 @@ export default function Home() {
               {/* Chat Area*/}
               {!isChatCollapsed && (
                 <ChatWindow
-                  chatMessages={chatMessages}
-                  inputText={inputMessageText}
-                  isProcessing={isProcessingChat}
-                  handleSubmit={handleChatSubmit}
-                  setInputText={setInputMessageText}
+                  sessionId={activeSession?.id || ""}
+                  userId={user.uid}
+                  context={context}
                   setIsChatCollapsed={setIsChatCollapsed}
                 />
               )}

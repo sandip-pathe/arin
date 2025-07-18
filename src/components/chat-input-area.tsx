@@ -121,11 +121,11 @@ export function ChatInputArea({
       >
         <CardContent className="flex flex-col flex-1 p-2 md:p-4">
           <div className="flex flex-col flex-1 relative overflow-auto">
-            <div className="flex-1">
+            <div className="flex-1 text-lg">
               <Textarea
                 autoFocus
                 placeholder="Type your message or question here..."
-                className={`bg-white border-none overflow-auto max-h-64 h-24 w-full focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none`}
+                className={`bg-white border-none overflow-auto max-h-64 h-24 w-full focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-lg placeholder:text-gray-500 focus:outline-none text-lg`}
                 value={inputText}
                 onChange={(e) => onInputTextChange(e.target.value)}
                 onKeyDown={(e) => {
@@ -176,11 +176,11 @@ export function ChatInputArea({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-muted-foreground h-10 w-10"
+                        className="text-muted-foreground h-10 w-10 hover:bg-transparent hover:text-primary"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isProcessing}
                       >
-                        <Paperclip className="h-5 w-5" />
+                        <Paperclip />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
