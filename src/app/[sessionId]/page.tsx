@@ -1,12 +1,12 @@
 // app/[sessionId]/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import useSessionStore from "@/store/session-store";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,38 +19,34 @@ import {
   FaFileImage,
   FaFilePdf,
   FaFileWord,
+  FaLock,
 } from "react-icons/fa6";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ChatWindow } from "@/components/follow-up-chat";
-import {
-  doc,
-  setDoc,
-  serverTimestamp,
-  Timestamp,
-  getDoc,
-} from "firebase/firestore";
-import {
-  Attachment,
-  ChatMessages,
-  DocumentChunk,
-  Session,
-  SummaryItem,
-} from "@/types/page";
-import { db } from "@/lib/firebase";
-import { Sidebar } from "@/components/sidebar";
-import {
-  loadChatMessages,
-  loadChunks,
-  saveChunksToFirestore,
-} from "@/lib/functions";
+import { Attachment, DocumentChunk, SummaryItem } from "@/types/page";
 import { extractText } from "@/lib/extraction";
 import { chunkDocument } from "@/lib/chunk";
 import { processChunks } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
-import Logo from "@/components/logo";
 import { WelcomeModal } from "@/components/modal";
 import { useSearchParams } from "next/navigation";
+import { summaries, chunks, attachment, msgs, message } from "@/lib/data";
+import {
+  BsLayoutSidebarInsetReverse,
+  BsLayoutSidebarInset,
+  BsMoonStars,
+  BsChatLeftText,
+} from "react-icons/bs";
+import Logo from "@/components/logo";
+import TopNavbar from "@/components/navbar";
+import { FiSliders } from "react-icons/fi";
+
+function SkeletonBox({ className = "" }: { className?: string }) {
+  return (
+    <div className={`bg-gray-200 rounded-md animate-pulse ${className}`} />
+  );
+}
 
 export default function SessionPage() {
   const params = useParams();
@@ -63,31 +59,45 @@ export default function SessionPage() {
   const { toast } = useToast();
 
   // State management
-  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
-  const [context, setContext] = useState<string>("");
-  const allowChunksToFirestore = true;
-  const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isProcessingDocument, setIsProcessingDocument] = useState(false);
-  const [loadingStates, setLoadingStates] = useState({
-    chunks: true,
-    chats: true,
-    session: true,
-  });
-  const [isProcessingChat, setIsProcessingChat] = useState(false);
-  const [inputText, setInputText] = useState("");
-  const [userInput, setUserInput] = useState("");
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [chunks, setChunks] = useState<DocumentChunk[]>([]);
-  const [summaries, setSummaries] = useState<SummaryItem[]>([]);
-
-  // UI state
-  const [isInputCollapsed, setIsInputCollapsed] = useState(false);
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
-  const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
+  const {
+    chatMessages,
+    setChatMessages,
+    context,
+    setContext,
+    activeSession,
+    setActiveSession,
+    isLoading,
+    setIsLoading,
+    isProcessingDocument,
+    setIsProcessingDocument,
+    loadingStates,
+    setLoadingStates,
+    isProcessingChat,
+    setIsProcessingChat,
+    inputText,
+    setInputText,
+    userInput,
+    setUserInput,
+    // attachment,
+    setAttachments,
+    addAttachment,
+    updateAttachment,
+    removeAttachment,
+    // chunk,
+    setChunks,
+    // summarie,
+    setSummaries,
+    isInputCollapsed,
+    setIsInputCollapsed,
+    isChatCollapsed,
+    setIsChatCollapsed,
+    showWelcomeModal,
+    setShowWelcomeModal,
+    isSidebarOpen,
+    toggleSidebar,
+    isChatOpen,
+    toggleChat,
+  } = useSessionStore();
 
   // Refs
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -115,17 +125,17 @@ export default function SessionPage() {
     }
   }, [user, loading, router]);
 
-  // useEffect(() => {
-  //   if (searchParams.get("new") === "true") {
-  //     setShowWelcomeModal(true);
-  //   }
-  // }, [searchParams]);
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      setShowWelcomeModal(true);
+    }
+  }, [searchParams, setShowWelcomeModal]);
 
-  // useEffect(() => {
-  //   if (user && !loading && sessionId) {
-  //     loadSessionData(sessionId);
-  //   }
-  // }, [user, loading, sessionId]);
+  useEffect(() => {
+    if (user && !loading && sessionId) {
+      // loadSessionData(sessionId);
+    }
+  }, [user, loading, sessionId]);
 
   const createNewSession = async () => {
     if (!user) return;
@@ -143,40 +153,36 @@ export default function SessionPage() {
   };
 
   const saveSession = async () => {
-    if (!activeSession) return;
-
-    const sessionData: Session = {
-      ...activeSession,
-      updatedAt: serverTimestamp() as Timestamp,
-      attachments: attachments.map((a) => ({
-        id: a.id,
-        name: a.name,
-        type: a.type,
-        status: a.status,
-        text: a.text,
-      })),
-      summaries,
-      userInput,
-    };
-
-    try {
-      await setDoc(doc(db, "sessions", activeSession.id), sessionData);
-      toast({
-        title: "Session Saved",
-        description: "Your session has been saved successfully",
-      });
-
-      if (allowChunksToFirestore) {
-        await saveChunksToFirestore(activeSession.id, chunks);
-      }
-    } catch (error) {
-      handleProcessingError("Save Session", error);
-    }
+    // if (!activeSession) return;
+    // const sessionData: Session = {
+    //   ...activeSession,
+    //   updatedAt: serverTimestamp() as Timestamp,
+    //   attachments: attachments.map((a) => ({
+    //     id: a.id,
+    //     name: a.name,
+    //     type: a.type,
+    //     status: a.status,
+    //     text: a.text,
+    //   })),
+    //   summaries,
+    //   userInput,
+    // };
+    // try {
+    //   await setDoc(doc(db, "sessions", activeSession.id), sessionData);
+    //   toast({
+    //     title: "Session Saved",
+    //     description: "Your session has been saved successfully",
+    //   });
+    //   if (allowChunksToFirestore) {
+    //     await saveChunksToFirestore(activeSession.id, chunks);
+    //   }
+    // } catch (error) {
+    //   handleProcessingError("Save Session", error);
+    // }
   };
 
   const handleFileAdded = async (file: File) => {
     setIsProcessingDocument(true);
-
     const newAttachment: Attachment = {
       id: uuidv4(),
       file,
@@ -185,28 +191,17 @@ export default function SessionPage() {
       status: "uploading",
     };
 
-    setAttachments((prev) => [...prev, newAttachment]);
+    addAttachment(newAttachment);
 
     try {
       const text = await extractText(file);
-      setAttachments((prev) =>
-        prev.map((a) =>
-          a.id === newAttachment.id ? { ...a, status: "extracted", text } : a
-        )
-      );
+      updateAttachment(newAttachment.id, { status: "extracted", text });
       await processDocument(newAttachment.id, text, file.name);
     } catch (error: any) {
-      setAttachments((prev) =>
-        prev.map((a) =>
-          a.id === newAttachment.id
-            ? {
-                ...a,
-                status: "error",
-                error: error.message || "Failed to extract text",
-              }
-            : a
-        )
-      );
+      updateAttachment(newAttachment.id, {
+        status: "error",
+        error: error.message || "Failed to extract text",
+      });
       toast({
         variant: "destructive",
         title: "Error processing file",
@@ -233,10 +228,7 @@ export default function SessionPage() {
         })
       );
 
-      setChunks((prev) => {
-        const seen = new Set(documentChunks.map((c) => c.id));
-        return [...prev.filter((c) => !seen.has(c.id)), ...documentChunks];
-      });
+      setChunks(documentChunks);
 
       return documentChunks;
     } catch (error) {
@@ -284,7 +276,7 @@ export default function SessionPage() {
       setIsInputCollapsed(true);
       setInputText("");
       setContext(newSummaries.map((summary) => summary.summary).join("\n\n"));
-      saveSession();
+      // saveSession();
     } catch (err) {
       handleProcessingError("Send Document", err);
     } finally {
@@ -294,52 +286,10 @@ export default function SessionPage() {
 
   const loadSessionData = async (id: string) => {
     resetSessionState();
-    setLoadingStates((prev) => ({ ...prev, session: true }));
+    setLoadingStates({ ...loadingStates, session: true });
 
     try {
-      // Create new session if doesn't exist
-      const sessionRef = doc(db, "sessions", id);
-      const sessionDoc = await getDoc(sessionRef);
-
-      if (!sessionDoc.exists()) {
-        const newSession: Session = {
-          id,
-          userId: user!.uid,
-          createdAt: serverTimestamp() as Timestamp,
-          updatedAt: serverTimestamp() as Timestamp,
-          attachments: [],
-          summaries: [],
-          title: "New Session",
-        };
-        await setDoc(sessionRef, newSession);
-        setActiveSession(newSession);
-      } else {
-        const sessionData = sessionDoc.data() as Session;
-        setActiveSession({
-          ...sessionData,
-          id: sessionDoc.id,
-        });
-
-        // Load summaries
-        if (sessionData.summaries) {
-          setSummaries(sessionData.summaries);
-          setContext(sessionData.summaries.map((s) => s.summary).join("\n\n"));
-        }
-
-        // Load user input
-        if (sessionData.userInput) {
-          setUserInput(sessionData.userInput);
-        }
-      }
-
-      // Load chunks and messages
-      const [loadedChunks, loadedMessages] = await Promise.all([
-        loadChunks(id),
-        loadChatMessages(id),
-      ]);
-
-      setChunks(loadedChunks);
-      setChatMessages(loadedMessages);
+      // Session loading implementation
     } catch (error) {
       handleProcessingError("Load Session Data", error);
       router.push("/");
@@ -348,230 +298,136 @@ export default function SessionPage() {
     }
   };
 
-  const removeDocumentChunks = async (documentId: string) => {
-    try {
-      setChunks((prev) =>
-        prev.filter((chunk) => chunk.documentId !== documentId)
-      );
-    } catch (error) {
-      handleProcessingError("Remove Document Chunks", error);
-    }
-  };
-
   const handleRemoveAttachment = async (id: string) => {
-    await removeDocumentChunks(id);
-    setAttachments((prev) => prev.filter((a) => a.id !== id));
+    removeAttachment(id);
   };
-
-  const handleToggleSidebar = () => {
-    const newState = !isSidebarExpanded;
-    setIsSidebarExpanded(newState);
-    setIsManuallyExpanded(newState);
-  };
-
-  if (loading || !user) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <Logo />
-          <Skeleton className="h-8 w-48 mt-2 bg-gray-300" />
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="flex flex-auto min-h-screen bg-background">
-      <Sidebar
-        isSheetOpen={isSheetOpen}
-        setIsSheetOpen={setIsSheetOpen}
-        isSidebarExpanded={isSidebarExpanded}
-        isManuallyExpanded={isManuallyExpanded}
-        setIsSidebarExpanded={setIsSidebarExpanded}
-        handleToggleSidebar={handleToggleSidebar}
-        onNewSession={createNewSession}
-        sessions={[]}
-        activeSessionId={null}
-        onSelectSession={function (sessionId: string): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-
-      <div className="flex-1 flex flex-col h-svh">
-        {loadingStates.session ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
+    <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
+      <TopNavbar />
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Sidebar */}
+        {isSidebarOpen ? (
+          <aside className="w-48 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
+            <div className="z-10 border-b flex items-center justify-between">
+              <div className="p-4 font-medium">Sidebar</div>
+              <BsLayoutSidebarInset
+                className="cursor-pointer m-2"
+                size={24}
+                onClick={toggleSidebar}
+              />
+            </div>
+            <div className="flex-1 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin p-4 space-y-3">
+              {/* ... skeleton content ... */}
+              <SkeletonBox className="h-4 w-2/3" />
+              <SkeletonBox className="h-4 w-1/2" />
+              <SkeletonBox className="h-4 w-5/6" />
+              <SkeletonBox className="h-32 w-full mt-4" />
+            </div>
+          </aside>
         ) : (
-          <>
-            <main className="flex-1 overflow-y-auto p-6 flex flex-col">
-              <div className="flex-1 flex lg:flex-row gap-6">
-                <div
-                  className={`${
-                    isChatCollapsed ? "w-full" : "w-[70%]"
-                  } transition-all items-start`}
-                >
-                  <div className="max-w-4xl">
-                    <Collapsible
-                      open={isInputCollapsed}
-                      onOpenChange={setIsInputCollapsed}
-                      className="mb-6 border-none rounded-lg overflow-hidden"
-                    >
-                      <CollapsibleTrigger asChild>
-                        <div className="flex border-none justify-between items-center p-4 pb-0 bg-white cursor-pointer">
-                          <div>
-                            <h2 className="font-medium text-base">Input</h2>
-                            <p className="text-sm text-gray-500">
-                              {attachments.length > 0
-                                ? `${attachments.length} document${
-                                    attachments.length > 1 ? "s" : ""
-                                  } attached`
-                                : "Text input"}
-                            </p>
-                          </div>
-                          <Button variant="ghost" size="icon">
-                            {isInputCollapsed ? (
-                              <FaChevronUp size={18} />
-                            ) : (
-                              <FaChevronDown size={18} />
-                            )}
-                          </Button>
-                        </div>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="p-4 border-t bg-white dark:bg-gray-900">
-                          {userInput && (
-                            <div className="mb-2">
-                              <p className="text-sm text-gray-800 dark:text-gray-100">
-                                {userInput}
-                              </p>
-                            </div>
-                          )}
+          <aside className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
+            <div className="z-10 border-b flex items-center justify-center py-2">
+              <BsLayoutSidebarInset
+                className="cursor-pointer m-2"
+                size={24}
+                onClick={toggleSidebar}
+              />
+            </div>
+            <div className="flex-1 overflow-auto p-4"> </div>
+          </aside>
+        )}
 
-                          {attachments.length > 0 && (
-                            <div>
-                              <div className="flex flex-wrap gap-2">
-                                {attachments.map((attachment, i) => (
-                                  <div
-                                    key={i}
-                                    className="flex items-center bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded"
-                                  >
-                                    <div className="mr-2">
-                                      {attachment.type === "pdf" ? (
-                                        <FaFilePdf className="h-4 w-4 text-red-500" />
-                                      ) : attachment.type === "docs" ? (
-                                        <FaFileWord className="h-4 w-4 text-blue-500" />
-                                      ) : attachment.type === "image" ? (
-                                        <FaFileImage className="h-4 w-4 text-purple-500" />
-                                      ) : attachment.type === "xlsx" ? (
-                                        <FaFileExcel className="h-4 w-4 text-green-500" />
-                                      ) : (
-                                        <FaFile className="h-4 w-4 text-gray-500" />
-                                      )}
-                                    </div>
-                                    <span className="text-sm max-w-[160px] truncate">
-                                      {attachment.name}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+        {/* Main Content */}
+        <main className="flex-1 min-w-0 mb-4 overflow-hidden">
+          <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
+            <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
+              {isLoading ? (
+                <>
+                  <div className="p-6">
+                    <SkeletonBox className="h-6 w-1/4" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                      {[...Array(6)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="bg-gray-100 p-4 rounded-lg space-y-2 animate-pulse"
+                        >
+                          <SkeletonBox className="h-4 w-2/3" />
+                          <SkeletonBox className="h-4 w-1/2" />
+                          <SkeletonBox className="h-20 w-full" />
                         </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </div>
-
-                  {summaries.length > 0 && (
-                    <div ref={summaryRef}>
-                      <SummaryDisplay
-                        chunks={chunks}
-                        summaries={summaries}
-                        loading={loadingStates.chunks}
-                      />
+                      ))}
                     </div>
-                  )}
-                </div>
-
-                {!isChatCollapsed && (
-                  <ChatWindow
-                    initialMessages={chatMessages}
-                    sessionId={sessionId || ""}
-                    context={context}
-                    setIsChatCollapsed={setIsChatCollapsed}
+                  </div>
+                </>
+              ) : (
+                <div ref={summaryRef} className="p-6">
+                  <SummaryDisplay
+                    chunks={chunks}
+                    summaries={summaries}
+                    loading={loadingStates.chunks}
                   />
-                )}
-              </div>
-            </main>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
 
-            <div className="border-t p-4">
-              <div className="max-w-4xl mx-auto flex items-center gap-4">
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Enter text or upload documents..."
-                  className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  disabled={isProcessingDocument || isLoading}
+        {/* Chat Panel */}
+        {isChatOpen ? (
+          <aside className="w-1/4 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
+            <div className="z-10 border-b flex items-center justify-between">
+              <div className="flex items-center justify-start gap-2">
+                <BsLayoutSidebarInsetReverse
+                  className="cursor-pointer m-2"
+                  size={24}
+                  onClick={toggleChat}
                 />
-                <Button
-                  onClick={handleSend}
-                  disabled={isProcessingDocument || isLoading}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                >
-                  <ArrowUp className="h-5 w-5 mr-2" />
-                  Process
-                </Button>
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      handleFileAdded(e.target.files[0]);
-                    }
-                  }}
-                  disabled={isProcessingDocument || isLoading}
-                />
-                <label
-                  htmlFor="file-upload"
-                  className="cursor-pointer p-3 border rounded-lg hover:bg-gray-50"
-                >
-                  Upload
-                </label>
+                <div className="p-4 font-medium">Chat</div>
+              </div>
+              <div className="flex items-center justify-start">
+                <FaLock size={18} className="text-green-600 m-2" />
+                <FiSliders size={18} className="m-2" />
               </div>
             </div>
-          </>
-        )}
-
-        {isChatCollapsed && (
-          <div
-            className="fixed w-64 bg-white right-4 bottom-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-white p-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out cursor-pointer"
-            onClick={() => setIsChatCollapsed(false)}
-          >
-            <input
-              type="text"
-              placeholder="Ask a question..."
-              className="flex-1 placeholder:text-lg ml-2 border-none focus:ring-0 text-sm z-10"
-              onFocus={() => setIsChatCollapsed(false)}
-            />
-            <Button
-              size="icon"
-              className="rounded-full h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              disabled={isProcessingDocument || isProcessingChat}
-            >
-              <ArrowUp className="h-5 w-5 text-white" />
-              <span className="sr-only">Send</span>
-            </Button>
-          </div>
+            <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-blue-200 scrollbar-track-gray-100 scrollbar-thin">
+              {isLoading ? (
+                <div className="p-4 space-y-3">
+                  <SkeletonBox className="h-4 w-3/4" />
+                  <SkeletonBox className="h-4 w-1/2" />
+                  <SkeletonBox className="h-32 w-full mt-4" />
+                  <SkeletonBox className="h-8 w-full mt-4" />
+                </div>
+              ) : (
+                <ChatWindow
+                  initialMessages={msgs}
+                  sessionId={sessionId || ""}
+                  context={context}
+                  setIsChatCollapsed={setIsChatCollapsed}
+                />
+              )}
+            </div>
+          </aside>
+        ) : (
+          <aside className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
+            <div className="z-10 border-b flex items-center py-2 justify-center">
+              <BsChatLeftText
+                className="cursor-pointer m-2"
+                size={24}
+                onClick={toggleChat}
+              />
+            </div>
+            <div className="flex-1 overflow-auto p-4"> </div>
+          </aside>
         )}
       </div>
+
       <WelcomeModal
         isOpen={showWelcomeModal}
         onOpenChange={setShowWelcomeModal}
         inputText={inputText}
         onInputTextChange={setInputText}
-        attachments={attachments}
+        attachments={attachment}
         onFileAdded={handleFileAdded}
         onRemoveAttachment={handleRemoveAttachment}
         onSend={() => {

@@ -21,7 +21,6 @@ export const ChatWindow = ({
   initialMessages,
   sessionId,
   context,
-  setIsChatCollapsed,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessageText, setInputMessageText] = useState("");
@@ -98,30 +97,32 @@ export const ChatWindow = ({
   };
 
   return (
-    <div className="fixed lg:w-[27%] bg-background flex flex-col h-[100dvh] right-0 bottom-0 border-none z-50">
-      <div className="absolute top-4 right-4 z-20">
-        <FaXmark
-          size={20}
-          className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
-          onClick={() => setIsChatCollapsed(true)}
-        />
-      </div>
-
-      <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
-
-      <div className="flex-1 overflow-y-auto p-4 pt-12 space-y-4">
-        {[...chatMessages].map((message) => (
-          <div
-            key={message.id}
-            className={`flex p-2 rounded-lg ${
-              message.role === "user" ? "bg-blue-900 text-gray-200 ml-6" : ""
-            }`}
-          >
-            <div className="flex-1 text-md break-words">
-              <div className="mb-1">{message.content}</div>
-            </div>
+    <div className="flex flex-col h-full border-none overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 pt-12 space-y-4">
+        {chatMessages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-gray-500">
+            <p className="text-lg text-gray-400 font-bold select-none">
+              Ask questions about your documents!
+            </p>
           </div>
-        ))}
+        ) : (
+          <>
+            {[...chatMessages].map((message) => (
+              <div
+                key={message.id}
+                className={`flex p-2 rounded-lg ${
+                  message.role === "user"
+                    ? "bg-blue-900 text-gray-200 ml-6"
+                    : ""
+                }`}
+              >
+                <div className="flex-1 text-sm break-words">
+                  <div className="mb-1">{message.content}</div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
         {isProcessingChat && (
           <div className="flex items-center p-2">
             <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></span>
@@ -139,8 +140,8 @@ export const ChatWindow = ({
         </div>
       )}
 
-      <div className="p-3">
-        <div className="bg-white dark:bg-gray-800 rounded-full flex items-center gap-2 border border-gray-300 dark:border-gray-700 px-4 py-2 transition-all">
+      <div className="flex items-center justify-between z-10 border-t">
+        <div className="bg-white dark:bg-gray-800 w-full rounded-lg flex items-center gap-2 dark:border-gray-700 px-4 py-2 transition-all">
           <input
             type="text"
             placeholder="Ask a question..."

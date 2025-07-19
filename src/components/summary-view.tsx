@@ -89,7 +89,7 @@ export const SummaryDisplay: React.FC<Props> = ({
           return (
             <Sheet key={`${chunkId}-${i}`}>
               <SheetTrigger asChild>
-                <span className="cursor-pointer hover:underline break-words text-lg text-start mr-1">
+                <span className="cursor-pointer hover:underline break-words text-base text-start mr-1">
                   {sentence}
                 </span>
               </SheetTrigger>
@@ -165,10 +165,10 @@ export const SummaryDisplay: React.FC<Props> = ({
   );
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-white max-w-4xl border-none">
-        <CardContent>
-          <div className="prose max-w-none dark:prose-invert pt-4">
+    <div className="space-y-6 h-full flex flex-col">
+      <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
+        <CardContent className="p-4">
+          <div className="prose max-w-none dark:prose-invert">
             <div className="text-start text-gray-900 dark:text-gray-100 leading-relaxed break-words">
               {summaries.map((summary, idx) => (
                 <React.Fragment key={idx}>
@@ -184,57 +184,59 @@ export const SummaryDisplay: React.FC<Props> = ({
         </CardContent>
       </Card>
 
-      <div className="flex bg-white flex-1 rounded-md p-4 max-w-4xl gap-6 justify-start flex-row flex-wrap">
-        {sortedOntology.map(({ key, values, title, color }) => (
-          <div key={key} className="w-auto md:w-[48%]">
-            <h3
-              className={`text-lg font-semibold mb-2 flex items-center gap-2 ${
-                key === "definitions"
-                  ? "text-blue-600"
-                  : key === "obligations"
-                  ? "text-green-600"
-                  : key === "rights"
-                  ? "text-yellow-600"
-                  : key === "conditions"
-                  ? "text-purple-600"
-                  : key === "clauses"
-                  ? "text-pink-600"
-                  : key === "dates"
-                  ? "text-indigo-600"
-                  : "text-teal-600"
-              }`}
-            >
-              <div className="w-3 h-3 rounded-full bg-current" />
-              {title}
-            </h3>
-            <ul className="space-y-1 pl-1">
-              {values.map((value, i) => (
-                <li key={i} className="text-lg leading-relaxed">
-                  <span
-                    className={`inline-block rounded-none px-2 bg-opacity-30 ${
-                      key === "definitions"
-                        ? "bg-blue-200 dark:bg-blue-800"
-                        : key === "obligations"
-                        ? "bg-green-200 dark:bg-green-800"
-                        : key === "rights"
-                        ? "bg-yellow-200 dark:bg-yellow-800"
-                        : key === "conditions"
-                        ? "bg-purple-200 dark:bg-purple-800"
-                        : key === "clauses"
-                        ? "bg-pink-200 dark:bg-pink-800"
-                        : key === "dates"
-                        ? "bg-indigo-200 dark:bg-indigo-800"
-                        : "bg-teal-200 dark:bg-teal-800"
-                    }`}
-                  >
-                    {value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      {nonEmptyOntology.length > 0 && (
+        <div className="bg-white rounded-md p-4 max-w-4xl gap-6 grid grid-cols-1 md:grid-cols-2">
+          {sortedOntology.map(({ key, values, title, color }) => (
+            <div key={key} className="w-auto">
+              <h3
+                className={`text-lg font-semibold mb-2 flex items-center gap-2 ${
+                  key === "definitions"
+                    ? "text-blue-600"
+                    : key === "obligations"
+                    ? "text-green-600"
+                    : key === "rights"
+                    ? "text-yellow-600"
+                    : key === "conditions"
+                    ? "text-purple-600"
+                    : key === "clauses"
+                    ? "text-pink-600"
+                    : key === "dates"
+                    ? "text-indigo-600"
+                    : "text-teal-600"
+                }`}
+              >
+                <div className="w-3 h-3 rounded-full bg-current" />
+                {title}
+              </h3>
+              <ul className="space-y-1 pl-1">
+                {values.map((value, i) => (
+                  <li key={i} className="text-lg leading-relaxed">
+                    <span
+                      className={`inline-block rounded-none px-2 bg-opacity-30 ${
+                        key === "definitions"
+                          ? "bg-blue-200 dark:bg-blue-800"
+                          : key === "obligations"
+                          ? "bg-green-200 dark:bg-green-800"
+                          : key === "rights"
+                          ? "bg-yellow-200 dark:bg-yellow-800"
+                          : key === "conditions"
+                          ? "bg-purple-200 dark:bg-purple-800"
+                          : key === "clauses"
+                          ? "bg-pink-200 dark:bg-pink-800"
+                          : key === "dates"
+                          ? "bg-indigo-200 dark:bg-indigo-800"
+                          : "bg-teal-200 dark:bg-teal-800"
+                      }`}
+                    >
+                      {value}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { DocumentChunk } from "@/types/page";
+import { Attachment, DocumentChunk } from "@/types/page";
 
 // summaries.ts
 export const summaries = [
@@ -266,31 +266,56 @@ export const msgs = [
   },
 ];
 
-export const attachment = [
+export const attachment: Attachment[] = [
   {
     id: "doc-1",
     name: "Service_Agreement.pdf",
     type: "pdf",
+    file: new File([""], "Service_Agreement.pdf", {
+      type: "application/pdf",
+    }),
+    status: "extracted",
+    text: "This is a sample service agreement document that outlines the terms and conditions between the service provider and the client. It includes sections on obligations, confidentiality, dispute resolution, and payment terms.",
   },
   {
     id: "doc-2",
     name: "Client_ID_Verification.png",
     type: "image",
+    file: new File([""], "Service_Agreement.pdf", {
+      type: "application/pdf",
+    }),
+    status: "extracted",
+    text: "This is a sample service agreement document that outlines the terms and conditions between the service provider and the client. It includes sections on obligations, confidentiality, dispute resolution, and payment terms.",
   },
   {
     id: "doc-3",
     name: "Terms_and_Conditions.txt",
     type: "text",
+    file: new File([""], "Service_Agreement.pdf", {
+      type: "application/pdf",
+    }),
+    status: "extracted",
+    text: "This is a sample service agreement document that outlines the terms and conditions between the service provider and the client. It includes sections on obligations, confidentiality, dispute resolution, and payment terms.",
   },
   {
     id: "doc-4",
     name: "Terms_and_Conditions.docs",
     type: "docs",
+    file: new File([""], "Service_Agreement.pdf", {
+      type: "application/pdf",
+    }),
+    status: "extracted",
+    text: "This is a sample service agreement document that outlines the terms and conditions between the service provider and the client. It includes sections on obligations, confidentiality, dispute resolution, and payment terms.",
   },
   {
     id: "doc-5",
     name: "Terms_and_Conditions.xlsx",
     type: "xlsx",
+    file: new File([""], "Service_Agreement.pdf", {
+      type: "application/pdf",
+    }),
+    status: "extracted",
+    text: "This is a sample service agreement document that outlines the terms and conditions between the service provider and the client. It includes sections on obligations, confidentiality, dispute resolution, and payment terms.",
   },
 ];
 
