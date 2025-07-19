@@ -11,23 +11,35 @@ import { ChatWithOpenAI } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
 
 interface ChatWindowProps {
-  sessionId: string;
-  userId: string;
+  initialMessages?: ChatMessages[];
+  sessionId: string | null;
   context: string;
   setIsChatCollapsed: (val: boolean) => void;
 }
 
 export const ChatWindow = ({
+  initialMessages,
   sessionId,
-  userId,
   context,
   setIsChatCollapsed,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessageText, setInputMessageText] = useState("");
   const [isProcessingChat, setIsProcessingChat] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessages[]>([]);
+  const [chatMessages, setChatMessages] = useState<ChatMessages[]>(
+    initialMessages || []
+  );
   const { toast } = useToast();
+
+  if (sessionId === null) {
+    console.error("Session ID not found.");
+    toast({
+      title: "Session Error",
+      description: "Session ID is required to use the chat feature.",
+      variant: "destructive",
+    });
+    return null;
+  }
 
   useEffect(() => {
     scrollToBottom();
@@ -36,8 +48,6 @@ export const ChatWindow = ({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const LoadMessages = () => {};
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -58,25 +68,21 @@ export const ChatWindow = ({
 
     setChatMessages((prev) => [...prev, userMessage]);
     setInputMessageText("");
-    if (inputMessageText.trim() !== "") {
-      saveChatMessage(userMessage, sessionId);
-    }
     setIsProcessingChat(true);
+    saveChatMessage(userMessage, sessionId);
 
     try {
+      console.log(`[${context}] Sending message to OpenAI:`, inputMessageText);
       const data = await ChatWithOpenAI(context, inputMessageText);
-
       const aiMessage: ChatMessages = {
         id: uuidv4(),
         role: "assistant",
-        content: data.message,
+        content: data,
         timestamp: new Date(),
       };
 
       setChatMessages((prev) => [...prev, aiMessage]);
-      if (aiMessage.content !== "") {
-        saveChatMessage(aiMessage, sessionId);
-      }
+      saveChatMessage(aiMessage, sessionId);
     } catch (error) {
       console.error(`[${context}]`, error);
 
@@ -106,6 +112,7 @@ export const ChatWindow = ({
       <div className="flex-1 overflow-y-auto p-4 pt-12 space-y-4">
         {[...chatMessages].map((message) => (
           <div
+            key={message.id}
             className={`flex p-2 rounded-lg ${
               message.role === "user" ? "bg-blue-900 text-gray-200 ml-6" : ""
             }`}
@@ -115,6 +122,12 @@ export const ChatWindow = ({
             </div>
           </div>
         ))}
+        {isProcessingChat && (
+          <div className="flex items-center p-2">
+            <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></span>
+            <span className="text-gray-500 text-sm">Thinking...</span>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 

@@ -15,8 +15,15 @@ export const saveChunksToFirestore = async (
 ) => {
   const chunksCollection = collection(db, "sessions", sessionId, "chunks");
 
-  const batch = writeBatch(db); // ⚡️ batching writes for performance
+  const batch = writeBatch(db);
+  console.log(
+    `Saving ${chunks.length} chunks to Firestore for session ${sessionId}`
+  );
 
+  if (chunks.length === 0) {
+    console.warn("No chunks to save");
+    return;
+  }
   chunks.forEach((chunk) => {
     const docRef = doc(chunksCollection);
     batch.set(docRef, {

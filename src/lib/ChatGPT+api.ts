@@ -100,7 +100,7 @@ export async function ChatWithOpenAI(context: string, inputText: string) {
   const output = response.choices[0]?.message?.content;
   if (!output) throw new Error("No response from OpenAI");
 
-  return JSON.parse(output);
+  return output;
 }
 
 export async function processChunks(
@@ -123,8 +123,8 @@ export async function processChunks(
         // Try GPT-4o first
         let data;
         try {
-          data = await callModel(chunk.content, "gpt-4o");
-          return { chunkId: chunk.id, modelUsed: "gpt-4o", data };
+          data = await callModel(chunk.content, "gpt-3.5-turbo");
+          return { chunkId: chunk.id, modelUsed: "gpt-3.5-turbo", data };
         } catch (e) {
           console.warn(`GPT-4o failed for ${chunk.id}, falling back to 3.5`);
           data = await callModel(chunk.content, "gpt-3.5-turbo");
