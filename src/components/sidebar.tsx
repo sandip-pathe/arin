@@ -1,213 +1,177 @@
-import React from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  MessageSquare,
-  PlusCircle,
-  Search,
-  History,
-  BookOpen,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { VscThreeBars } from "react-icons/vsc";
-import Logo from "./logo";
-import { UserProfile } from "./user-profile";
-import { SidebarItem, SidebarProps } from "@/types/page";
+"use client";
 
-const iconBaseClasses = "w-5 h-5 transition-all";
-const iconActiveColor = "text-primary";
-const iconInactiveColor = "text-muted-foreground";
+import { FiShare2, FiSettings, FiHome, FiChevronDown } from "react-icons/fi";
+import { BsLayoutSidebarInset } from "react-icons/bs";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import useSessionStore from "@/store/session-store";
 
-const sidebarItems: SidebarItem[] = [
-  {
-    icon: <PlusCircle className={iconBaseClasses} />,
-    label: "New Chat",
-    active: true,
-  },
-  {
-    icon: <BookOpen className={iconBaseClasses} />,
-    label: "Tools",
-  },
-  {
-    icon: <History className={iconBaseClasses} />,
-    label: "History",
-  },
-];
+export const Sidebar = () => {
+  const router = useRouter();
+  const { isSidebarOpen, toggleSidebar } = useSessionStore();
+  const [showShare, setShowShare] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  isSheetOpen,
-  setIsSheetOpen,
-  isSidebarExpanded,
-  isManuallyExpanded,
-  setIsSidebarExpanded,
-  handleToggleSidebar,
-  sessions,
-  activeSessionId,
-  onSelectSession,
-}) => {
-  return (
-    <div className="flex bg-white">
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" className="absolute top-4 left-4 md:hidden">
-            <MessageSquare className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle>
-              <Logo />
-            </SheetTitle>
-          </SheetHeader>
+  const mockUser = {
+    name: "Sandeep",
+    membership: "Pro",
+  };
 
-          <div className="p-4 flex flex-col gap-4 h-[calc(100vh-120px)]">
-            {sidebarItems.map((item, i) => (
-              <Button
-                key={i}
-                variant={item.active ? "secondary" : "ghost"}
-                className="justify-start gap-2"
-              >
-                {item.icon}
-                {item.label}
-              </Button>
-            ))}
-
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search chats..." className="pl-10" />
-            </div>
-
-            <div className="flex-1 overflow-y-auto">
-              <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
-                Recent Chats
-              </h3>
-              <div className="mt-4">
-                {sessions.map((session) => (
-                  <button
-                    key={session.id}
-                    className={`flex items-center w-full px-3 py-2 rounded-md transition ${
-                      activeSessionId === session.id
-                        ? "bg-muted text-primary"
-                        : "hover:bg-muted text-muted-foreground"
-                    }`}
-                    onClick={() => onSelectSession(session.id)}
-                  >
-                    {isSidebarExpanded && (
-                      <>
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        <span className="truncate text-sm">
-                          {session.title}
-                        </span>
-                      </>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <UserProfile />
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* 💻 Desktop Sidebar */}
-      <div
-        className={`bg-white hidden md:flex h-svh border-r transition-all duration-300 ease-in-out bg-background ${
-          isSidebarExpanded ? "w-64" : "w-16"
-        }`}
-        onMouseEnter={() => {
-          if (!isManuallyExpanded) setIsSidebarExpanded(true);
-        }}
-        onMouseLeave={() => {
-          if (!isManuallyExpanded) setIsSidebarExpanded(false);
-        }}
-      >
-        <div className="flex flex-col w-full relative">
-          {/* Logo + Toggle */}
-          <div className="flex items-center justify-between p-4">
-            {isSidebarExpanded && <Logo />}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-auto"
-              onClick={handleToggleSidebar}
-            >
-              <VscThreeBars size={22} />
-            </Button>
-          </div>
-
-          {/* Navigation Items */}
-          <div className="flex flex-col gap-1 px-2">
-            {sidebarItems.map((item, i) => (
-              <button
-                key={i}
-                onClick={item.onClick}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md transition hover:bg-muted ${
-                  item.active
-                    ? "bg-muted text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                <span
-                  className={`${
-                    item.active ? iconActiveColor : iconInactiveColor
-                  }`}
-                >
-                  {item.icon}
-                </span>
-                {isSidebarExpanded && (
-                  <span className="text-sm font-medium">{item.label}</span>
-                )}
-              </button>
-            ))}
-            {isSidebarExpanded && (
-              <div className="relative mt-2">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  className="pl-10 bg-muted border-none focus-visible:ring-0"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1 mt-4 px-4 overflow-y-auto">
-            {sessions.map((session) => (
-              <button
-                key={session.id}
-                className={`flex items-center w-full px-3 py-1 rounded-md transition ${
-                  activeSessionId === session.id
-                    ? "bg-muted text-primary"
-                    : "hover:bg-muted text-muted-foreground"
-                }`}
-                onClick={() => onSelectSession(session.id)}
-              >
-                {isSidebarExpanded && (
-                  <>
-                    <span className="truncate text-sm ml-2">
-                      {session.title}
-                    </span>
-                  </>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {isSidebarExpanded && (
-            <div className="mt-auto border-t p-4">
-              <UserProfile />
-            </div>
-          )}
-        </div>
+  const SidebarButton = ({
+    icon,
+    label,
+    onClick,
+    isDropdown = false,
+    open,
+  }: {
+    icon: JSX.Element;
+    label: string;
+    onClick?: () => void;
+    isDropdown?: boolean;
+    open?: boolean;
+  }) => (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-between gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+    >
+      <div className="flex items-center gap-2">
+        {icon}
+        <span>{label}</span>
       </div>
+      {isDropdown && (
+        <FiChevronDown
+          className={`transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      )}
+    </button>
+  );
+
+  const DropdownItem = ({ label }: { label: string }) => (
+    <div className="text-xs px-4 py-1 text-gray-600 hover:text-black z-50 hover:bg-gray-100 rounded">
+      {label}
     </div>
+  );
+
+  return (
+    <aside
+      className={`${
+        isSidebarOpen ? "w-60" : "w-14"
+      } border-none bg-white rounded-lg select-none mx-4 mb-4 flex flex-col shadow transition-all duration-200`}
+    >
+      {/* Header */}
+      <div className="z-10 border-b flex items-center justify-between px-2 py-3">
+        {isSidebarOpen ? (
+          <>
+            <span className="text-sm font-semibold px-2">Menu</span>
+            <BsLayoutSidebarInset
+              className="cursor-pointer"
+              size={20}
+              onClick={toggleSidebar}
+            />
+          </>
+        ) : (
+          <BsLayoutSidebarInset
+            className="cursor-pointer mx-auto"
+            size={20}
+            onClick={toggleSidebar}
+          />
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-auto p-2 space-y-2">
+        {isSidebarOpen ? (
+          <div className="flex flex-col space-y-1 justify-between h-full">
+            {/* Share */}
+            <div className="relative">
+              {/* Home */}
+              <SidebarButton
+                icon={<FiHome size={18} />}
+                label="Home"
+                onClick={() => router.push("/")}
+              />
+              <SidebarButton
+                icon={<FiShare2 size={18} />}
+                label="Share"
+                onClick={() => setShowShare(!showShare)}
+                isDropdown
+                open={showShare}
+              />
+              {showShare && (
+                <div className="ml-8 space-y-1 z-20 relative">
+                  <DropdownItem label="With Source Files" />
+                  <DropdownItem label="Without Source Files" />
+                </div>
+              )}
+
+              {/* Settings */}
+              <SidebarButton
+                icon={<FiSettings size={18} />}
+                label="Settings"
+                onClick={() => setShowSettings(!showSettings)}
+                isDropdown
+                open={showSettings}
+              />
+
+              {showSettings && (
+                <div className="ml-8 space-y-1 z-20 relative">
+                  <DropdownItem label="Light Mode" />
+                  <DropdownItem label="Subscription" />
+                  <DropdownItem label="Privacy & Policy" />
+                  <DropdownItem label="Feedback" />
+                  <DropdownItem label="Suggestions" />
+                </div>
+              )}
+            </div>
+
+            {/* User Info */}
+            <div className="border-t mt-4 pt-3 px-2 flex items-center gap-2">
+              <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
+                <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="text-xs">
+                <div className="font-semibold">{mockUser.name}</div>
+                <div className="text-[11px] text-blue-500">
+                  {mockUser.membership}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center space-y-4 justify-between h-full">
+            {/* Logo */}
+            {/* Icon-only dropdowns */}
+            <div className="flex flex-col items-center space-y-4 mt-4">
+              <FiHome className="mx-auto cursor-pointer" size={18} />
+              <div className="relative group">
+                <FiShare2 className="mx-auto cursor-pointer" size={18} />
+                <div className="absolute left-full top-0 ml-2 w-48 p-2 rounded bg-white shadow hidden group-hover:block z-20">
+                  <DropdownItem label="With Source Files" />
+                  <DropdownItem label="Without Source Files" />
+                </div>
+              </div>
+
+              <div className="relative group">
+                <FiSettings className="mx-auto cursor-pointer" size={18} />
+                <div className="absolute left-full top-0 ml-2 w-48 p-2 rounded bg-white shadow hidden group-hover:block z-20">
+                  <DropdownItem label="Light Mode" />
+                  <DropdownItem label="Subscription" />
+                  <DropdownItem label="Privacy & Policy" />
+                  <DropdownItem label="Feedback" />
+                  <DropdownItem label="Suggestions" />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative group mt-4">
+              <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
+                <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+        )}
+      </div>
+    </aside>
   );
 };

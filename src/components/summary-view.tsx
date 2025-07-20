@@ -30,14 +30,6 @@ const ONTOLOGY_COLORS: Record<keyof Ontology, string> = {
     "bg-teal-100 border-teal-400 dark:bg-teal-900/40 dark:border-teal-600",
 };
 
-// Gradient background colors for summaries
-const SUMMARY_COLORS = [
-  "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20",
-  "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
-  "bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20",
-  "bg-gradient-to-r from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20",
-];
-
 export const SummaryDisplay: React.FC<Props> = ({
   chunks,
   summaries,
@@ -163,6 +155,43 @@ export const SummaryDisplay: React.FC<Props> = ({
   const sortedOntology = [...nonEmptyOntology].sort(
     (a, b) => b.values.length - a.values.length
   );
+  if (loading) {
+    return (
+      <div className="space-y-6 h-full flex flex-col">
+        <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
+          <CardContent className="p-4">
+            <div className="prose max-w-none dark:prose-invert">
+              <div className="space-y-4">
+                {[...Array(3)].map((_, idx) => (
+                  <div key={idx} className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="bg-white rounded-md p-4 max-w-4xl gap-6 grid grid-cols-1 md:grid-cols-2">
+          {[...Array(2)].map((_, idx) => (
+            <div key={idx} className="w-auto">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700 animate-pulse" />
+                <div className="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              </div>
+              <ul className="space-y-1 pl-1">
+                {[...Array(3)].map((_, i) => (
+                  <li key={i}>
+                    <span className="inline-block h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 h-full flex flex-col">
@@ -210,9 +239,9 @@ export const SummaryDisplay: React.FC<Props> = ({
               </h3>
               <ul className="space-y-1 pl-1">
                 {values.map((value, i) => (
-                  <li key={i} className="text-lg leading-relaxed">
+                  <li key={i} className="leading-relaxed">
                     <span
-                      className={`inline-block rounded-none px-2 bg-opacity-30 ${
+                      className={`inline-block text-sm rounded-none px-2 bg-opacity-30 ${
                         key === "definitions"
                           ? "bg-blue-200 dark:bg-blue-800"
                           : key === "obligations"

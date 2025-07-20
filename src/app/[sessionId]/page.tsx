@@ -1,27 +1,11 @@
-// app/[sessionId]/page.tsx
 "use client";
 
 import useSessionStore from "@/store/session-store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { ArrowUp, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { SummaryDisplay } from "@/components/summary-view";
-import {
-  FaFile,
-  FaFileExcel,
-  FaFileImage,
-  FaFilePdf,
-  FaFileWord,
-  FaLock,
-} from "react-icons/fa6";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaLock } from "react-icons/fa6";
 import { ChatWindow } from "@/components/follow-up-chat";
 import { Attachment, DocumentChunk, SummaryItem } from "@/types/page";
 import { extractText } from "@/lib/extraction";
@@ -31,16 +15,11 @@ import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 import { WelcomeModal } from "@/components/modal";
 import { useSearchParams } from "next/navigation";
-import { summaries, chunks, attachment, msgs, message } from "@/lib/data";
-import {
-  BsLayoutSidebarInsetReverse,
-  BsLayoutSidebarInset,
-  BsMoonStars,
-  BsChatLeftText,
-} from "react-icons/bs";
-import Logo from "@/components/logo";
+import { summaries, chunks, attachment, msgs } from "@/lib/data";
+import { BsLayoutSidebarInsetReverse, BsChatLeftText } from "react-icons/bs";
 import TopNavbar from "@/components/navbar";
 import { FiSliders } from "react-icons/fi";
+import { Sidebar } from "@/components/sidebar";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -60,23 +39,17 @@ export default function SessionPage() {
 
   // State management
   const {
-    chatMessages,
-    setChatMessages,
     context,
     setContext,
     activeSession,
-    setActiveSession,
     isLoading,
     setIsLoading,
     isProcessingDocument,
     setIsProcessingDocument,
     loadingStates,
     setLoadingStates,
-    isProcessingChat,
-    setIsProcessingChat,
     inputText,
     setInputText,
-    userInput,
     setUserInput,
     // attachment,
     setAttachments,
@@ -87,14 +60,11 @@ export default function SessionPage() {
     setChunks,
     // summarie,
     setSummaries,
-    isInputCollapsed,
     setIsInputCollapsed,
-    isChatCollapsed,
     setIsChatCollapsed,
     showWelcomeModal,
     setShowWelcomeModal,
     isSidebarOpen,
-    toggleSidebar,
     isChatOpen,
     toggleChat,
   } = useSessionStore();
@@ -137,48 +107,12 @@ export default function SessionPage() {
     }
   }, [user, loading, sessionId]);
 
-  const createNewSession = async () => {
-    if (!user) return;
-
-    const newSessionId = uuidv4();
-    router.push(`/${newSessionId}`);
-  };
-
   const resetSessionState = () => {
     setAttachments([]);
     setChunks([]);
     setSummaries([]);
     setInputText("");
     setIsInputCollapsed(false);
-  };
-
-  const saveSession = async () => {
-    // if (!activeSession) return;
-    // const sessionData: Session = {
-    //   ...activeSession,
-    //   updatedAt: serverTimestamp() as Timestamp,
-    //   attachments: attachments.map((a) => ({
-    //     id: a.id,
-    //     name: a.name,
-    //     type: a.type,
-    //     status: a.status,
-    //     text: a.text,
-    //   })),
-    //   summaries,
-    //   userInput,
-    // };
-    // try {
-    //   await setDoc(doc(db, "sessions", activeSession.id), sessionData);
-    //   toast({
-    //     title: "Session Saved",
-    //     description: "Your session has been saved successfully",
-    //   });
-    //   if (allowChunksToFirestore) {
-    //     await saveChunksToFirestore(activeSession.id, chunks);
-    //   }
-    // } catch (error) {
-    //   handleProcessingError("Save Session", error);
-    // }
   };
 
   const handleFileAdded = async (file: File) => {
@@ -284,91 +218,32 @@ export default function SessionPage() {
     }
   };
 
-  const loadSessionData = async (id: string) => {
-    resetSessionState();
-    setLoadingStates({ ...loadingStates, session: true });
-
-    try {
-      // Session loading implementation
-    } catch (error) {
-      handleProcessingError("Load Session Data", error);
-      router.push("/");
-    } finally {
-      setLoadingStates({ chunks: false, chats: false, session: false });
-    }
-  };
-
   const handleRemoveAttachment = async (id: string) => {
     removeAttachment(id);
   };
 
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
-      <TopNavbar />
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        {/* Sidebar */}
-        {isSidebarOpen ? (
-          <aside className="w-48 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
-            <div className="z-10 border-b flex items-center justify-between">
-              <div className="p-4 font-medium">Sidebar</div>
-              <BsLayoutSidebarInset
-                className="cursor-pointer m-2"
-                size={24}
-                onClick={toggleSidebar}
-              />
-            </div>
-            <div className="flex-1 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin p-4 space-y-3">
-              {/* ... skeleton content ... */}
-              <SkeletonBox className="h-4 w-2/3" />
-              <SkeletonBox className="h-4 w-1/2" />
-              <SkeletonBox className="h-4 w-5/6" />
-              <SkeletonBox className="h-32 w-full mt-4" />
-            </div>
-          </aside>
-        ) : (
-          <aside className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
-            <div className="z-10 border-b flex items-center justify-center py-2">
-              <BsLayoutSidebarInset
-                className="cursor-pointer m-2"
-                size={24}
-                onClick={toggleSidebar}
-              />
-            </div>
-            <div className="flex-1 overflow-auto p-4"> </div>
-          </aside>
-        )}
-
+      <TopNavbar isSidebarOpen={isSidebarOpen} />
+      <div className="flex flex-1 min-h-0 overflow-visible">
+        <Sidebar />
         {/* Main Content */}
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
           <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
+            <div className="z-10 border-b flex items-center justify-between py-2">
+              <h2 className="m-1.5 ml-8 font-bold text-xl">
+                The Art of Witty Banter
+              </h2>
+              <p className="mr-8">2 attachments</p>
+            </div>
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
-              {isLoading ? (
-                <>
-                  <div className="p-6">
-                    <SkeletonBox className="h-6 w-1/4" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                      {[...Array(6)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="bg-gray-100 p-4 rounded-lg space-y-2 animate-pulse"
-                        >
-                          <SkeletonBox className="h-4 w-2/3" />
-                          <SkeletonBox className="h-4 w-1/2" />
-                          <SkeletonBox className="h-20 w-full" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div ref={summaryRef} className="p-6">
-                  <SummaryDisplay
-                    chunks={chunks}
-                    summaries={summaries}
-                    loading={loadingStates.chunks}
-                  />
-                </div>
-              )}
+              <div ref={summaryRef} className="p-6">
+                <SummaryDisplay
+                  chunks={chunks}
+                  summaries={summaries}
+                  loading={loadingStates.chunks}
+                />
+              </div>
             </div>
           </div>
         </main>
@@ -379,7 +254,7 @@ export default function SessionPage() {
             <div className="z-10 border-b flex items-center justify-between">
               <div className="flex items-center justify-start gap-2">
                 <BsLayoutSidebarInsetReverse
-                  className="cursor-pointer m-2"
+                  className="cursor-pointer m-2 text-gray-600"
                   size={24}
                   onClick={toggleChat}
                 />
@@ -387,7 +262,7 @@ export default function SessionPage() {
               </div>
               <div className="flex items-center justify-start">
                 <FaLock size={18} className="text-green-600 m-2" />
-                <FiSliders size={18} className="m-2" />
+                <FiSliders size={18} className="m-2 text-gray-600" />
               </div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-blue-200 scrollbar-track-gray-100 scrollbar-thin">
@@ -421,7 +296,6 @@ export default function SessionPage() {
           </aside>
         )}
       </div>
-
       <WelcomeModal
         isOpen={showWelcomeModal}
         onOpenChange={setShowWelcomeModal}
