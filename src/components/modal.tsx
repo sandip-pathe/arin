@@ -135,6 +135,9 @@ export function WelcomeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogTitle className="sr-only">
+        Welcome to Legal AI Assistant
+      </DialogTitle>
       <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
         <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
           <Logo />

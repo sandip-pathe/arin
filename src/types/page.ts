@@ -91,4 +91,11 @@ export type MinimalSession = {
   id: string;
   title: string;
   updatedAt: Date;
+  createdAt: Date;
+  userId: string;
+  isStarred: boolean;
+  noOfAttachments: number;
+  folder: string;
+  sharedWith: string[];
+  owner: string;
 };

@@ -3,21 +3,27 @@
 import { useAuth } from "@/contexts/auth-context";
 
 export function ChatWelcome() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   const displayName = user?.displayName?.split(" ")[0] || "User";
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <div className="mx-auto max-w-4xl text-start">
-        <h1 className="mt-8 font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+    <div className="select-none mb-6 flex flex-row items-center justify-between">
+      <div className="text-start">
+        <h1 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
           <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Welcome {displayName},
+            Welcome Back {displayName},
           </span>
         </h1>
-        <p className="mt-6 text-base leading-7 text-foreground/80 sm:text-lg">
-          Your AI-powered legal assistant. How can I help you today?
-        </p>
+        <span
+          className={`text-xl ml-2 font-medium font-logo text-primary mt-auto transition-all duration-300 ease-in-out ${
+            !loading
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-2 pointer-events-none"
+          }`}
+        >
+          Let’s dig in.
+        </span>
       </div>
     </div>
   );

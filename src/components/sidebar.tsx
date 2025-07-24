@@ -1,177 +1,211 @@
 "use client";
 
-import { FiShare2, FiSettings, FiHome, FiChevronDown } from "react-icons/fi";
+import { FiShare2, FiSettings, FiHome, FiX } from "react-icons/fi";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
+import { motion } from "framer-motion";
+import {
+  AccountModal,
+  HomeModal,
+  SettingsModal,
+  ShareModal,
+} from "./sidebar-modals";
 
 export const Sidebar = () => {
   const router = useRouter();
   const { isSidebarOpen, toggleSidebar } = useSessionStore();
-  const [showShare, setShowShare] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [modalType, setModalType] = useState<
+    "home" | "share" | "settings" | "account" | null
+  >(null);
 
   const mockUser = {
     name: "Sandeep",
-    membership: "Pro",
+    email: "sandeep@example.com",
+    membershipType: "free", // free | pro | trial
+    remainingSessions: 3,
+    trialEndDate: "2025-08-24",
   };
+
+  const closeModal = () => setModalType(null);
 
   const SidebarButton = ({
     icon,
     label,
     onClick,
-    isDropdown = false,
-    open,
   }: {
     icon: JSX.Element;
     label: string;
-    onClick?: () => void;
-    isDropdown?: boolean;
-    open?: boolean;
+    onClick: () => void;
   }) => (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+      className="w-full flex items-center gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 transition"
     >
       <div className="flex items-center gap-2">
         {icon}
         <span>{label}</span>
       </div>
-      {isDropdown && (
-        <FiChevronDown
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      )}
     </button>
   );
 
-  const DropdownItem = ({ label }: { label: string }) => (
-    <div className="text-xs px-4 py-1 text-gray-600 hover:text-black z-50 hover:bg-gray-100 rounded">
-      {label}
-    </div>
-  );
-
   return (
-    <aside
-      className={`${
-        isSidebarOpen ? "w-60" : "w-14"
-      } border-none bg-white rounded-lg select-none mx-4 mb-4 flex flex-col shadow transition-all duration-200`}
-    >
-      {/* Header */}
-      <div className="z-10 border-b flex items-center justify-between px-2 py-3">
-        {isSidebarOpen ? (
-          <>
-            <span className="text-sm font-semibold px-2">Menu</span>
+    <>
+      {/* Modal Overlay */}
+      {modalType && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl border-none w-full p-12 max-w-4xl h-[90dvh] shadow-none relative"
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100"
+            >
+              <FiX size={24} />
+            </button>
+
+            <div
+              className="overflow-y-auto h-full"
+              style={{
+                scrollbarWidth: "none",
+                scrollbarColor: "#213555 #f3f4f6",
+              }}
+            >
+              {modalType === "home" && <HomeModal />}
+              {modalType === "share" && <ShareModal />}
+              {modalType === "settings" && <SettingsModal />}
+              {modalType === "account" && <AccountModal />}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <aside
+        className={`${
+          isSidebarOpen ? "w-60" : "w-14"
+        } border-none bg-white rounded-lg select-none mx-4 mb-4 flex flex-col shadow transition-all duration-200`}
+      >
+        {/* Header */}
+        <div className="z-10 border-b flex items-center justify-between px-2 py-2">
+          {isSidebarOpen ? (
+            <>
+              <span className="text-sm font-semibold px-2">Menu</span>
+              <BsLayoutSidebarInset
+                className="cursor-pointer m-2"
+                size={24}
+                onClick={toggleSidebar}
+              />
+            </>
+          ) : (
             <BsLayoutSidebarInset
-              className="cursor-pointer"
-              size={20}
+              className="cursor-pointer mx-auto m-2"
+              size={24}
               onClick={toggleSidebar}
             />
-          </>
-        ) : (
-          <BsLayoutSidebarInset
-            className="cursor-pointer mx-auto"
-            size={20}
-            onClick={toggleSidebar}
-          />
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto p-2 space-y-2">
-        {isSidebarOpen ? (
-          <div className="flex flex-col space-y-1 justify-between h-full">
-            {/* Share */}
-            <div className="relative">
-              {/* Home */}
-              <SidebarButton
-                icon={<FiHome size={18} />}
-                label="Home"
-                onClick={() => router.push("/")}
-              />
-              <SidebarButton
-                icon={<FiShare2 size={18} />}
-                label="Share"
-                onClick={() => setShowShare(!showShare)}
-                isDropdown
-                open={showShare}
-              />
-              {showShare && (
-                <div className="ml-8 space-y-1 z-20 relative">
-                  <DropdownItem label="With Source Files" />
-                  <DropdownItem label="Without Source Files" />
+        {/* Content */}
+        <div className="flex-1 overflow-auto p-2 space-y-2">
+          {isSidebarOpen ? (
+            <div className="flex flex-col space-y-1 justify-between h-full">
+              {/* Main Buttons */}
+              <div className="space-y-1">
+                <SidebarButton
+                  icon={<FiHome size={18} />}
+                  label="Home"
+                  onClick={() => setModalType("home")}
+                />
+                <SidebarButton
+                  icon={<FiShare2 size={18} />}
+                  label="Share"
+                  onClick={() => setModalType("share")}
+                />
+                <SidebarButton
+                  icon={<FiSettings size={18} />}
+                  label="Settings"
+                  onClick={() => setModalType("settings")}
+                />
+              </div>
+
+              {/* Subscribe Button */}
+              {mockUser.membershipType === "free" && (
+                <div className="mt-4 pt-3 px-2 flex items-center gap-2">
+                  <button
+                    onClick={() => setModalType("account")}
+                    className="flex items-center justify-center px-3 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
+                  >
+                    <span>✨ Upgrade to Pro</span>
+                    <span className="bg-white text-orange-500 text-xs px-2 py-1 rounded ml-2">
+                      50% OFF
+                    </span>
+                  </button>
                 </div>
               )}
 
-              {/* Settings */}
-              <SidebarButton
-                icon={<FiSettings size={18} />}
-                label="Settings"
-                onClick={() => setShowSettings(!showSettings)}
-                isDropdown
-                open={showSettings}
-              />
-
-              {showSettings && (
-                <div className="ml-8 space-y-1 z-20 relative">
-                  <DropdownItem label="Light Mode" />
-                  <DropdownItem label="Subscription" />
-                  <DropdownItem label="Privacy & Policy" />
-                  <DropdownItem label="Feedback" />
-                  <DropdownItem label="Suggestions" />
-                </div>
-              )}
-            </div>
-
-            {/* User Info */}
-            <div className="border-t mt-4 pt-3 px-2 flex items-center gap-2">
-              <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
-                <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="text-xs">
-                <div className="font-semibold">{mockUser.name}</div>
-                <div className="text-[11px] text-blue-500">
-                  {mockUser.membership}
+              {/* User Info */}
+              <div
+                className="border-t mt-4 pt-3 px-2 flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-lg p-2"
+                onClick={() => setModalType("account")}
+              >
+                <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
+                  <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="text-xs">
+                  <div className="font-semibold">{mockUser.name}</div>
+                  <div className="text-[11px] text-blue-500">
+                    {mockUser.membershipType === "free"
+                      ? `Free (${mockUser.remainingSessions}/5 sessions)`
+                      : mockUser.membershipType === "trial"
+                      ? `Trial (ends ${mockUser.trialEndDate})`
+                      : "Pro Member"}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center space-y-4 justify-between h-full">
-            {/* Logo */}
-            {/* Icon-only dropdowns */}
-            <div className="flex flex-col items-center space-y-4 mt-4">
-              <FiHome className="mx-auto cursor-pointer" size={18} />
-              <div className="relative group">
-                <FiShare2 className="mx-auto cursor-pointer" size={18} />
-                <div className="absolute left-full top-0 ml-2 w-48 p-2 rounded bg-white shadow hidden group-hover:block z-20">
-                  <DropdownItem label="With Source Files" />
-                  <DropdownItem label="Without Source Files" />
-                </div>
+          ) : (
+            <div className="flex flex-col items-center space-y-4 justify-between h-full">
+              {/* Icons */}
+              <div className="flex flex-col items-center space-y-6 mt-4">
+                <FiHome
+                  className="mx-auto cursor-pointer hover:text-blue-600 transition"
+                  size={20}
+                  onClick={() => setModalType("home")}
+                />
+                <FiShare2
+                  className="mx-auto cursor-pointer hover:text-blue-600 transition"
+                  size={20}
+                  onClick={() => setModalType("share")}
+                />
+                <FiSettings
+                  className="mx-auto cursor-pointer hover:text-blue-600 transition"
+                  size={20}
+                  onClick={() => setModalType("settings")}
+                />
               </div>
 
-              <div className="relative group">
-                <FiSettings className="mx-auto cursor-pointer" size={18} />
-                <div className="absolute left-full top-0 ml-2 w-48 p-2 rounded bg-white shadow hidden group-hover:block z-20">
-                  <DropdownItem label="Light Mode" />
-                  <DropdownItem label="Subscription" />
-                  <DropdownItem label="Privacy & Policy" />
-                  <DropdownItem label="Feedback" />
-                  <DropdownItem label="Suggestions" />
-                </div>
+              {/* User Avatar */}
+              <div
+                className="relative group mt-4 cursor-pointer"
+                onClick={() => setModalType("account")}
+              >
+                <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
+                  <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {mockUser.membershipType === "free" && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center">
+                    {mockUser.remainingSessions}
+                  </span>
+                )}
               </div>
             </div>
-
-            <div className="relative group mt-4">
-              <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
-                <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        )}
-      </div>
-    </aside>
+          )}
+        </div>
+      </aside>
+    </>
   );
 };

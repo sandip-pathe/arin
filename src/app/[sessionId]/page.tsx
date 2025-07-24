@@ -95,11 +95,11 @@ export default function SessionPage() {
     }
   }, [user, loading, router]);
 
-  useEffect(() => {
-    if (searchParams.get("new") === "true") {
-      setShowWelcomeModal(true);
-    }
-  }, [searchParams, setShowWelcomeModal]);
+  // useEffect(() => {
+  //   if (searchParams.get("new") === "true") {
+  //     setShowWelcomeModal(true);
+  //   }
+  // }, [searchParams, setShowWelcomeModal]);
 
   useEffect(() => {
     if (user && !loading && sessionId) {
@@ -232,9 +232,9 @@ export default function SessionPage() {
           <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
             <div className="z-10 border-b flex items-center justify-between py-2">
               <h2 className="m-1.5 ml-8 font-bold text-xl">
-                The Art of Witty Banter
+                {activeSession?.title || "New Session"}
               </h2>
-              <p className="mr-8">2 attachments</p>
+              <p className="mr-8">{attachment.length} attachments</p>
             </div>
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
               <div ref={summaryRef} className="p-6">
@@ -265,7 +265,13 @@ export default function SessionPage() {
                 <FiSliders size={18} className="m-2 text-gray-600" />
               </div>
             </div>
-            <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-blue-200 scrollbar-track-gray-100 scrollbar-thin">
+            <div
+              className="flex-1 min-h-0 overflow-auto"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#2563eb #f3f4f6",
+              }}
+            >
               {isLoading ? (
                 <div className="p-4 space-y-3">
                   <SkeletonBox className="h-4 w-3/4" />
