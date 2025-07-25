@@ -25,6 +25,11 @@ import {
   FiArchive,
   FiSettings,
   FiX,
+  FiPlus,
+  FiPlay,
+  FiPlayCircle,
+  FiPlusCircle,
+  FiArrowRight,
 } from "react-icons/fi";
 import { ChatWelcome } from "@/components/chat-welcome";
 import Footer from "@/components/footer";
@@ -36,13 +41,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import {
-  AccountModal,
-  SettingsModal,
-  ShareModal,
-} from "@/components/sidebar-modals";
+import { AccountModal, SettingsModal } from "@/components/sidebar-modals";
 import Logo from "@/components/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ShareModal } from "@/components/share-modal";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -267,99 +270,138 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white select-none overflow-hidden">
-      <div className="mx-4 p-2 flex items-center justify-between">
-        <Logo />
-        {/* User Avatar */}
-        <div className="flex items-center gap-4 flex-row">
-          <FiSettings
-            className="mx-auto text-gray-600 cursor-pointer hover:text-blue-600 transition"
-            size={20}
-            onClick={() => setModalType("settings")}
-          />
-          <div
-            className="relative group cursor-pointer"
-            onClick={() => setModalType("account")}
-          >
-            <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
-              <AvatarFallback>{user?.displayName?.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </div>
+    <div className="min-h-screen bg-white overflow-hidden">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-white px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center">
+          <Logo />
         </div>
-      </div>
-      <main className="m-12 overflow-hidden">
-        <ChatWelcome />
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 select-none"></div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setModalType("settings")}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <FiSettings className="text-gray-600" size={20} />
+          </button>
+          <button
+            onClick={() => setModalType("account")}
+            className="relative group"
+          >
+            <Avatar className="h-9 w-9 border-blue-600 border-2">
+              <AvatarFallback className="font-medium bg-blue-50">
+                {user?.displayName?.charAt(0) || "U"}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        </div>
+      </header>
 
-        {/* Folder Tabs */}
-        <div className="text-sm w-full max-w-3xl mx-auto">
-          <div className="text-sm gap-2 mb-4 items-center justify-between flex flex-row font-medium mt-auto">
+      <main className="px-4 py-8 max-w-6xl mx-auto">
+        <div className="mx-auto flex w-full">
+          <ChatWelcome />
+        </div>
+
+        <div className="w-full max-w-3xl mx-auto my-16">
+          <button
+            onClick={() => router.push("/new")}
+            className="group w-full flex items-center justify-center gap-3 rounded-xl border border-neutral-300 bg-gradient-to-br from-white via-[#f9fafb] to-[#f1f5f9] text-neutral-800 shadow-sm hover:shadow-md hover:border-blue-900 hover:bg-white transition-all duration-200 py-4 px-6 font-semibold text-lg"
+          >
+            <FiArrowRight
+              size={22}
+              className="group-hover:scale-110 transition-transform duration-200"
+            />
+            <span className="">Start Your Session</span>
+          </button>
+        </div>
+
+        {/* Folder Navigation */}
+        <div className="flex flex-col md:flex-row justify-between gap-4 my-6">
+          <div className="flex flex-wrap gap-1 md:gap-2">
             {folderOptions.map((folder) => (
               <button
                 key={folder.id}
-                className={`w-full text-start ${
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeFolder === folder.id
-                    ? "text-black border-b-2 border-black"
-                    : "text-gray-400"
+                    ? "bg-blue-100 text-blue-700"
+                    : "text-gray-500 hover:bg-gray-100"
                 }`}
                 onClick={() => setActiveFolder(folder.id)}
               >
-                <span className="flex flex-row items-center">
-                  {folder.icon}
-                  {folder.label}
-                </span>
+                {folder.icon}
+                {folder.label}
               </button>
             ))}
-            <div className="gap-2 items-center">
-              <Select onValueChange={setSortOption} value={sortOption}>
-                <SelectTrigger className="text-sm h-8 w-28">
-                  <SelectValue placeholder="Sort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Most recent</SelectItem>
-                  <SelectItem value="title">Title A-Z</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
-          <ul className="bg-white" style={{ scrollbarWidth: "none" }}>
-            {loadingSessions
-              ? Array.from({ length: 5 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="animate-pulse bg-gray-100 p-7 border-none rounded-lg mb-4"
-                  />
-                ))
-              : sessions.map((session) => (
-                  <NotebookCard
-                    key={session.id}
-                    id={session.id}
-                    title={session.title}
-                    updatedAt={
-                      typeof session.updatedAt === "number"
-                        ? session.updatedAt
-                        : session.updatedAt.getTime()
-                    }
-                    isStarred={session.isStarred}
-                    folder={session.folder}
-                    sharedCount={session.sharedWith?.length || 0}
-                    onClick={() => router.push(`/${session.id}`)}
-                    onToggleStar={() => toggleStar(session.id)}
-                    onMoveToFolder={(folder) =>
-                      moveToFolder(session.id, folder)
-                    }
-                    onArchive={() => moveToFolder(session.id, "archived")}
-                    onDelete={() => deleteSession(session.id)}
-                    onShare={() => setModalType("share")}
-                  />
-                ))}
-          </ul>
+
+          <div className="flex items-center">
+            <Select onValueChange={setSortOption} value={sortOption}>
+              <SelectTrigger className="text-sm h-10 w-40">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most recent</SelectItem>
+                <SelectItem value="title">Title A-Z</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Notebooks Grid */}
+        <div className="mb-16">
+          {loadingSessions ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="animate-pulse bg-gray-100 h-40 rounded-xl"
+                />
+              ))}
+            </div>
+          ) : sessions.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sortedSessions.map((session) => (
+                <NotebookCard
+                  key={session.id}
+                  id={session.id}
+                  title={session.title}
+                  updatedAt={
+                    typeof session.updatedAt === "number"
+                      ? session.updatedAt
+                      : session.updatedAt.getTime()
+                  }
+                  isStarred={session.isStarred}
+                  folder={session.folder}
+                  sharedCount={session.sharedWith?.length || 0}
+                  onClick={() => router.push(`/${session.id}`)}
+                  onToggleStar={() => toggleStar(session.id)}
+                  onMoveToFolder={(folder) => moveToFolder(session.id, folder)}
+                  onArchive={() => moveToFolder(session.id, "archived")}
+                  onDelete={() => deleteSession(session.id)}
+                  onShare={() => setModalType("share")}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiFolder className="text-gray-400" size={24} />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No notebooks yet
+              </h3>
+              <p className="text-gray-500 max-w-md mx-auto">
+                Create your first notebook to start organizing your ideas and
+                projects.
+              </p>
+              <Button className="mt-4" onClick={() => router.push("/new")}>
+                Create Notebook
+              </Button>
+            </div>
+          )}
         </div>
       </main>
 
-      <div className="mx-auto right-0 max-w-6xl bg-transparent">
-        <Footer />
-      </div>
+      <Footer />
 
       {/* Modal */}
       {modalType && (
@@ -367,23 +409,17 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl border-none w-full p-12 max-w-4xl h-[90dvh] shadow-none relative"
+            className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-auto relative"
           >
             <button
               onClick={closeModal}
-              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100"
+              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100 z-10"
             >
               <FiX size={24} />
             </button>
 
-            <div
-              className="overflow-y-auto h-full"
-              style={{
-                scrollbarWidth: "none",
-                scrollbarColor: "#213555 #f3f4f6",
-              }}
-            >
-              {modalType === "share" && <ShareModal />}
+            <div className="p-6 md:p-8">
+              {modalType === "share" && <ShareModal sessionId={""} />}
               {modalType === "settings" && <SettingsModal />}
               {modalType === "account" && <AccountModal />}
             </div>

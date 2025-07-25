@@ -25,7 +25,7 @@ export type Ontology = {
 
 export type Attachment = {
   id: string;
-  file: File;
+  file?: File;
   name: string;
   type: string;
   status: "uploading" | "extracted" | "error";
@@ -54,12 +54,13 @@ export type Session = {
   userId: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  attachments: Array<{
-    id: string;
-    name: string;
-    type: string;
-    status: string;
-  }>;
+  createdBy: string;
+  owner: string;
+  sharedWith: string[];
+  isStarred: boolean;
+  folder?: string;
+  noOfAttachments: number;
+  attachments?: Attachment[];
   summaries?: SummaryItem[];
   chunks?: DocumentChunk[];
   chats?: ChatMessages[];

@@ -7,18 +7,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
 import { motion } from "framer-motion";
-import {
-  AccountModal,
-  HomeModal,
-  SettingsModal,
-  ShareModal,
-} from "./sidebar-modals";
+import { AccountModal, SettingsModal } from "./sidebar-modals";
+import { FaGavel } from "react-icons/fa6";
+import { ShareModal } from "./share-modal";
 
-export const Sidebar = () => {
+export const Sidebar = ({ sessionId }: { sessionId: string }) => {
   const router = useRouter();
   const { isSidebarOpen, toggleSidebar } = useSessionStore();
   const [modalType, setModalType] = useState<
-    "home" | "share" | "settings" | "account" | null
+    "share" | "settings" | "account" | null
   >(null);
 
   const mockUser = {
@@ -59,7 +56,7 @@ export const Sidebar = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl border-none w-full p-12 max-w-4xl h-[90dvh] shadow-none relative"
+            className="bg-white rounded-2xl border-none p-12 max-w-4xl h-[90dvh] shadow-none relative"
           >
             <button
               onClick={closeModal}
@@ -75,8 +72,7 @@ export const Sidebar = () => {
                 scrollbarColor: "#213555 #f3f4f6",
               }}
             >
-              {modalType === "home" && <HomeModal />}
-              {modalType === "share" && <ShareModal />}
+              {modalType === "share" && <ShareModal sessionId={sessionId} />}
               {modalType === "settings" && <SettingsModal />}
               {modalType === "account" && <AccountModal />}
             </div>
@@ -118,7 +114,7 @@ export const Sidebar = () => {
                 <SidebarButton
                   icon={<FiHome size={18} />}
                   label="Home"
-                  onClick={() => setModalType("home")}
+                  onClick={() => router.push("/")}
                 />
                 <SidebarButton
                   icon={<FiShare2 size={18} />}
@@ -132,9 +128,18 @@ export const Sidebar = () => {
                 />
               </div>
 
+              <div
+                onClick={() => setModalType("settings")}
+                className="flex flex-row cursor-pointer items-center justify-center border rounded-sm px-1 w-full"
+              >
+                <span className="text-gray-600 text-sm">Mock</span>
+                <span className="text-gray-600 text-md mx-2">Trial</span>
+                <FaGavel className="text-gray-600 cursor-pointer hover:text-black" />
+              </div>
+
               {/* Subscribe Button */}
               {mockUser.membershipType === "free" && (
-                <div className="mt-4 pt-3 px-2 flex items-center gap-2">
+                <div className="px-2 items-center gap-2">
                   <button
                     onClick={() => setModalType("account")}
                     className="flex items-center justify-center px-3 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
@@ -174,7 +179,7 @@ export const Sidebar = () => {
                 <FiHome
                   className="mx-auto cursor-pointer hover:text-blue-600 transition"
                   size={20}
-                  onClick={() => setModalType("home")}
+                  onClick={() => router.push("/")}
                 />
                 <FiShare2
                   className="mx-auto cursor-pointer hover:text-blue-600 transition"
@@ -186,6 +191,26 @@ export const Sidebar = () => {
                   size={20}
                   onClick={() => setModalType("settings")}
                 />
+                <div
+                  onClick={() => setModalType("settings")}
+                  className="flex flex-col cursor-pointer items-center justify-center m-2 border rounded-sm px-1"
+                >
+                  <span className="text-gray-600 text-xs">Mock</span>
+                  <span className="text-gray-600 text-sm">Trail</span>
+                  {/* <FaGavel className="text-gray-600 cursor-pointer hover:text-black" /> */}
+                </div>
+                {mockUser.membershipType === "free" && (
+                  <div className="px-2 flex items-center gap-2">
+                    <button
+                      onClick={() => setModalType("account")}
+                      className="flex items-center justify-center px-3 py-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
+                    >
+                      <span className="bg-white text-blue-900 text-xs px-2 py-1 rounded-md">
+                        40% OFF
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* User Avatar */}

@@ -8,6 +8,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { useToast } from "@/hooks/use-toast";
 
 export const saveChunksToFirestore = async (
   sessionId: string,
@@ -78,4 +79,21 @@ export const loadChatMessages = async (
     id: doc.id,
     ...doc.data(),
   })) as ChatMessages[];
+};
+
+export const handleProcessingError = (context: string, error: unknown) => {
+  const { toast } = useToast();
+  console.error(`[${context}]`, error);
+  let errorMessage = "An unexpected error occurred";
+  if (error instanceof Error) {
+    errorMessage = error.message;
+  } else if (typeof error === "string") {
+    errorMessage = error;
+  }
+
+  toast({
+    title: `${context} Failed`,
+    description: errorMessage,
+    variant: "destructive",
+  });
 };
