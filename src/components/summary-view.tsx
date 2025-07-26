@@ -1,13 +1,20 @@
 "use client";
 
 import React from "react";
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetDescription,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import fuzzysort from "fuzzysort";
-import { Card, CardContent } from "./ui/card";
-import { Chunk, Ontology, SummaryItem } from "@/types/page";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { DocumentChunk, Ontology, SummaryItem } from "@/types/page";
 
 type Props = {
-  chunks: Chunk[];
+  chunks: DocumentChunk[];
   summaries: SummaryItem[];
   loading?: boolean;
 };
@@ -85,6 +92,11 @@ export const SummaryDisplay: React.FC<Props> = ({
                   {sentence}
                 </span>
               </SheetTrigger>
+              <SheetTitle className="sr-only">
+                {`Reference ${refNumber}.${i + 1} in ${
+                  chunk?.documentName ? chunk.documentName : "Unknown Document"
+                }`}
+              </SheetTitle>
               <SheetContent
                 side="right"
                 className="overflow-y-auto p-6 sm:max-w-xl"
@@ -196,6 +208,9 @@ export const SummaryDisplay: React.FC<Props> = ({
   return (
     <div className="space-y-6 h-full flex flex-col">
       <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
+        <CardHeader className="px-4 pt-4 sr-only">
+          <h2 className="text-lg font-semibold">Summaries</h2>
+        </CardHeader>
         <CardContent className="p-4">
           <div className="prose max-w-none dark:prose-invert">
             <div className="text-start text-gray-900 dark:text-gray-100 leading-relaxed break-words">

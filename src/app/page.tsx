@@ -54,7 +54,6 @@ export default function HomePage() {
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [activeFolder, setActiveFolder] = useState("all");
   const [sortOption, setSortOption] = useState("recent");
-  const [activeTab, setActiveTab] = useState<"my" | "shared">("my");
   const [modalType, setModalType] = useState<
     "home" | "share" | "settings" | "account" | null
   >(null);
@@ -303,7 +302,7 @@ export default function HomePage() {
 
         <div className="w-full max-w-3xl mx-auto my-16">
           <button
-            onClick={() => router.push("/new")}
+            onClick={() => router.push("/session?new=true")}
             className="group w-full flex items-center justify-center gap-3 rounded-xl border border-neutral-300 bg-gradient-to-br from-white via-[#f9fafb] to-[#f1f5f9] text-neutral-800 shadow-sm hover:shadow-md hover:border-blue-900 hover:bg-white transition-all duration-200 py-4 px-6 font-semibold text-lg"
           >
             <FiArrowRight

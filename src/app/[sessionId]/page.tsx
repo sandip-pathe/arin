@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 import { WelcomeModal } from "@/components/modal";
 import { useSearchParams } from "next/navigation";
-import { summaries, chunks, attachment, msgs } from "@/lib/data";
+import { msgs } from "@/lib/data";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
 import TopNavbar from "@/components/navbar";
 import { FiSliders, FiX } from "react-icons/fi";
@@ -31,11 +31,12 @@ import {
   serverTimestamp,
   setDoc,
   Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 import {
   handleProcessingError,
-  loadChatMessages,
   loadChunks,
+  saveChunksToFirestore,
 } from "@/lib/functions";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
@@ -46,10 +47,7 @@ function SkeletonBox({ className = "" }: { className?: string }) {
 
 export default function SessionPage() {
   const params = useParams();
-  const sessionId = Array.isArray(params.sessionId)
-    ? params.sessionId[0]
-    : params.sessionId;
-
+  const sessionId = params.sessionId as string;
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -62,6 +60,7 @@ export default function SessionPage() {
     context,
     setContext,
     activeSession,
+    setActiveSession,
     isLoading,
     setIsLoading,
     isProcessingDocument,
@@ -71,16 +70,15 @@ export default function SessionPage() {
     inputText,
     setInputText,
     setUserInput,
-    // attachment,
+    attachments,
     setAttachments,
     addAttachment,
     updateAttachment,
     removeAttachment,
-    // chunk,
+    chunks,
     setChunks,
-    // summarie,
+    summaries,
     setSummaries,
-    setIsInputCollapsed,
     setIsChatCollapsed,
     showWelcomeModal,
     setShowWelcomeModal,
@@ -100,64 +98,47 @@ export default function SessionPage() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (searchParams.get("new") === "true") {
-      setShowWelcomeModal(true);
-    }
-  }, [searchParams, setShowWelcomeModal]);
+    const isNew = searchParams.get("new") === "true";
 
-  useEffect(() => {
     if (user && !loading && sessionId) {
-      loadSessionData(sessionId);
+      if (!isNew) {
+        loadSessionData(sessionId);
+      } else {
+        resetSessionState();
+        setShowWelcomeModal(true);
+      }
     }
-  }, [user, loading, sessionId]);
+  }, [user, loading, sessionId, searchParams]);
 
   const loadSessionData = async (id: string) => {
     resetSessionState();
     setLoadingStates({ chunks: true, chats: true, session: true });
 
     try {
-      // Create new session if doesn't exist
       const sessionRef = doc(db, "sessions", id);
       const sessionDoc = await getDoc(sessionRef);
 
       if (!sessionDoc.exists()) {
-        const newSession: Session = {
-          id,
-          userId: user!.uid,
-          createdAt: serverTimestamp() as Timestamp,
-          updatedAt: serverTimestamp() as Timestamp,
-          attachments: [],
-          summaries: [],
-          title: "New Session",
-          createdBy: user!.email || "Unknown",
-          owner: user!.email || "Unknown",
-          sharedWith: [],
-          isStarred: false,
-          noOfAttachments: 0,
-          userInput: "",
-          folder: "default",
-        };
-        await setDoc(sessionRef, newSession);
-      } else {
-        const sessionData = sessionDoc.data() as Session;
-
-        // Load summaries
-        if (sessionData.summaries) {
-          setSummaries(sessionData.summaries);
-          setContext(sessionData.summaries.map((s) => s.summary).join("\n\n"));
-        }
-
-        // Load user input
-        if (sessionData.userInput) {
-          setUserInput(sessionData.userInput);
-        }
+        setShowWelcomeModal(true);
+        return;
       }
 
-      // Load chunks and messages
-      const [loadedChunks] = await Promise.all([loadChunks(id)]);
+      const sessionData = sessionDoc.data() as Session;
+      setActiveSession(sessionData);
 
+      if (sessionData.summaries) {
+        setSummaries(sessionData.summaries);
+        setContext(sessionData.summaries.map((s) => s.summary).join("\n\n"));
+      }
+
+      if (sessionData.userInput) {
+        setUserInput(sessionData.userInput);
+      }
+
+      setLoadingStates({ chunks: true, chats: true, session: false });
+
+      const [loadedChunks] = await Promise.all([loadChunks(id)]);
       setChunks(loadedChunks);
-      setLoadingStates({ chunks: false, chats: false, session: false });
     } catch (error) {
       handleProcessingError("Load Session Data", error);
       router.push("/");
@@ -166,12 +147,15 @@ export default function SessionPage() {
     }
   };
 
+  const handleRemoveAttachment = async (id: string) => {
+    removeAttachment(id);
+  };
+
   const resetSessionState = () => {
     setAttachments([]);
     setChunks([]);
     setSummaries([]);
     setInputText("");
-    setIsInputCollapsed(false);
   };
 
   const handleFileAdded = async (file: File) => {
@@ -231,26 +215,63 @@ export default function SessionPage() {
   };
 
   const handleSend = async () => {
-    if (isProcessingDocument || isLoading || !activeSession) return;
+    if (isProcessingDocument || isLoading) return;
 
+    setIsLoading(true);
     const inputTextTrimmed = inputText.trim();
     setUserInput(inputTextTrimmed);
     let newChunks: DocumentChunk[] = [];
 
     if (inputTextTrimmed !== "") {
       newChunks = await processDocument(
-        activeSession.id,
+        uuidv4(),
         inputTextTrimmed,
-        "Input Text"
+        "Input_Text"
       );
+      console.log("Send 1. New chunks:", newChunks);
     }
 
     const allChunks = [...chunks, ...newChunks];
 
-    setIsLoading(true);
-
     try {
+      // 1. Create/update session in Firestore
+      const sessionData: Partial<Session> = {
+        userId: user!.uid,
+        updatedAt: serverTimestamp() as Timestamp,
+        noOfAttachments: attachments.length,
+        userInput: inputTextTrimmed || "",
+        title:
+          inputTextTrimmed.substring(0, 30) +
+            (inputTextTrimmed.length > 30 ? "..." : "") || "New Session",
+      };
+      console.log("Send 2. Session data:", sessionData);
+
+      if (!activeSession) {
+        // New session creation
+        sessionData.id = uuidv4();
+        sessionData.createdAt = serverTimestamp() as Timestamp;
+        sessionData.createdBy = user!.email || "Unknown";
+        sessionData.owner = user!.email || "Unknown";
+        sessionData.sharedWith = [];
+        sessionData.folder = "all";
+      }
+
+      const NewSessionId = sessionData.id;
+
+      const sessionRef = doc(
+        db,
+        "sessions",
+        NewSessionId ?? "default-session-id"
+      );
+      console.log("Send 4. Session reference:", sessionRef);
+      // Save or update session data
+      await setDoc(sessionRef, sessionData, { merge: true });
+      console.log("Send 4. Session saved:", sessionData);
+
+      // 3. Process and get summaries
+      router.replace(`/${sessionId}`);
       const results = await processChunks(allChunks);
+      console.log("Send 5. Processed results:", results);
       const newSummaries: SummaryItem[] = results.map((result) => ({
         summary: result.data.summary,
         legalOntology: result.data.legalOntology || {
@@ -265,20 +286,27 @@ export default function SessionPage() {
         chunkIds: result.chunkId,
       }));
 
+      // 5. Update local state
       setSummaries(newSummaries);
-      setIsInputCollapsed(true);
-      setInputText("");
+      console.log("Send 6. New summaries:", newSummaries);
       setContext(newSummaries.map((summary) => summary.summary).join("\n\n"));
-      // saveSession();
+
+      setInputText("");
+      setShowWelcomeModal(false);
+
+      // 4. Update session with summaries
+      await updateDoc(sessionRef, {
+        summaries: newSummaries,
+        context: newSummaries.map((s) => s.summary).join("\n\n"),
+      });
+
+      // 2. Save chunks to subcollection
+      await saveChunksToFirestore(sessionId!, allChunks);
     } catch (err) {
       handleProcessingError("Send Document", err);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleRemoveAttachment = async (id: string) => {
-    removeAttachment(id);
   };
 
   const closeModal = () => setModalType(null);
@@ -315,17 +343,21 @@ export default function SessionPage() {
         </div>
       )}
       <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
-        <TopNavbar isSidebarOpen={isSidebarOpen} />
+        <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
+          <TopNavbar isSidebarOpen={isSidebarOpen} />
+          <h2 className="m-1.5 ml-8 font-semibold text-xl text-gray-700">
+            {activeSession?.title || "New Session"}
+          </h2>
+        </div>
         <div className="flex flex-1 min-h-0 overflow-visible">
           <Sidebar sessionId={sessionId!} />
-          {/* Main Content */}
           <main className="flex-1 min-w-0 mb-4 overflow-hidden">
             <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
               <div className="z-10 border-b flex items-center justify-between py-2">
-                <h2 className="m-1.5 ml-8 font-bold text-xl">
-                  {activeSession?.title || "New Session"}
-                </h2>
-                <p className="mr-8">{attachment.length} attachments</p>
+                <div className="p-2 font-medium">Summary</div>
+                <p className="mr-8">
+                  {activeSession?.noOfAttachments} attachments
+                </p>
               </div>
               <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
                 <div ref={summaryRef} className="p-6">
@@ -411,7 +443,7 @@ export default function SessionPage() {
           onOpenChange={setShowWelcomeModal}
           inputText={inputText}
           onInputTextChange={setInputText}
-          attachments={attachment}
+          attachments={attachments}
           onFileAdded={handleFileAdded}
           onRemoveAttachment={handleRemoveAttachment}
           onSend={() => {

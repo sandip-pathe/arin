@@ -25,12 +25,37 @@ export const saveChunksToFirestore = async (
     console.warn("No chunks to save");
     return;
   }
+
   chunks.forEach((chunk) => {
     const docRef = doc(chunksCollection);
-    batch.set(docRef, {
+
+    // Derive section title from content if missing (first 6–8 words)
+    let inferredTitle = chunk.sectionTitle?.trim();
+
+    if (!inferredTitle) {
+      const match = chunk.content.match(/([^\.!?]{1,20}[\.!?])/);
+      if (match) {
+        const words = match[0].split(/\s+/);
+        inferredTitle = words.slice(0, 20).join(" ");
+        if (words.length > 20) {
+          inferredTitle += "...";
+        }
+      } else {
+        inferredTitle = chunk.content.split(/\s+/).slice(0, 8).join(" ");
+      }
+    }
+
+    // Estimate tokens (roughly 4 chars per token)
+    const estimatedTokens = Math.ceil(chunk.content.length / 4);
+
+    const normalizedChunk = {
       ...chunk,
-      createdAt: serverTimestamp(),
-    });
+      sectionTitle: inferredTitle,
+      tokenEstimate: estimatedTokens,
+      createdAt: serverTimestamp(), // Add timestamp
+    };
+
+    batch.set(docRef, normalizedChunk);
   });
 
   try {
@@ -82,7 +107,6 @@ export const loadChatMessages = async (
 };
 
 export const handleProcessingError = (context: string, error: unknown) => {
-  const { toast } = useToast();
   console.error(`[${context}]`, error);
   let errorMessage = "An unexpected error occurred";
   if (error instanceof Error) {
@@ -90,10 +114,4 @@ export const handleProcessingError = (context: string, error: unknown) => {
   } else if (typeof error === "string") {
     errorMessage = error;
   }
-
-  toast({
-    title: `${context} Failed`,
-    description: errorMessage,
-    variant: "destructive",
-  });
 };

@@ -42,13 +42,6 @@ export type DocumentChunk = {
   documentName: string;
 };
 
-export type Chunk = {
-  id: string;
-  content: string;
-  documentId: string;
-  documentName: string;
-};
-
 export type Session = {
   id: string;
   userId: string;
