@@ -41,11 +41,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import { AccountModal, SettingsModal } from "@/components/sidebar-modals";
 import Logo from "@/components/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ShareModal } from "@/components/share-modal";
+import {
+  AccountSettings,
+  MembershipSettings,
+} from "@/components/sidebar-modals";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -419,8 +422,8 @@ export default function HomePage() {
 
             <div className="p-6 md:p-8">
               {modalType === "share" && <ShareModal sessionId={""} />}
-              {modalType === "settings" && <SettingsModal />}
-              {modalType === "account" && <AccountModal />}
+              {modalType === "settings" && <MembershipSettings />}
+              {modalType === "account" && <AccountSettings />}
             </div>
           </motion.div>
         </div>

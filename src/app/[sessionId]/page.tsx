@@ -21,7 +21,6 @@ import TopNavbar from "@/components/navbar";
 import { FiSliders, FiX } from "react-icons/fi";
 import { Sidebar } from "@/components/sidebar";
 import { motion } from "framer-motion";
-import { ChatSettingsModal } from "@/components/sidebar-modals";
 import { AiOutlineRobot } from "react-icons/ai";
 import { MockTrialChat } from "@/components/mock-trial";
 import { db } from "@/lib/firebase";
@@ -38,6 +37,12 @@ import {
   loadChunks,
   saveChunksToFirestore,
 } from "@/lib/functions";
+import { GoShieldLock } from "react-icons/go";
+import {
+  ChatSettings,
+  MembershipSettings,
+  SummarySettings,
+} from "@/components/sidebar-modals";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -52,8 +57,15 @@ export default function SessionPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [modalType, setModalType] = useState<
-    "home" | "share" | "settings" | "account" | "mock-trial" | null
+    | "membership"
+    | "summary"
+    | "share"
+    | "settings"
+    | "account"
+    | "mock-trial"
+    | null
   >(null);
+  const [sharedWith, setSharedWith] = useState<boolean>(false);
 
   // State management
   const {
@@ -124,6 +136,23 @@ export default function SessionPage() {
       }
 
       const sessionData = sessionDoc.data() as Session;
+
+      const isOwner = sessionData.owner === user?.email;
+      const isSharedWithUser = sessionData.sharedWith?.includes(
+        user?.email ?? ""
+      );
+
+      setSharedWith(isSharedWithUser);
+
+      if (!isOwner && !isSharedWithUser) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to view this session.",
+          variant: "destructive",
+        });
+        router.push("/");
+        return;
+      }
       setActiveSession(sessionData);
 
       if (sessionData.summaries) {
@@ -135,82 +164,15 @@ export default function SessionPage() {
         setUserInput(sessionData.userInput);
       }
 
-      setLoadingStates({ chunks: true, chats: true, session: false });
-
-      const [loadedChunks] = await Promise.all([loadChunks(id)]);
-      setChunks(loadedChunks);
+      if (!isSharedWithUser) {
+        const [loadedChunks] = await Promise.all([loadChunks(id)]);
+        setChunks(loadedChunks);
+      }
     } catch (error) {
       handleProcessingError("Load Session Data", error);
       router.push("/");
     } finally {
       setLoadingStates({ chunks: false, chats: false, session: false });
-    }
-  };
-
-  const handleRemoveAttachment = async (id: string) => {
-    removeAttachment(id);
-  };
-
-  const resetSessionState = () => {
-    setAttachments([]);
-    setChunks([]);
-    setSummaries([]);
-    setInputText("");
-  };
-
-  const handleFileAdded = async (file: File) => {
-    setIsProcessingDocument(true);
-    const newAttachment: Attachment = {
-      id: uuidv4(),
-      file,
-      name: file.name,
-      type: file.type.split("/")[0] || file.name.split(".").pop() || "file",
-      status: "uploading",
-    };
-
-    addAttachment(newAttachment);
-
-    try {
-      const text = await extractText(file);
-      updateAttachment(newAttachment.id, { status: "extracted", text });
-      await processDocument(newAttachment.id, text, file.name);
-    } catch (error: any) {
-      updateAttachment(newAttachment.id, {
-        status: "error",
-        error: error.message || "Failed to extract text",
-      });
-      toast({
-        variant: "destructive",
-        title: "Error processing file",
-        description: `Failed to extract text from ${newAttachment.name}: ${
-          error.message || "Unknown error"
-        }`,
-      });
-    } finally {
-      setIsProcessingDocument(false);
-    }
-  };
-
-  const processDocument = async (
-    documentId: string,
-    text: string,
-    documentName: string
-  ): Promise<DocumentChunk[]> => {
-    try {
-      const documentChunks = chunkDocument(text, { maxChunkSize: 4000 }).map(
-        (chunk) => ({
-          ...chunk,
-          documentId,
-          documentName,
-        })
-      );
-
-      setChunks(documentChunks);
-
-      return documentChunks;
-    } catch (error) {
-      handleProcessingError("Process Document", error);
-      return [];
     }
   };
 
@@ -309,6 +271,73 @@ export default function SessionPage() {
     }
   };
 
+  const handleRemoveAttachment = async (id: string) => {
+    removeAttachment(id);
+  };
+
+  const resetSessionState = () => {
+    setAttachments([]);
+    setChunks([]);
+    setSummaries([]);
+    setInputText("");
+  };
+
+  const handleFileAdded = async (file: File) => {
+    setIsProcessingDocument(true);
+    const newAttachment: Attachment = {
+      id: uuidv4(),
+      file,
+      name: file.name,
+      type: file.type.split("/")[0] || file.name.split(".").pop() || "file",
+      status: "uploading",
+    };
+
+    addAttachment(newAttachment);
+
+    try {
+      const text = await extractText(file);
+      updateAttachment(newAttachment.id, { status: "extracted", text });
+      await processDocument(newAttachment.id, text, file.name);
+    } catch (error: any) {
+      updateAttachment(newAttachment.id, {
+        status: "error",
+        error: error.message || "Failed to extract text",
+      });
+      toast({
+        variant: "destructive",
+        title: "Error processing file",
+        description: `Failed to extract text from ${newAttachment.name}: ${
+          error.message || "Unknown error"
+        }`,
+      });
+    } finally {
+      setIsProcessingDocument(false);
+    }
+  };
+
+  const processDocument = async (
+    documentId: string,
+    text: string,
+    documentName: string
+  ): Promise<DocumentChunk[]> => {
+    try {
+      const documentChunks = chunkDocument(text, { maxChunkSize: 4000 }).map(
+        (chunk) => ({
+          ...chunk,
+          documentId,
+          documentName,
+        })
+      );
+
+      setChunks(documentChunks);
+
+      return documentChunks;
+    } catch (error) {
+      handleProcessingError("Process Document", error);
+      return [];
+    }
+  };
+
   const closeModal = () => setModalType(null);
 
   return (
@@ -334,10 +363,12 @@ export default function SessionPage() {
                 scrollbarColor: "#213555 #f3f4f6",
               }}
             >
-              {modalType === "settings" && <ChatSettingsModal />}
+              {modalType === "settings" && <ChatSettings />}
+              {modalType === "membership" && <MembershipSettings />}
               {modalType === "mock-trial" && (
                 <MockTrialChat sessionId={sessionId!} />
               )}
+              {modalType === "summary" && <SummarySettings />}
             </div>
           </motion.div>
         </div>
@@ -348,16 +379,31 @@ export default function SessionPage() {
           <h2 className="m-1.5 ml-8 font-semibold text-xl text-gray-700">
             {activeSession?.title || "New Session"}
           </h2>
+          {sharedWith && (
+            <div className="flex items-center ml-2 px-2 py-1 rounded-lg  bg-white">
+              <GoShieldLock className="font-semibold" size={18} />
+              <span className="text-sm ml-1 font-semibold">
+                Shared with you
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex flex-1 min-h-0 overflow-visible">
           <Sidebar sessionId={sessionId!} />
           <main className="flex-1 min-w-0 mb-4 overflow-hidden">
             <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
               <div className="z-10 border-b flex items-center justify-between py-2">
-                <div className="p-2 font-medium">Summary</div>
-                <p className="mr-8">
-                  {activeSession?.noOfAttachments} attachments
-                </p>
+                <div className="flex items-center justify-start">
+                  <div className="p-2 font-medium">Summary</div>
+                  <span className="h-6 w-6 bg-blue-200 flex items-center justify-center rounded-full text-xs font-semibold mr-2">
+                    {activeSession?.noOfAttachments}
+                  </span>
+                </div>
+                <FiSliders
+                  size={18}
+                  className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                  onClick={() => setModalType("summary")}
+                />
               </div>
               <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
                 <div ref={summaryRef} className="p-6">

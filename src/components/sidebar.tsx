@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
 import { motion } from "framer-motion";
-import { AccountModal, SettingsModal } from "./sidebar-modals";
+import { AccountSettings, MembershipSettings } from "./sidebar-modals";
 import { FaGavel } from "react-icons/fa6";
 import { ShareModal } from "./share-modal";
 
@@ -73,8 +73,8 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
               }}
             >
               {modalType === "share" && <ShareModal sessionId={sessionId} />}
-              {modalType === "settings" && <SettingsModal />}
-              {modalType === "account" && <AccountModal />}
+              {modalType === "settings" && <MembershipSettings />}
+              {modalType === "account" && <AccountSettings />}
             </div>
           </motion.div>
         </div>
