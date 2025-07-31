@@ -1,4 +1,21 @@
-import { Attachment, DocumentChunk } from "@/types/page";
+import { Attachment, DocumentChunk, Ontology } from "@/types/page";
+
+export const ONTOLOGY_COLORS: Record<keyof Ontology, string> = {
+  definitions:
+    "bg-blue-100 border-blue-400 dark:bg-blue-900/40 dark:border-blue-600",
+  obligations:
+    "bg-green-100 border-green-400 dark:bg-green-900/40 dark:border-green-600",
+  rights:
+    "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/40 dark:border-yellow-600",
+  conditions:
+    "bg-purple-100 border-purple-400 dark:bg-purple-900/40 dark:border-purple-600",
+  clauses:
+    "bg-pink-100 border-pink-400 dark:bg-pink-900/40 dark:border-pink-600",
+  dates:
+    "bg-indigo-100 border-indigo-400 dark:bg-indigo-900/40 dark:border-indigo-600",
+  parties:
+    "bg-teal-100 border-teal-400 dark:bg-teal-900/40 dark:border-teal-600",
+};
 
 // summaries.ts
 export const summaries = [
@@ -239,5 +256,60 @@ export const message = [
     role: "user",
     content:
       "Summarize this contract and extract any obligations, rights, and important clauses.",
+  },
+];
+
+export const plans = [
+  {
+    id: "trial",
+    title: "Free",
+    price: "$0 / month",
+    bg: "bg-gray-100",
+    border: "border",
+    description: "Explore how AI can help you with everyday tasks",
+    features: [
+      "Access to GPT-4o mini and reasoning",
+      "Standard voice mode",
+      "Real-time data from the web",
+      "Limited access to GPT-4o and o4-mini",
+      "Limited file uploads & image generation",
+      "Use custom GPTs",
+    ],
+    cta: "Your current plan",
+    disabled: true,
+  },
+  {
+    id: "plus",
+    title: "Plus",
+    price: "$20 / month",
+    bg: "bg-blue-100",
+    border: "border-emerald-600",
+    description: "Level up productivity and creativity with expanded access",
+    features: [
+      "Everything in Free",
+      "Extended limits on messaging & uploads",
+      "Access to o4-mini, o4-mini-high, o3",
+      "Research preview of GPT-4.5",
+      "Custom tasks, projects & GPTs",
+      "Limited Sora video generation",
+    ],
+    cta: "Get Plus",
+  },
+  {
+    id: "pro",
+    title: "Pro",
+    price: "$200 / month",
+    bg: "bg-gray-100",
+    border: "border-gray-600",
+    description: "Get the best of OpenAI with the highest level of access",
+    features: [
+      "Everything in Plus",
+      "Unlimited access to all models & GPT-4o",
+      "Advanced voice & deep research",
+      "Access to GPT-4.5, Operator, and o3 Pro",
+      "Extended Sora generation",
+      "Preview of Codex agent",
+    ],
+    cta: "Get Pro",
   },
 ];

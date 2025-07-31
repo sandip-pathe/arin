@@ -22,7 +22,6 @@ import { FiSliders, FiX } from "react-icons/fi";
 import { Sidebar } from "@/components/sidebar";
 import { motion } from "framer-motion";
 import { AiOutlineRobot } from "react-icons/ai";
-import { MockTrialChat } from "@/components/mock-trial";
 import { db } from "@/lib/firebase";
 import {
   doc,
@@ -38,11 +37,9 @@ import {
   saveChunksToFirestore,
 } from "@/lib/functions";
 import { GoShieldLock } from "react-icons/go";
-import {
-  ChatSettings,
-  MembershipSettings,
-  SummarySettings,
-} from "@/components/sidebar-modals";
+import { MembershipSettings } from "@/components/settings/membershipSettings";
+import { ChatSettings } from "@/components/settings/chatSettings";
+import { SummarySettings } from "@/components/settings/summarySettings";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -56,15 +53,6 @@ export default function SessionPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const [modalType, setModalType] = useState<
-    | "membership"
-    | "summary"
-    | "share"
-    | "settings"
-    | "account"
-    | "mock-trial"
-    | null
-  >(null);
   const [sharedWith, setSharedWith] = useState<boolean>(false);
 
   // State management
@@ -97,9 +85,12 @@ export default function SessionPage() {
     isSidebarOpen,
     isChatOpen,
     toggleChat,
+    showChatSettingsModal,
+    setShowChatSettingsModal,
+    showSummarySettingsModal,
+    setShowSummarySettingsModal,
   } = useSessionStore();
 
-  // Refs
   const summaryRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -338,41 +329,8 @@ export default function SessionPage() {
     }
   };
 
-  const closeModal = () => setModalType(null);
-
   return (
     <>
-      {modalType && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl border-none w-full p-12 max-w-4xl h-[90dvh] shadow-none relative"
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100"
-            >
-              <FiX size={24} />
-            </button>
-
-            <div
-              className="overflow-y-auto h-full"
-              style={{
-                scrollbarWidth: "none",
-                scrollbarColor: "#213555 #f3f4f6",
-              }}
-            >
-              {modalType === "settings" && <ChatSettings />}
-              {modalType === "membership" && <MembershipSettings />}
-              {modalType === "mock-trial" && (
-                <MockTrialChat sessionId={sessionId!} />
-              )}
-              {modalType === "summary" && <SummarySettings />}
-            </div>
-          </motion.div>
-        </div>
-      )}
       <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
         <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
           <TopNavbar isSidebarOpen={isSidebarOpen} />
@@ -402,7 +360,7 @@ export default function SessionPage() {
                 <FiSliders
                   size={18}
                   className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                  onClick={() => setModalType("summary")}
+                  onClick={() => setShowSummarySettingsModal(true)}
                 />
               </div>
               <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
@@ -430,19 +388,11 @@ export default function SessionPage() {
                   <div className="p-4 font-medium">Chat</div>
                 </div>
                 <div className="flex items-center justify-start">
-                  <div
-                    onClick={() => setModalType("mock-trial")}
-                    className="flex flex-col cursor-pointer items-center justify-center m-2 border rounded-sm px-1"
-                  >
-                    <span className="text-gray-600 text-xs">Mock</span>
-                    <span className="text-gray-600 text-sm">Trail</span>
-                    {/* <FaGavel className="text-gray-600 cursor-pointer hover:text-black" /> */}
-                  </div>
                   <FaLock size={18} className="text-green-600 m-2" />
                   <FiSliders
                     size={18}
                     className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                    onClick={() => setModalType("settings")}
+                    onClick={() => setShowChatSettingsModal(true)}
                   />
                 </div>
               </div>
@@ -497,6 +447,14 @@ export default function SessionPage() {
             setShowWelcomeModal(false);
           }}
           isProcessing={isProcessingDocument}
+        />
+        <ChatSettings
+          isOpen={showChatSettingsModal}
+          onOpenChange={setShowChatSettingsModal}
+        />
+        <SummarySettings
+          isOpen={showSummarySettingsModal}
+          onOpenChange={setShowSummarySettingsModal}
         />
       </div>
     </>

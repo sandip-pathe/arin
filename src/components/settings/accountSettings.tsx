@@ -1,0 +1,140 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { FiUser, FiMail, FiPhone, FiSend } from "react-icons/fi";
+import { useAuth } from "@/contexts/auth-context";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { motion } from "framer-motion";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+
+export const AccountSettings = ({
+  isOpen,
+  isOpenChange,
+}: {
+  isOpen: boolean;
+  isOpenChange: (open: boolean) => void;
+}) => {
+  const { user } = useAuth();
+  const [name, setName] = useState(user?.displayName);
+  const [contact, setContact] = useState(user?.phoneNumber);
+  const router = useRouter();
+
+  const handleSave = async () => {
+    try {
+      if (!user?.uid) return;
+      const db = getFirestore();
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        displayName: name,
+        phoneNumber: contact,
+      });
+      console.log("Account info updated in Firestore:", { name, contact });
+    } catch (error) {
+      console.error("Error updating account info:", error);
+    }
+    isOpenChange(false);
+  };
+
+  const logout = () => {
+    logout();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      isOpenChange(false);
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={isOpenChange}>
+      <DialogTitle className="sr-only">
+        Welcome to Legal AI Assistant
+      </DialogTitle>
+      <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
+        <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
+          <div className="pt-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <Card className="border-0">
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold">
+                    Account Settings
+                  </CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <FiUser className="text-indigo-500" />
+                      Name
+                    </Label>
+                    <Input
+                      value={name || ""}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your full name"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <FiPhone className="text-green-500" />
+                      Contact Number
+                    </Label>
+                    <Input
+                      value={contact || ""}
+                      onChange={(e) => setContact(e.target.value)}
+                      placeholder={"Your phone number"}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <FiMail className="text-blue-500" />
+                      Email
+                    </Label>
+                    <p>{user?.email}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Button
+                      onClick={handleLogout}
+                      className="w-full text-red-700"
+                    >
+                      Log Out
+                    </Button>
+                  </div>
+                </CardContent>
+
+                <CardFooter className="flex justify-end">
+                  <Button onClick={handleSave}>
+                    <FiSend className="mr-2" />
+                    Save Changes
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

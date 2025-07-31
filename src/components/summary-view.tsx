@@ -5,36 +5,17 @@ import {
   Sheet,
   SheetTrigger,
   SheetContent,
-  SheetHeader,
-  SheetDescription,
   SheetTitle,
 } from "@/components/ui/sheet";
 import fuzzysort from "fuzzysort";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { DocumentChunk, Ontology, SummaryItem } from "@/types/page";
+import { ONTOLOGY_COLORS } from "@/lib/data";
 
 type Props = {
   chunks: DocumentChunk[];
   summaries: SummaryItem[];
   loading?: boolean;
-};
-
-// Improved color mapping
-const ONTOLOGY_COLORS: Record<keyof Ontology, string> = {
-  definitions:
-    "bg-blue-100 border-blue-400 dark:bg-blue-900/40 dark:border-blue-600",
-  obligations:
-    "bg-green-100 border-green-400 dark:bg-green-900/40 dark:border-green-600",
-  rights:
-    "bg-yellow-100 border-yellow-400 dark:bg-yellow-900/40 dark:border-yellow-600",
-  conditions:
-    "bg-purple-100 border-purple-400 dark:bg-purple-900/40 dark:border-purple-600",
-  clauses:
-    "bg-pink-100 border-pink-400 dark:bg-pink-900/40 dark:border-pink-600",
-  dates:
-    "bg-indigo-100 border-indigo-400 dark:bg-indigo-900/40 dark:border-indigo-600",
-  parties:
-    "bg-teal-100 border-teal-400 dark:bg-teal-900/40 dark:border-teal-600",
 };
 
 export const SummaryDisplay: React.FC<Props> = ({
@@ -81,7 +62,7 @@ export const SummaryDisplay: React.FC<Props> = ({
     const sentences = splitIntoSentences(summary);
 
     return (
-      <div key={chunkId} className="space-y-2">
+      <div key={chunkId} className="space-y-2 max-w-3xl">
         {sentences.map((sentence, i) => {
           const { index } = matchSummaryToParagraphs(sentence, chunkParagraphs);
 

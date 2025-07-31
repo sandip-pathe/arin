@@ -1,32 +1,27 @@
 "use client";
 
-import { FiShare2, FiSettings, FiHome, FiX } from "react-icons/fi";
+import { FiShare2, FiSettings, FiHome } from "react-icons/fi";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
-import { motion } from "framer-motion";
-import { AccountSettings, MembershipSettings } from "./sidebar-modals";
-import { FaGavel } from "react-icons/fa6";
-import { ShareModal } from "./share-modal";
+import { useAuth } from "@/contexts/auth-context";
+import { AccountSettings } from "./settings/accountSettings";
+import { ShareModal } from "./settings/sharing";
+import { MembershipSettings } from "./settings/membershipSettings";
 
 export const Sidebar = ({ sessionId }: { sessionId: string }) => {
   const router = useRouter();
   const { isSidebarOpen, toggleSidebar } = useSessionStore();
-  const [modalType, setModalType] = useState<
-    "share" | "settings" | "account" | null
-  >(null);
-
-  const mockUser = {
-    name: "Sandeep",
-    email: "sandeep@example.com",
-    membershipType: "free", // free | pro | trial
-    remainingSessions: 3,
-    trialEndDate: "2025-08-24",
-  };
-
-  const closeModal = () => setModalType(null);
+  const { user, membership } = useAuth();
+  const {
+    showAccountModal,
+    setShowAccountModal,
+    showMembershipModal,
+    setShowMembershipModal,
+    showShareModal,
+    setShowShareModal,
+  } = useSessionStore();
 
   const SidebarButton = ({
     icon,
@@ -50,35 +45,19 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
 
   return (
     <>
-      {/* Modal Overlay */}
-      {modalType && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl border-none p-12 max-w-4xl h-[90dvh] shadow-none relative"
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100"
-            >
-              <FiX size={24} />
-            </button>
-
-            <div
-              className="overflow-y-auto h-full"
-              style={{
-                scrollbarWidth: "none",
-                scrollbarColor: "#213555 #f3f4f6",
-              }}
-            >
-              {modalType === "share" && <ShareModal sessionId={sessionId} />}
-              {modalType === "settings" && <MembershipSettings />}
-              {modalType === "account" && <AccountSettings />}
-            </div>
-          </motion.div>
-        </div>
-      )}
+      <AccountSettings
+        isOpen={showAccountModal}
+        isOpenChange={setShowAccountModal}
+      />
+      <ShareModal
+        isOpen={showShareModal}
+        onOpenChange={setShowShareModal}
+        sessionId={sessionId}
+      />
+      <MembershipSettings
+        isOpen={showMembershipModal}
+        onOpenChange={setShowMembershipModal}
+      />
 
       <aside
         className={`${
@@ -119,54 +98,45 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
                 <SidebarButton
                   icon={<FiShare2 size={18} />}
                   label="Share"
-                  onClick={() => setModalType("share")}
+                  onClick={() => setShowShareModal(true)}
                 />
                 <SidebarButton
                   icon={<FiSettings size={18} />}
                   label="Settings"
-                  onClick={() => setModalType("settings")}
+                  onClick={() => {}}
                 />
+                {membership.type === "trial" && (
+                  <div className="gap-2">
+                    <button
+                      onClick={() => setShowMembershipModal(true)}
+                      className="flex items-center justify-center p-3 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
+                    >
+                      <span>✨ Upgrade to Pro</span>
+                      <span className="bg-white text-orange-500 text-xs px-2 py-1 rounded ml-2">
+                        50% OFF
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
-
-              <div
-                onClick={() => setModalType("settings")}
-                className="flex flex-row cursor-pointer items-center justify-center border rounded-sm px-1 w-full"
-              >
-                <span className="text-gray-600 text-sm">Mock</span>
-                <span className="text-gray-600 text-md mx-2">Trial</span>
-                <FaGavel className="text-gray-600 cursor-pointer hover:text-black" />
-              </div>
-
-              {/* Subscribe Button */}
-              {mockUser.membershipType === "free" && (
-                <div className="px-2 items-center gap-2">
-                  <button
-                    onClick={() => setModalType("account")}
-                    className="flex items-center justify-center px-3 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
-                  >
-                    <span>✨ Upgrade to Pro</span>
-                    <span className="bg-white text-orange-500 text-xs px-2 py-1 rounded ml-2">
-                      50% OFF
-                    </span>
-                  </button>
-                </div>
-              )}
 
               {/* User Info */}
               <div
                 className="border-t mt-4 pt-3 px-2 flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-lg p-2"
-                onClick={() => setModalType("account")}
+                onClick={() => setShowAccountModal(true)}
               >
                 <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
-                  <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>
+                    {user?.displayName?.charAt(0) || "U"}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="text-xs">
-                  <div className="font-semibold">{mockUser.name}</div>
+                  <div className="font-semibold">{user?.displayName}</div>
                   <div className="text-[11px] text-blue-500">
-                    {mockUser.membershipType === "free"
-                      ? `Free (${mockUser.remainingSessions}/5 sessions)`
-                      : mockUser.membershipType === "trial"
-                      ? `Trial (ends ${mockUser.trialEndDate})`
+                    {membership.type === "trial"
+                      ? `Free (${membership.endDate})`
+                      : membership.type === "pro"
+                      ? `Pro (ends ${membership.endDate})`
                       : "Pro Member"}
                   </div>
                 </div>
@@ -184,28 +154,20 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
                 <FiShare2
                   className="mx-auto cursor-pointer hover:text-blue-600 transition"
                   size={20}
-                  onClick={() => setModalType("share")}
+                  onClick={() => setShowShareModal(true)}
                 />
                 <FiSettings
                   className="mx-auto cursor-pointer hover:text-blue-600 transition"
                   size={20}
-                  onClick={() => setModalType("settings")}
+                  onClick={() => {}}
                 />
-                <div
-                  onClick={() => setModalType("settings")}
-                  className="flex flex-col cursor-pointer items-center justify-center m-2 border rounded-sm px-1"
-                >
-                  <span className="text-gray-600 text-xs">Mock</span>
-                  <span className="text-gray-600 text-sm">Trail</span>
-                  {/* <FaGavel className="text-gray-600 cursor-pointer hover:text-black" /> */}
-                </div>
-                {mockUser.membershipType === "free" && (
-                  <div className="px-2 flex items-center gap-2">
+                {membership.type === "trial" && (
+                  <div className="items-center gap-2">
                     <button
-                      onClick={() => setModalType("account")}
-                      className="flex items-center justify-center px-3 py-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition text-white text-sm font-semibold shadow w-full"
+                      onClick={() => setShowMembershipModal(true)}
+                      className="flex items-center justify-center text-white text-sm font-semibold shadow w-full"
                     >
-                      <span className="bg-white text-blue-900 text-xs px-2 py-1 rounded-md">
+                      <span className="text-white text-xs px-2 py-1 rounded-md bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 transition">
                         40% OFF
                       </span>
                     </button>
@@ -216,14 +178,25 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
               {/* User Avatar */}
               <div
                 className="relative group mt-4 cursor-pointer"
-                onClick={() => setModalType("account")}
+                onClick={() => setShowAccountModal(true)}
               >
-                <Avatar className="h-8 w-8 border-blue-600 border-2 shadow-sm">
-                  <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+                <Avatar className="border-blue-600 border-2 shadow-sm">
+                  <AvatarFallback>
+                    {user?.displayName?.charAt(0) || "U"}
+                  </AvatarFallback>
                 </Avatar>
-                {mockUser.membershipType === "free" && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center">
-                    {mockUser.remainingSessions}
+                {membership.type === "trial" && (
+                  <span className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center">
+                    {membership.endDate
+                      ? Math.max(
+                          0,
+                          Math.floor(
+                            (Date.now() -
+                              Date.parse(String(membership.endDate))) /
+                              (1000 * 60 * 60 * 24)
+                          )
+                        )
+                      : ""}
                   </span>
                 )}
               </div>

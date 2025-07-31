@@ -24,11 +24,6 @@ import {
   FiUsers,
   FiArchive,
   FiSettings,
-  FiX,
-  FiPlus,
-  FiPlay,
-  FiPlayCircle,
-  FiPlusCircle,
   FiArrowRight,
 } from "react-icons/fi";
 import { ChatWelcome } from "@/components/chat-welcome";
@@ -40,15 +35,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { motion } from "framer-motion";
 import Logo from "@/components/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ShareModal } from "@/components/share-modal";
-import {
-  AccountSettings,
-  MembershipSettings,
-} from "@/components/sidebar-modals";
+import { ShareModal } from "@/components/settings/sharing";
+import { MembershipSettings } from "@/components/settings/membershipSettings";
+import { AccountSettings } from "@/components/settings/accountSettings";
+import useSessionStore from "@/store/session-store";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -57,9 +50,15 @@ export default function HomePage() {
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [activeFolder, setActiveFolder] = useState("all");
   const [sortOption, setSortOption] = useState("recent");
-  const [modalType, setModalType] = useState<
-    "home" | "share" | "settings" | "account" | null
-  >(null);
+  const [shareSessionId, setShareSessionId] = useState<string | null>(null);
+  const {
+    showAccountModal,
+    setShowAccountModal,
+    showMembershipModal,
+    setShowMembershipModal,
+    showShareModal,
+    setShowShareModal,
+  } = useSessionStore();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -267,26 +266,21 @@ export default function HomePage() {
     { id: "archived", label: "Archived", icon: <FiArchive className="mr-2" /> },
   ];
 
-  function closeModal(): void {
-    setModalType(null);
-  }
-
   return (
     <div className="min-h-screen bg-white overflow-hidden">
-      {/* Header */}
       <header className="sticky top-0 z-10 bg-white px-6 py-3 flex items-center justify-between">
         <div className="flex items-center">
           <Logo />
         </div>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setModalType("settings")}
+            onClick={() => {}}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <FiSettings className="text-gray-600" size={20} />
           </button>
           <button
-            onClick={() => setModalType("account")}
+            onClick={() => setShowAccountModal(true)}
             className="relative group"
           >
             <Avatar className="h-9 w-9 border-blue-600 border-2">
@@ -316,7 +310,6 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Folder Navigation */}
         <div className="flex flex-col md:flex-row justify-between gap-4 my-6">
           <div className="flex flex-wrap gap-1 md:gap-2">
             {folderOptions.map((folder) => (
@@ -347,8 +340,6 @@ export default function HomePage() {
             </Select>
           </div>
         </div>
-
-        {/* Notebooks Grid */}
         <div className="mb-16">
           {loadingSessions ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -379,7 +370,10 @@ export default function HomePage() {
                   onMoveToFolder={(folder) => moveToFolder(session.id, folder)}
                   onArchive={() => moveToFolder(session.id, "archived")}
                   onDelete={() => deleteSession(session.id)}
-                  onShare={() => setModalType("share")}
+                  onShare={() => {
+                    setShowShareModal(true);
+                    setShareSessionId(session.id);
+                  }}
                 />
               ))}
             </div>
@@ -403,31 +397,22 @@ export default function HomePage() {
         </div>
       </main>
 
-      <Footer />
-
-      {/* Modal */}
-      {modalType && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-auto relative"
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-6 text-gray-500 hover:text-black p-1 rounded-full hover:bg-gray-100 z-10"
-            >
-              <FiX size={24} />
-            </button>
-
-            <div className="p-6 md:p-8">
-              {modalType === "share" && <ShareModal sessionId={""} />}
-              {modalType === "settings" && <MembershipSettings />}
-              {modalType === "account" && <AccountSettings />}
-            </div>
-          </motion.div>
-        </div>
-      )}
+      <div className="fixed bottom-0 left-0 right-0 p-4">
+        <Footer />
+      </div>
+      <ShareModal
+        isOpen={showShareModal}
+        onOpenChange={setShowShareModal}
+        sessionId={shareSessionId || ""}
+      />
+      <MembershipSettings
+        isOpen={showMembershipModal}
+        onOpenChange={setShowMembershipModal}
+      />
+      <AccountSettings
+        isOpen={showAccountModal}
+        isOpenChange={setShowAccountModal}
+      />
     </div>
   );
 }

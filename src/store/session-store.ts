@@ -27,6 +27,12 @@ interface SessionState {
   showWelcomeModal: boolean;
   isSidebarOpen: boolean;
   isChatOpen: boolean;
+  showSettingsModal: boolean;
+  showSummarySettingsModal: boolean;
+  showChatSettingsModal: boolean;
+  showAccountModal: boolean;
+  showMembershipModal: boolean;
+  showShareModal: boolean;
 
   // Actions
   setChatMessages: (messages: ChatMessages[]) => void;
@@ -50,6 +56,12 @@ interface SessionState {
   setShowWelcomeModal: (show: boolean) => void;
   toggleChat: () => void;
   toggleSidebar: () => void;
+  setShowSettingsModal: (show: boolean) => void;
+  setShowSummarySettingsModal: (show: boolean) => void;
+  setShowChatSettingsModal: (show: boolean) => void;
+  setShowAccountModal: (show: boolean) => void;
+  setShowMembershipModal: (show: boolean) => void;
+  setShowShareModal: (show: boolean) => void;
 
   // Complex actions
   addAttachment: (attachment: Attachment) => void;
@@ -77,6 +89,13 @@ const useSessionStore = create<SessionState>((set) => ({
   showWelcomeModal: false,
   isSidebarOpen: false,
   isChatOpen: true,
+  showSettingsModal: false,
+  showSummarySettingsModal: false,
+  showChatSettingsModal: false,
+  showAccountModal: false,
+  showMembershipModal: false,
+  showShareModal: false,
+  // Actions
 
   // Setters
   setChatMessages: (chatMessages) => set({ chatMessages }),
@@ -95,6 +114,15 @@ const useSessionStore = create<SessionState>((set) => ({
   setIsInputCollapsed: (isInputCollapsed) => set({ isInputCollapsed }),
   setIsChatCollapsed: (isChatCollapsed) => set({ isChatCollapsed }),
   setShowWelcomeModal: (showWelcomeModal) => set({ showWelcomeModal }),
+  setShowSettingsModal: (showSettingsModal) => set({ showSettingsModal }),
+  setShowSummarySettingsModal: (showSummarySettingsModal) =>
+    set({ showSummarySettingsModal }),
+  setShowChatSettingsModal: (showChatSettingsModal) =>
+    set({ showChatSettingsModal }),
+  setShowAccountModal: (showAccountModal) => set({ showAccountModal }),
+  setShowMembershipModal: (showMembershipModal) => set({ showMembershipModal }),
+  setShowShareModal: (showShareModal) => set({ showShareModal }),
+  // Toggle actions
   toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
   toggleSidebar: () =>
     set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),

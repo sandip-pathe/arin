@@ -13,9 +13,13 @@ import { auth, db } from "@/lib/firebase";
 import type { User } from "firebase/auth";
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 
+// Enhanced membership types
+export type MembershipType = "trial" | "plus" | "pro" | "enterprise";
+export type MembershipStatus = "active" | "expired" | "pending";
+
 interface MembershipDetails {
-  type: "trial" | "plus" | "pro" | "enterprise";
-  status: "active" | "expired" | "pending";
+  type: MembershipType;
+  status: MembershipStatus;
   startDate: Timestamp | null;
   endDate: Timestamp | null;
   lastDiscount?: {
@@ -46,6 +50,7 @@ interface AuthContextType {
   error: any;
   dbUser: any | null;
   settings: typeof defaultSettings;
+  membership: MembershipDetails;
   updateSettings: (
     newSettings: Partial<typeof defaultSettings>
   ) => Promise<void>;
@@ -60,6 +65,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const [dbUser, setDbUser] = useState<any | null>(null);
   const [settings, setSettings] = useState(defaultSettings);
+  const [membership, setMembership] = useState<MembershipDetails>({
+    type: "trial",
+    status: "pending",
+    startDate: null,
+    endDate: null,
+    sessionsRemaining: 3,
+  });
 
   // Fetch user and settings from Firestore
   useEffect(() => {
@@ -71,6 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (snapshot.exists()) {
           const userData = snapshot.data();
           setDbUser(userData);
+
+          // Update membership
+          if (userData.membership) {
+            setMembership(userData.membership);
+          }
 
           // Merge saved settings with defaults
           if (userData.settings) {
@@ -90,15 +107,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             displayName: user.displayName,
             photoURL: user.photoURL,
             settings: defaultSettings,
+            membership: {
+              type: "trial",
+              status: "active",
+              startDate: Timestamp.now(),
+              endDate: Timestamp.fromDate(
+                new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days trial
+              ),
+              sessionsRemaining: 3,
+            },
           };
 
           await setDoc(userRef, newUser);
           setDbUser(newUser);
           setSettings(defaultSettings);
+          setMembership(newUser.membership as MembershipDetails);
         }
       } else {
         setDbUser(null);
         setSettings(defaultSettings);
+        setMembership({
+          type: "trial",
+          status: "pending",
+          startDate: null,
+          endDate: null,
+          sessionsRemaining: 3,
+        });
       }
     };
 
@@ -111,25 +145,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       try {
         const userRef = doc(db, `users/${user.uid}`);
+        const updatedMembership = {
+          ...membership,
+          ...newMembership,
+        };
+
         await updateDoc(userRef, {
-          membership: {
-            ...dbUser?.membership,
-            ...newMembership,
-          },
+          membership: updatedMembership,
         });
 
+        setMembership(updatedMembership);
         setDbUser((prev: any) => ({
           ...prev,
-          membership: {
-            ...prev.membership,
-            ...newMembership,
-          },
+          membership: updatedMembership,
         }));
       } catch (error) {
         console.error("Error updating membership:", error);
       }
     },
-    [user, dbUser]
+    [user, membership]
   );
 
   // Update settings in Firestore and local state
@@ -166,6 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error,
     dbUser,
     settings,
+    membership,
     updateMembership,
     updateSettings,
   };
