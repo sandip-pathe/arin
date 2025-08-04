@@ -8,7 +8,6 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { useToast } from "@/hooks/use-toast";
 
 export const saveChunksToFirestore = async (
   sessionId: string,

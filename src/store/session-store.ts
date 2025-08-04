@@ -141,7 +141,7 @@ const useSessionStore = create<SessionState>((set) => ({
   removeAttachment: (id) =>
     set((state) => ({
       attachments: state.attachments.filter((a) => a.id !== id),
-      chunks: state.chunks.filter((c) => c.documentId !== id),
+      chunks: state.chunks.filter((c) => c.id !== id),
     })),
 
   resetSessionState: () =>

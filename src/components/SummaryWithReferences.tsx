@@ -3,7 +3,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover"; // Replace with your actual import
+} from "@/components/ui/popover";
 
 type Chunk = {
   id: string;
@@ -13,7 +13,7 @@ type Chunk = {
 
 type Props = {
   text: string;
-  chunkIds: string[]; // IDs in the order like ["chunk-abc", "chunk-def"]
+  chunkIds: string[];
   getChunkById: (id: string) => Chunk | undefined;
 };
 

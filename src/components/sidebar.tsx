@@ -182,7 +182,7 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
               >
                 <Avatar className="border-blue-600 border-2 shadow-sm">
                   <AvatarFallback>
-                    {user?.displayName?.charAt(0) || "U"}
+                    {user?.displayName?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 {membership.type === "trial" && (

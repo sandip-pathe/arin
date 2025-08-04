@@ -1,6 +1,7 @@
+// ChatSettings.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -23,30 +24,75 @@ export const ChatSettings = ({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
-  const { updateSettings } = useAuth();
+  const { settings, updateSettings } = useAuth();
   const [conversationStyle, setConversationStyle] = useState<
     "precise" | "balanced" | "creative"
-  >("balanced");
+  >(
+    ["precise", "balanced", "creative"].includes(
+      settings.chat.conversationStyle
+    )
+      ? (settings.chat.conversationStyle as "precise" | "balanced" | "creative")
+      : "balanced"
+  );
   const [responseLength, setResponseLength] = useState<
     "short" | "medium" | "long"
-  >("medium");
-  const [autoSuggestions, setAutoSuggestions] = useState(true);
+  >(
+    ["short", "medium", "long"].includes(settings.chat.responseLength)
+      ? (settings.chat.responseLength as "short" | "medium" | "long")
+      : "medium"
+  );
+  const [autoSuggestions, setAutoSuggestions] = useState<boolean>(
+    !!settings.chat.autoSuggestions
+  );
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    updateSettings({
+  // Sync whenever opened or settings change
+  useEffect(() => {
+    if (isOpen) {
+      setConversationStyle(
+        ["precise", "balanced", "creative"].includes(
+          settings.chat.conversationStyle
+        )
+          ? (settings.chat.conversationStyle as
+              | "precise"
+              | "balanced"
+              | "creative")
+          : "balanced"
+      );
+      setResponseLength(
+        ["short", "medium", "long"].includes(settings.chat.responseLength)
+          ? (settings.chat.responseLength as "short" | "medium" | "long")
+          : "medium"
+      );
+      setAutoSuggestions(settings.chat.autoSuggestions);
+    }
+  }, [isOpen, settings]);
+
+  const hasChanges = useMemo(() => {
+    return (
+      conversationStyle !== settings.chat.conversationStyle ||
+      responseLength !== settings.chat.responseLength ||
+      autoSuggestions !== settings.chat.autoSuggestions
+    );
+  }, [conversationStyle, responseLength, autoSuggestions, settings]);
+
+  const handleSave = async () => {
+    if (!hasChanges) return;
+    setSaving(true);
+    await updateSettings({
       chat: {
         conversationStyle,
         responseLength,
         autoSuggestions,
       },
     });
+    setSaving(false);
+    onOpenChange(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTitle className="sr-only">
-        Welcome to Legal AI Assistant
-      </DialogTitle>
+      <DialogTitle className="sr-only">Chat Settings</DialogTitle>
       <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
         <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
           <motion.div
@@ -136,9 +182,9 @@ export const ChatSettings = ({
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button onClick={handleSave}>
+                <Button onClick={handleSave} disabled={!hasChanges || saving}>
                   <FiSend className="mr-2" />
-                  Save Changes
+                  {saving ? "Saving..." : "Save Changes"}
                 </Button>
               </CardFooter>
             </Card>

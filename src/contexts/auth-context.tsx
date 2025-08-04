@@ -64,7 +64,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const [dbUser, setDbUser] = useState<any | null>(null);
-  const [settings, setSettings] = useState(defaultSettings);
+  const [settings, setSettings] =
+    useState<typeof defaultSettings>(defaultSettings);
   const [membership, setMembership] = useState<MembershipDetails>({
     type: "trial",
     status: "pending",
@@ -73,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionsRemaining: 3,
   });
 
-  // Fetch user and settings from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
@@ -101,27 +101,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } else {
           // Create new user with default settings
+          const newMembership: MembershipDetails = {
+            type: "trial",
+            status: "active",
+            startDate: Timestamp.now(),
+            endDate: Timestamp.fromDate(
+              new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days trial
+            ),
+            sessionsRemaining: 3,
+          };
+
           const newUser = {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL,
+            phoneNumber: user.phoneNumber,
             settings: defaultSettings,
-            membership: {
-              type: "trial",
-              status: "active",
-              startDate: Timestamp.now(),
-              endDate: Timestamp.fromDate(
-                new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days trial
-              ),
-              sessionsRemaining: 3,
-            },
+            membership: newMembership,
           };
 
           await setDoc(userRef, newUser);
           setDbUser(newUser);
           setSettings(defaultSettings);
-          setMembership(newUser.membership as MembershipDetails);
+          setMembership(newMembership);
         }
       } else {
         setDbUser(null);
@@ -137,7 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     fetchUserData();
-  }, [user]);
+  }, [user, db]);
 
   const updateMembership = useCallback(
     async (newMembership: Partial<MembershipDetails>) => {
@@ -163,7 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Error updating membership:", error);
       }
     },
-    [user, membership]
+    [user, membership, db]
   );
 
   // Update settings in Firestore and local state
@@ -191,7 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Error updating settings:", error);
       }
     },
-    [user, settings]
+    [user, settings, db]
   );
 
   const value = {
@@ -204,6 +207,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     updateMembership,
     updateSettings,
   };
+
+  console.log("AuthContext value:", value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -51,7 +51,8 @@ export function ChatInputArea({
   const [selectedResponseType, setSelectedResponseType] = useState("auto");
   const [selectedJurisdiction, setSelectedJurisdiction] =
     useState("indian-law");
-  const hasMessages = false;
+  const [extractionProgress, setExtractionProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -162,6 +163,17 @@ export function ChatInputArea({
                           <X className="h-3 w-3" />
                         </Button>
                       </div>
+                      {extractionProgress > 0 && extractionProgress < 100 && (
+                        <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                          <div
+                            className="bg-blue-600 h-2.5 rounded-full"
+                            style={{ width: `${extractionProgress}%` }}
+                          ></div>
+                          <div className="text-xs mt-1 text-gray-500">
+                            {progressMessage}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

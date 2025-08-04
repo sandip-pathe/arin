@@ -1,3 +1,4 @@
+import { MembershipType } from "@/contexts/auth-context";
 import { Attachment, DocumentChunk, Ontology } from "@/types/page";
 
 export const ONTOLOGY_COLORS: Record<keyof Ontology, string> = {
@@ -17,7 +18,6 @@ export const ONTOLOGY_COLORS: Record<keyof Ontology, string> = {
     "bg-teal-100 border-teal-400 dark:bg-teal-900/40 dark:border-teal-600",
 };
 
-// summaries.ts
 export const summaries = [
   {
     summary:
@@ -259,57 +259,109 @@ export const message = [
   },
 ];
 
-export const plans = [
+export const soloPlans = [
   {
-    id: "trial",
-    title: "Free",
-    price: "$0 / month",
-    bg: "bg-gray-100",
-    border: "border",
-    description: "Explore how AI can help you with everyday tasks",
+    id: "trial" as MembershipType,
+    title: "Trial",
+    price: "$0",
+    subtitle: "Start building your legal second brain",
+    description: "Case summaries, basic follow-up, and limited search.",
     features: [
-      "Access to GPT-4o mini and reasoning",
-      "Standard voice mode",
-      "Real-time data from the web",
-      "Limited access to GPT-4o and o4-mini",
-      "Limited file uploads & image generation",
-      "Use custom GPTs",
+      "5 sessions per month",
+      "Download PDFs",
+      "Case Summaries",
+      "Limited follow-up Q&A",
+      "Follow-up chat per case",
+      "Key clause highlighting",
+      "Limited precedent search",
+      "Notebook-style storage",
     ],
-    cta: "Your current plan",
+    cta: "Current plan",
+    recommended: false,
     disabled: true,
   },
   {
-    id: "plus",
+    id: "plus" as MembershipType,
     title: "Plus",
-    price: "$20 / month",
-    bg: "bg-blue-100",
-    border: "border-emerald-600",
-    description: "Level up productivity and creativity with expanded access",
+    price: "$9.99 / mo",
+    subtitle: "Focused legal practitioners",
+    description: "Deeper insight, richer follow-ups, and trial prep tools.",
     features: [
-      "Everything in Free",
-      "Extended limits on messaging & uploads",
-      "Access to o4-mini, o4-mini-high, o3",
-      "Research preview of GPT-4.5",
-      "Custom tasks, projects & GPTs",
-      "Limited Sora video generation",
+      "20 sessions per month",
+      "Download PDFs",
+      "Extended case summarization",
+      "Unlimited follow-up Q&A",
+      "Mock trial simulator (basic)",
+      "Important data & clause extraction",
+      "Precedent similarity search",
+      "Save & tag legal knowledge",
     ],
     cta: "Get Plus",
+    recommended: true,
+    disabled: false,
+    link: "https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-19K748897R7513945NCGQDCA",
   },
   {
-    id: "pro",
+    id: "pro" as MembershipType,
     title: "Pro",
-    price: "$200 / month",
-    bg: "bg-gray-100",
-    border: "border-gray-600",
-    description: "Get the best of OpenAI with the highest level of access",
+    price: "$49.99 / mo",
+    subtitle: "Small firms / power users",
+    description:
+      "All features plus firm-level collaboration & advanced agents.",
     features: [
-      "Everything in Plus",
-      "Unlimited access to all models & GPT-4o",
-      "Advanced voice & deep research",
-      "Access to GPT-4.5, Operator, and o3 Pro",
-      "Extended Sora generation",
-      "Preview of Codex agent",
+      "Unlimited sessions",
+      "Download PDFs",
+      "Advanced mock trials with branching scenarios",
+      "Team-shared case folders",
+      "Custom legal agents (e.g., contract reviewer)",
+      "Priority processing & search",
+      "Firm knowledge graph integration",
     ],
     cta: "Get Pro",
+    recommended: false,
+    disabled: false,
+    link: "https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-7J400757A5379360UNCGQGZQ",
+  },
+];
+
+export const firmPlans = [
+  {
+    id: "business" as MembershipType,
+    title: "Team",
+    price: "$25 / user / mo",
+    subtitle: "Collaboration for legal teams",
+    description: "Secure shared workspace, firm-level insights.",
+    features: [
+      "Unlimited sessions",
+      "Download PDFs",
+      "Shared case dashboards",
+      "Role-based access",
+      "Audit trail & activity logs",
+      "Enterprise integrations (Drive, SharePoint, Slack)",
+      "Dedicated onboarding & support",
+    ],
+    cta: "Buy Team Plan",
+    recommended: false,
+    disabled: false,
+    link: "https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-7D383136G64082319NCGQHQA",
+  },
+  {
+    id: "enterprise" as MembershipType,
+    title: "Enterprise",
+    price: "Custom pricing",
+    subtitle: "Full firm-scale deployment",
+    description: "Tailored SLAs, compliance, and on-prem options.",
+    features: [
+      "Everything in Team",
+      "Custom PDFs",
+      "Custom model fine-tuning (legal domain)",
+      "On-prem / hybrid deployment",
+      "Advanced security & SOC2/GDPR",
+      "Dedicated account strategist",
+      "Integrate internal knowledge bases",
+    ],
+    cta: "Contact Sales",
+    recommended: true,
+    disabled: false,
   },
 ];

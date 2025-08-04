@@ -1,11 +1,5 @@
 // components/welcome-modal.tsx
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   X,
   Paperclip,
@@ -32,8 +26,21 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ChatWelcome } from "./chat-welcome";
 import Logo from "./logo";
+import { SummarySettings } from "./settings/summarySettings";
+import { FiSettings } from "react-icons/fi";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -45,6 +52,8 @@ interface WelcomeModalProps {
   onRemoveAttachment: (id: string) => void;
   onSend: () => void;
   isProcessing: boolean;
+  extractionProgress?: number;
+  progressMessage?: string;
 }
 
 export function WelcomeModal({
@@ -57,12 +66,15 @@ export function WelcomeModal({
   onRemoveAttachment,
   onSend,
   isProcessing,
+  extractionProgress,
+  progressMessage,
 }: WelcomeModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [selectedJurisdiction, setSelectedJurisdiction] =
     useState("indian-law");
   const [selectedResponseType, setSelectedResponseType] = useState("auto");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -223,6 +235,21 @@ export function WelcomeModal({
                                   <X className="h-4 w-4" />
                                 </Button>
                               </div>
+                              {typeof extractionProgress === "number" &&
+                                extractionProgress > 0 &&
+                                extractionProgress < 100 && (
+                                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                                    <div
+                                      className="bg-blue-600 h-2.5 rounded-full"
+                                      style={{
+                                        width: `${extractionProgress}%`,
+                                      }}
+                                    ></div>
+                                    <div className="text-xs mt-1 text-gray-500">
+                                      {progressMessage}
+                                    </div>
+                                  </div>
+                                )}
                             </motion.div>
                           ))}
                         </div>
@@ -281,6 +308,34 @@ export function WelcomeModal({
                               <p>Capture Image</p>
                             </TooltipContent>
                           </Tooltip>
+
+                          <Sheet
+                            open={isSettingsOpen}
+                            onOpenChange={setIsSettingsOpen}
+                          >
+                            <SheetTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full h-10 w-10"
+                                disabled={isProcessing}
+                              >
+                                <FiSettings className="h-5 w-5" />
+                              </Button>
+                            </SheetTrigger>
+
+                            <SheetContent
+                              side="right"
+                              className="w-full max-w-md sm:max-w-lg"
+                            >
+                              <SheetHeader>
+                                <SheetTitle className="sr-only">
+                                  Summary Settings
+                                </SheetTitle>
+                              </SheetHeader>
+                              <SummarySettings />
+                            </SheetContent>
+                          </Sheet>
                         </TooltipProvider>
                       </div>
 
@@ -356,12 +411,6 @@ export function WelcomeModal({
                     </Button>
                   ))}
                 </div>
-              </div>
-              <div className="fixed bottom-2 text-gray-500 text-sm select-none">
-                <p>
-                  Your documents are processed securely and never stored without
-                  your permission.
-                </p>
               </div>
             </div>
           </div>

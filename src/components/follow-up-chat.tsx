@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { ChatMessages } from "@/types/page";
 import { v4 as uuidv4 } from "uuid";
 import { saveChatMessage } from "@/lib/functions";
-import { ChatWithOpenAI } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
+import { ChatWithOpenAI } from "@/lib/utils";
 
 interface ChatWindowProps {
   initialMessages?: ChatMessages[];

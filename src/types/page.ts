@@ -33,13 +33,16 @@ export type Attachment = {
   error?: string;
 };
 
+export type Paragraph = {
+  id: string;
+  text: string;
+};
+
 export type DocumentChunk = {
   id: string;
-  content: string;
+  paragraphs: Paragraph[];
   sectionTitle?: string;
-  tokenEstimate?: number;
-  documentId: string;
-  documentName: string;
+  tokenEstimate: number;
 };
 
 export type Session = {

@@ -4,7 +4,6 @@ import useSessionStore from "@/store/session-store";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { SummaryDisplay } from "@/components/summary-view";
 import { FaLock } from "react-icons/fa6";
 import { ChatWindow } from "@/components/follow-up-chat";
 import { Attachment, DocumentChunk, Session, SummaryItem } from "@/types/page";
@@ -13,14 +12,13 @@ import { chunkDocument } from "@/lib/chunk";
 import { processChunks } from "@/lib/ChatGPT+api";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
-import { WelcomeModal } from "@/components/modal";
+import { WelcomeModal } from "@/components/InputModal";
 import { useSearchParams } from "next/navigation";
 import { msgs } from "@/lib/data";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
 import TopNavbar from "@/components/navbar";
-import { FiSliders, FiX } from "react-icons/fi";
+import { FiSliders } from "react-icons/fi";
 import { Sidebar } from "@/components/sidebar";
-import { motion } from "framer-motion";
 import { AiOutlineRobot } from "react-icons/ai";
 import { db } from "@/lib/firebase";
 import {
@@ -37,9 +35,13 @@ import {
   saveChunksToFirestore,
 } from "@/lib/functions";
 import { GoShieldLock } from "react-icons/go";
-import { MembershipSettings } from "@/components/settings/membershipSettings";
 import { ChatSettings } from "@/components/settings/chatSettings";
-import { SummarySettings } from "@/components/settings/summarySettings";
+import {
+  SummarySettings,
+  SummarySettingsModal,
+} from "@/components/settings/summarySettings";
+import SummaryDisplay from "@/components/summaryDisplay";
+import { Button } from "@/components/ui/button";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -50,10 +52,12 @@ function SkeletonBox({ className = "" }: { className?: string }) {
 export default function SessionPage() {
   const params = useParams();
   const sessionId = params.sessionId as string;
-  const { user, loading } = useAuth();
+  const { user, loading, settings } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [sharedWith, setSharedWith] = useState<boolean>(false);
+  const [extractionProgress, setExtractionProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
 
   // State management
   const {
@@ -226,7 +230,9 @@ export default function SessionPage() {
       const results = await processChunks(allChunks);
       console.log("Send 5. Processed results:", results);
       const newSummaries: SummaryItem[] = results.map((result) => ({
-        summary: result.data.summary,
+        summary: Array.isArray(result.data.summary)
+          ? result.data.summary.map((s: any) => s.text).join("\n\n")
+          : result.data.summary,
         legalOntology: result.data.legalOntology || {
           definitions: [],
           obligations: [],
@@ -286,7 +292,10 @@ export default function SessionPage() {
     addAttachment(newAttachment);
 
     try {
-      const text = await extractText(file);
+      const text = await extractText(file, (progress, message) => {
+        setExtractionProgress(progress);
+        setProgressMessage(message || "");
+      });
       updateAttachment(newAttachment.id, { status: "extracted", text });
       await processDocument(newAttachment.id, text, file.name);
     } catch (error: any) {
@@ -353,9 +362,11 @@ export default function SessionPage() {
               <div className="z-10 border-b flex items-center justify-between py-2">
                 <div className="flex items-center justify-start">
                   <div className="p-2 font-medium">Summary</div>
-                  <span className="h-6 w-6 bg-blue-200 flex items-center justify-center rounded-full text-xs font-semibold mr-2">
-                    {activeSession?.noOfAttachments}
-                  </span>
+                  {activeSession?.attachments && (
+                    <span className="h-6 w-6 bg-blue-200 flex items-center justify-center rounded-full text-xs font-semibold mr-2">
+                      {activeSession?.noOfAttachments}
+                    </span>
+                  )}
                 </div>
                 <FiSliders
                   size={18}
@@ -364,13 +375,28 @@ export default function SessionPage() {
                 />
               </div>
               <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
-                <div ref={summaryRef} className="p-6">
-                  <SummaryDisplay
-                    chunks={chunks}
-                    summaries={summaries}
-                    loading={loadingStates.chunks}
-                  />
-                </div>
+                {summaries.length > 0 ? (
+                  <div ref={summaryRef} className="p-6">
+                    <SummaryDisplay
+                      chunks={chunks}
+                      summaries={summaries}
+                      loading={loadingStates.chunks}
+                    />
+                  </div>
+                ) : (
+                  <div className="p-6 items-center flex flex-col justify-center">
+                    <h2 className="text-lg font-semibold text-gray-700">
+                      No summaries available
+                    </h2>
+                    <Button
+                      variant="outline"
+                      className="mt-4"
+                      onClick={() => setShowWelcomeModal(true)}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </main>
@@ -447,12 +473,14 @@ export default function SessionPage() {
             setShowWelcomeModal(false);
           }}
           isProcessing={isProcessingDocument}
+          extractionProgress={extractionProgress}
+          progressMessage={progressMessage}
         />
         <ChatSettings
           isOpen={showChatSettingsModal}
           onOpenChange={setShowChatSettingsModal}
         />
-        <SummarySettings
+        <SummarySettingsModal
           isOpen={showSummarySettingsModal}
           onOpenChange={setShowSummarySettingsModal}
         />
