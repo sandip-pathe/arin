@@ -35,7 +35,10 @@ import {
   saveChunksToFirestore,
 } from "@/lib/functions";
 import { GoShieldLock } from "react-icons/go";
-import { ChatSettings } from "@/components/settings/chatSettings";
+import {
+  ChatSettings,
+  ChatSettingsModal,
+} from "@/components/settings/chatSettings";
 import {
   SummarySettings,
   SummarySettingsModal,
@@ -52,7 +55,7 @@ function SkeletonBox({ className = "" }: { className?: string }) {
 export default function SessionPage() {
   const params = useParams();
   const sessionId = params.sessionId as string;
-  const { user, loading, settings } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [sharedWith, setSharedWith] = useState<boolean>(false);
@@ -384,13 +387,21 @@ export default function SessionPage() {
                     />
                   </div>
                 ) : (
-                  <div className="p-6 items-center flex flex-col justify-center">
+                  <div className="p-6 items-center flex flex-col justify-center gap-8">
                     <h2 className="text-lg font-semibold text-gray-700">
-                      No summaries available
+                      looks like a new session! Let's
+                      <span
+                        onClick={() => setShowWelcomeModal(true)}
+                        className="text-blue-600 cursor-pointer"
+                      >
+                        {" "}
+                        get started
+                      </span>
+                      .
                     </h2>
                     <Button
                       variant="outline"
-                      className="mt-4"
+                      className="rounded-full px-4 py-2 transition-colors bg-white text-gray-700 hover:bg-blue-600 hover:text-white text-lg"
                       onClick={() => setShowWelcomeModal(true)}
                     >
                       Get Started
@@ -476,7 +487,7 @@ export default function SessionPage() {
           extractionProgress={extractionProgress}
           progressMessage={progressMessage}
         />
-        <ChatSettings
+        <ChatSettingsModal
           isOpen={showChatSettingsModal}
           onOpenChange={setShowChatSettingsModal}
         />

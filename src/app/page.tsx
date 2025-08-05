@@ -39,9 +39,10 @@ import Logo from "@/components/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ShareModal } from "@/components/settings/sharing";
-import { MembershipSettings } from "@/components/settings/membershipSettings";
-import { AccountSettings } from "@/components/settings/accountSettings";
+import { Membership } from "@/components/settings/membership";
+import { AccountSettingsModal } from "@/components/settings/accountSettings";
 import useSessionStore from "@/store/session-store";
+import { UnifiedSettingsModal } from "@/components/settings/settings";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -58,6 +59,8 @@ export default function HomePage() {
     setShowMembershipModal,
     showShareModal,
     setShowShareModal,
+    showSettingsModal,
+    setShowSettingsModal,
   } = useSessionStore();
 
   useEffect(() => {
@@ -274,7 +277,7 @@ export default function HomePage() {
         </div>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => {}}
+            onClick={() => setShowSettingsModal(true)}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <FiSettings className="text-gray-600" size={20} />
@@ -405,13 +408,17 @@ export default function HomePage() {
         onOpenChange={setShowShareModal}
         sessionId={shareSessionId || ""}
       />
-      <MembershipSettings
+      <Membership
         isOpen={showMembershipModal}
         onOpenChange={setShowMembershipModal}
       />
-      <AccountSettings
+      <AccountSettingsModal
         isOpen={showAccountModal}
         isOpenChange={setShowAccountModal}
+      />
+      <UnifiedSettingsModal
+        isOpen={showSettingsModal}
+        isOpenChange={setShowSettingsModal}
       />
     </div>
   );

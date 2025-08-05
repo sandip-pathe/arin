@@ -78,7 +78,7 @@ export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
   };
 
   return (
-    <Card className="border-none shadow-none bg-background">
+    <Card className="border-none shadow-none bg-white">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           Summary Settings

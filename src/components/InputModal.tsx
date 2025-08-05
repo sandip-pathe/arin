@@ -212,42 +212,49 @@ export function WelcomeModal({
                               key={attachment.id}
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="flex items-center justify-between bg-blue-50 rounded-lg p-2 pr-1 border border-blue-200"
+                              className="flex flex-col gap-1"
                             >
-                              <div className="flex items-center">
-                                {getFileIcon(attachment.type)}
-                                <span className="ml-2 text-sm max-w-[140px] truncate">
-                                  {attachment.name}
-                                </span>
+                              <div className="flex items-center justify-between bg-blue-50 rounded-lg p-2 pr-1 border border-blue-200">
+                                <div className="flex items-center">
+                                  {getFileIcon(attachment.type)}
+                                  <span className="ml-2 text-sm max-w-[140px] truncate">
+                                    {attachment.name}
+                                  </span>
+                                </div>
+                                <div className="flex items-center">
+                                  <span className="ml-2">
+                                    {getStatusIcon(attachment.status)}
+                                  </span>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 text-gray-500 hover:text-red-500 ml-1"
+                                    onClick={() =>
+                                      onRemoveAttachment(attachment.id)
+                                    }
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </div>
-                              <div className="flex items-center">
-                                <span className="ml-2">
-                                  {getStatusIcon(attachment.status)}
-                                </span>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 text-gray-500 hover:text-red-500 ml-1"
-                                  onClick={() =>
-                                    onRemoveAttachment(attachment.id)
-                                  }
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                              </div>
-                              {typeof extractionProgress === "number" &&
+                              {attachment.status === "uploading" &&
+                                typeof extractionProgress === "number" &&
                                 extractionProgress > 0 &&
                                 extractionProgress < 100 && (
-                                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
-                                    <div
-                                      className="bg-blue-600 h-2.5 rounded-full"
-                                      style={{
-                                        width: `${extractionProgress}%`,
-                                      }}
-                                    ></div>
-                                    <div className="text-xs mt-1 text-gray-500">
-                                      {progressMessage}
+                                  <div className="w-full px-2">
+                                    <div className="bg-gray-200 rounded-full h-2.5 w-full">
+                                      <div
+                                        className="bg-blue-600 h-2.5 rounded-full transition-all duration-200"
+                                        style={{
+                                          width: `${extractionProgress}%`,
+                                        }}
+                                      ></div>
                                     </div>
+                                    {progressMessage && (
+                                      <div className="text-xs mt-1 text-gray-500 text-center">
+                                        {progressMessage}
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                             </motion.div>

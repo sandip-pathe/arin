@@ -11,7 +11,7 @@ import { Timestamp } from "firebase/firestore";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { firmPlans, soloPlans } from "@/lib/data";
 
-export const MembershipSettings = ({
+export const Membership = ({
   isOpen,
   onOpenChange,
 }: {
