@@ -1,6 +1,12 @@
+// OntologyDisplay.tsx
 import React from "react";
 import { Ontology } from "@/types/page";
 import { ONTOLOGY_COLORS } from "@/lib/data";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 type OntologyDisplayProps = {
   ontology: Ontology;
@@ -49,25 +55,44 @@ export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
           <ul className="space-y-1 pl-1">
             {values.map((value, i) => (
               <li key={i} className="leading-relaxed">
-                <span
-                  className={`inline-block text-sm rounded-none px-2 bg-opacity-30 ${
-                    key === "definitions"
-                      ? "bg-blue-200 dark:bg-blue-800"
-                      : key === "obligations"
-                      ? "bg-green-200 dark:bg-green-800"
-                      : key === "rights"
-                      ? "bg-yellow-200 dark:bg-yellow-800"
-                      : key === "conditions"
-                      ? "bg-purple-200 dark:bg-purple-800"
-                      : key === "clauses"
-                      ? "bg-pink-200 dark:bg-pink-800"
-                      : key === "dates"
-                      ? "bg-indigo-200 dark:bg-indigo-800"
-                      : "bg-teal-200 dark:bg-teal-800"
-                  }`}
-                >
-                  {value}
-                </span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <span
+                      className={`inline-block text-sm rounded-none px-2 bg-opacity-30 cursor-pointer ${
+                        key === "definitions"
+                          ? "bg-blue-200 dark:bg-blue-800"
+                          : key === "obligations"
+                          ? "bg-green-200 dark:bg-green-800"
+                          : key === "rights"
+                          ? "bg-yellow-200 dark:bg-yellow-800"
+                          : key === "conditions"
+                          ? "bg-purple-200 dark:bg-purple-800"
+                          : key === "clauses"
+                          ? "bg-pink-200 dark:bg-pink-800"
+                          : key === "dates"
+                          ? "bg-indigo-200 dark:bg-indigo-800"
+                          : "bg-teal-200 dark:bg-teal-800"
+                      }`}
+                    >
+                      {typeof value === "string"
+                        ? value
+                        : Object.values(value).join(", ")}
+                    </span>
+                  </PopoverTrigger>
+                  <PopoverContent className="max-w-md text-sm">
+                    {typeof value === "string" ? (
+                      value
+                    ) : (
+                      <div className="flex flex-col text-sm">
+                        {Object.entries(value).map(([k, v]) => (
+                          <span key={k}>
+                            <strong>{k}:</strong> {String(v)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
               </li>
             ))}
           </ul>

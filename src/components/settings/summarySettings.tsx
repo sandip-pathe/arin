@@ -12,12 +12,12 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { FiSend } from "react-icons/fi";
-import { useAuth } from "@/contexts/auth-context";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth-store";
 
 export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
-  const { settings, updateSettings } = useAuth();
+  const { settings, updateSettings } = useAuthStore();
   const [summaryLength, setSummaryLength] = useState(settings.summary.length);
   const [complexity, setComplexity] = useState(settings.summary.complexity);
   const [tone, setTone] = useState(settings.summary.tone);

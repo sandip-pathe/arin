@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/auth-context";
 import ClientInit from "@/components/clientInit";
 
 export const metadata: Metadata = {
-  title: "Arin",
+  title: "Anaya",
   description: "Your AI Legal Assistant",
 };
 
@@ -29,11 +28,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased h-full bg-background">
-        <AuthProvider>
-          <ClientInit />
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <ClientInit />
+        {children}
+        <Toaster />
       </body>
     </html>
   );

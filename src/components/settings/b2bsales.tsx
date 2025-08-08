@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/auth-context";
 import {
   getFirestore,
   collection,
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/store/auth-store";
 
 export interface ContactSalesProps {
   onSubmit?: (data: {
@@ -30,7 +30,7 @@ export interface ContactSalesProps {
 }
 
 export const ContactSales: React.FC<ContactSalesProps> = ({ onSubmit }) => {
-  const { dbUser } = useAuth();
+  const { dbUser, membership } = useAuthStore();
   const [company, setCompany] = useState("");
   const [name, setName] = useState(dbUser?.displayName || "");
   const [email, setEmail] = useState(dbUser?.email || "");

@@ -1,4 +1,4 @@
-# **App Name**: Arin
+# **App Name**: Anaya
 
 ## Core Features:
 

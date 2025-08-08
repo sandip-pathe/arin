@@ -15,14 +15,14 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { useAuth } from "@/contexts/auth-context";
 import { auth } from "@/lib/firebase";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { updateProfile, signOut } from "firebase/auth";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useAuthStore } from "@/store/auth-store";
 
 export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
-  const { dbUser } = useAuth();
+  const { dbUser } = useAuthStore();
   const [name, setName] = useState<string>(dbUser?.displayName || "");
   const [contact, setContact] = useState<string>(dbUser?.phoneNumber || "");
   const [saving, setSaving] = useState(false);

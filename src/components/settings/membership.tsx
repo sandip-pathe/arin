@@ -5,11 +5,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FiCheck, FiStar } from "react-icons/fi";
-import { MembershipType, useAuth } from "@/contexts/auth-context";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Timestamp } from "firebase/firestore";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { firmPlans, soloPlans } from "@/lib/data";
+import { useAuthStore } from "@/store/auth-store";
+
+export type MembershipType = "basic" | "pro" | "enterprise";
 
 export const Membership = ({
   isOpen,
@@ -18,14 +20,13 @@ export const Membership = ({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
-  const { membership, updateMembership } = useAuth();
+  const { membership, updateMembership } = useAuthStore();
   const [isUpgrading, setIsUpgrading] = useState<string | null>(null); // plan id upgrading
 
   const handleUpgrade = async (targetPlan: MembershipType) => {
     setIsUpgrading(targetPlan);
     try {
       await updateMembership({
-        type: targetPlan,
         status: "active",
         startDate: Timestamp.now(),
         endDate: Timestamp.fromDate(

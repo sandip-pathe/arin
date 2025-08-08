@@ -5,11 +5,11 @@ import { BsLayoutSidebarInset } from "react-icons/bs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
-import { useAuth } from "@/contexts/auth-context";
 import { AccountSettingsModal } from "./settings/accountSettings";
 import { ShareModal } from "./settings/sharing";
 import { Membership } from "./settings/membership";
 import { UnifiedSettingsModal } from "./settings/settings";
+import { useAuthStore } from "@/store/auth-store";
 
 interface SidebarButtonProps {
   icon: React.ReactNode;
@@ -21,7 +21,7 @@ interface SidebarButtonProps {
 export const Sidebar = ({ sessionId }: { sessionId: string }) => {
   const router = useRouter();
   const { isSidebarOpen, toggleSidebar } = useSessionStore();
-  const { user, membership } = useAuth();
+  const { user, membership } = useAuthStore();
   const {
     showAccountModal,
     setShowAccountModal,

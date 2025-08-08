@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 import {
   collection,
   query,
@@ -43,9 +42,10 @@ import { Membership } from "@/components/settings/membership";
 import { AccountSettingsModal } from "@/components/settings/accountSettings";
 import useSessionStore from "@/store/session-store";
 import { UnifiedSettingsModal } from "@/components/settings/settings";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function HomePage() {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthStore();
   const router = useRouter();
   const [sessions, setSessions] = useState<MinimalSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);

@@ -1,82 +1,86 @@
-import { ChatMessages, DocumentChunk } from "@/types/page";
+import { ChatMessages, DocumentChunk, Paragraph } from "@/types/page";
 import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   serverTimestamp,
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const saveChunksToFirestore = async (
+const createParagraphId = (
+  docIndex: number,
+  chunkIndex: number,
+  paragraphIndex: number
+) => `d${docIndex}.c${chunkIndex}.p${paragraphIndex}`;
+
+export const saveParagraphsToFirestore = async (
   sessionId: string,
-  chunks: DocumentChunk[]
+  documentChunks: DocumentChunk[],
+  docIndex: number = 1 // Optional for future multi-document support
 ) => {
-  const chunksCollection = collection(db, "sessions", sessionId, "chunks");
-
-  const batch = writeBatch(db);
-  console.log(
-    `Saving ${chunks.length} chunks to Firestore for session ${sessionId}`
-  );
-
-  if (chunks.length === 0) {
+  if (documentChunks.length === 0) {
     console.warn("No chunks to save");
     return;
   }
 
-  chunks.forEach((chunk) => {
-    const docRef = doc(chunksCollection);
+  const paragraphCollection = collection(
+    db,
+    "sessions",
+    sessionId,
+    "paragraphs"
+  );
+  const batch = writeBatch(db);
+  let totalParagraphs = 0;
 
-    // Derive section title from content if missing (first 6–8 words)
-    let inferredTitle = chunk.sectionTitle?.trim();
+  documentChunks.forEach((chunk, chunkIndex) => {
+    chunk.paragraphs.forEach((para, paragraphIndex) => {
+      const paragraphId = createParagraphId(
+        docIndex,
+        chunkIndex,
+        paragraphIndex
+      );
+      const paragraphRef = doc(paragraphCollection, paragraphId);
 
-    if (!inferredTitle) {
-      const match = chunk.content.match(/([^\.!?]{1,20}[\.!?])/);
-      if (match) {
-        const words = match[0].split(/\s+/);
-        inferredTitle = words.slice(0, 20).join(" ");
-        if (words.length > 20) {
-          inferredTitle += "...";
-        }
-      } else {
-        inferredTitle = chunk.content.split(/\s+/).slice(0, 8).join(" ");
-      }
-    }
+      const estimatedTokens = Math.ceil(para.text.length / 4);
 
-    // Estimate tokens (roughly 4 chars per token)
-    const estimatedTokens = Math.ceil(chunk.content.length / 4);
+      const data = {
+        id: paragraphId,
+        text: para.text,
+        sectionTitle: chunk.sectionTitle ?? null,
+        tokenEstimate: estimatedTokens,
+        createdAt: serverTimestamp(),
+      };
 
-    const normalizedChunk = {
-      ...chunk,
-      sectionTitle: inferredTitle,
-      tokenEstimate: estimatedTokens,
-      createdAt: serverTimestamp(), // Add timestamp
-    };
-
-    batch.set(docRef, normalizedChunk);
+      batch.set(paragraphRef, data);
+      totalParagraphs++;
+    });
   });
 
   try {
     await batch.commit();
-    console.log("Chunks saved successfully");
+    console.log(`Saved ${totalParagraphs} paragraphs to Firestore`);
   } catch (error) {
-    console.error("Error saving chunks:", error);
-    throw new Error("Failed to save chunks to Firestore");
+    console.error("Error saving paragraphs:", error);
+    throw new Error("Failed to save paragraphs to Firestore");
   }
 };
 
-export const loadChunks = async (
+export const loadParagraphs = async (
   sessionId: string
-): Promise<DocumentChunk[]> => {
-  const querySnapshot = await getDocs(
-    collection(db, "sessions", sessionId, "chunks")
-  );
+): Promise<Paragraph[]> => {
+  const paragraphsRef = collection(db, "sessions", sessionId, "paragraphs");
+  const snapshot = await getDocs(paragraphsRef);
 
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as DocumentChunk[];
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      text: data.text,
+    } as Paragraph;
+  });
 };
 
 export const saveChatMessage = async (

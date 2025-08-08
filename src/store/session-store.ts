@@ -15,7 +15,12 @@ interface SessionState {
   activeSession: Session | null;
   isLoading: boolean;
   isProcessingDocument: boolean;
-  loadingStates: { chunks: boolean; chats: boolean; session: boolean };
+  loadingStates: {
+    chunks?: boolean;
+    chats?: boolean;
+    session?: boolean;
+    summary?: boolean;
+  };
   isProcessingChat: boolean;
   inputText: string;
   userInput: string;
@@ -41,9 +46,10 @@ interface SessionState {
   setIsLoading: (isLoading: boolean) => void;
   setIsProcessingDocument: (isProcessing: boolean) => void;
   setLoadingStates: (loadingStates: {
-    chunks: boolean;
-    chats: boolean;
-    session: boolean;
+    chunks?: boolean;
+    chats?: boolean;
+    session?: boolean;
+    summary?: boolean;
   }) => void;
   setIsProcessingChat: (isProcessing: boolean) => void;
   setInputText: (text: string) => void;
@@ -77,7 +83,12 @@ const useSessionStore = create<SessionState>((set) => ({
   activeSession: null,
   isLoading: false,
   isProcessingDocument: false,
-  loadingStates: { chunks: false, chats: false, session: false },
+  loadingStates: {
+    chunks: false,
+    chats: false,
+    session: false,
+    summary: false,
+  },
   isProcessingChat: false,
   inputText: "",
   userInput: "",

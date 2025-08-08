@@ -10,13 +10,13 @@ const estimateTokens = (text: string) =>
 
 export function chunkDocument(
   rawText: string,
-  options: { maxChunkSize?: number } = {}
+  options: { maxChunkSize?: number; documentIndex?: number } = {}
 ): DocumentChunk[] {
-  const { maxChunkSize = 4000 } = options;
-  const minChunkSize = 3000;
+  const { maxChunkSize = 8000, documentIndex = 1 } = options;
   const chunks: DocumentChunk[] = [];
 
-  let segments: string[] = rawText.split(
+  // First-pass segmentation
+  const segments = rawText.split(
     /(?=\n\s*(?:SECTION|ARTICLE|CLAUSE|SUBSECTION|ACT|RULE)\s+[IVXLCDM0-9]+[.)]?\s)/gi
   );
 
@@ -25,104 +25,99 @@ export function chunkDocument(
   for (const segment of segments) {
     const segmentTokens = estimateTokens(segment);
 
-    if (segmentTokens <= maxChunkSize && segmentTokens >= minChunkSize) {
+    if (segmentTokens <= maxChunkSize) {
       chunks.push(createLabeledChunk(segment, chunkCounter++));
-    } else if (segmentTokens > maxChunkSize) {
-      const brokenChunks = breakLargeSegment(
-        segment,
-        minChunkSize,
-        maxChunkSize
-      );
-      for (const text of brokenChunks) {
-        chunks.push(createLabeledChunk(text, chunkCounter++));
-      }
-    } else if (chunks.length > 0) {
-      const last = chunks[chunks.length - 1];
-      const extraParagraphs = splitAndLabelParagraphs(
-        segment,
-        chunkCounter - 1,
-        last.paragraphs.length + 1
-      );
-      last.paragraphs.push(...extraParagraphs);
-      last.tokenEstimate += estimateTokens(segment);
     } else {
-      chunks.push(createLabeledChunk(segment, chunkCounter++));
+      const subChunks = optimizedSegmentSplit(segment, maxChunkSize);
+      subChunks.forEach((text) => {
+        chunks.push(createLabeledChunk(text, chunkCounter++));
+      });
     }
   }
 
-  console.log(`Total chunks created: ${chunks.length}`);
-  console.log(`chunks`, chunks);
   return chunks;
 
-  function breakLargeSegment(text: string, min: number, max: number): string[] {
-    const doc = nlp.readDoc(text);
+  // Helper functions
+  function optimizedSegmentSplit(text: string, maxSize: number): string[] {
+    const chunks = [];
+    let start = 0;
+    let end = maxSize * 4; // Approximate character count
+
+    while (start < text.length) {
+      if (end >= text.length) {
+        chunks.push(text.substring(start));
+        break;
+      }
+
+      // Find safe break point (paragraph or sentence boundary)
+      let breakIndex = Math.min(
+        text.lastIndexOf("\n\n", end),
+        text.lastIndexOf(". ", end),
+        text.lastIndexOf("; ", end)
+      );
+
+      if (breakIndex <= start) {
+        // Fallback to NLP only when necessary
+        breakIndex = findNlpBreakPoint(text, start, end, maxSize);
+      }
+
+      chunks.push(text.substring(start, breakIndex).trim());
+      start = breakIndex;
+      end = start + maxSize * 4;
+    }
+
+    return chunks;
+  }
+
+  function findNlpBreakPoint(
+    text: string,
+    start: number,
+    end: number,
+    maxSize: number
+  ): number {
+    const slice = text.substring(start, Math.min(end + 100, text.length));
+    const doc = nlp.readDoc(slice);
     const sentences = doc.sentences().out();
+    let position = start;
 
-    const result: string[] = [];
-    let currentChunk = "";
-    let currentTokens = 0;
-
-    for (let i = 0; i < sentences.length; i++) {
-      const sentence = sentences[i];
-      const sentenceTokens = estimateTokens(sentence);
-      const isBreakPoint =
-        /[.:;!?]\s*$/.test(sentence) ||
-        (i < sentences.length - 1 && sentences[i + 1].match(/^\s*[A-Z0-9]/));
-
-      if (currentTokens + sentenceTokens > max && currentTokens >= min) {
-        result.push(currentChunk.trim());
-        currentChunk = sentence;
-        currentTokens = sentenceTokens;
-      } else if (isBreakPoint && currentTokens >= min) {
-        currentChunk += " " + sentence;
-        currentTokens += sentenceTokens;
-        result.push(currentChunk.trim());
-        currentChunk = "";
-        currentTokens = 0;
-      } else {
-        currentChunk += currentChunk ? " " + sentence : sentence;
-        currentTokens += sentenceTokens;
+    for (const sent of sentences) {
+      position += sent.length;
+      if (position - start > maxSize * 3) {
+        return position;
       }
     }
 
-    if (currentChunk) {
-      result.push(currentChunk.trim());
-    }
-
-    return result;
+    return end;
   }
 
   function createLabeledChunk(text: string, chunkIndex: number): DocumentChunk {
-    const paragraphs = splitAndLabelParagraphs(text, chunkIndex);
     return {
       id: uuidv4(),
-      paragraphs,
+      paragraphs: splitParagraphs(text, documentIndex, chunkIndex),
       sectionTitle: getSectionTitle(text),
       tokenEstimate: estimateTokens(text),
     };
   }
 
-  function splitAndLabelParagraphs(
+  function splitParagraphs(
     text: string,
-    chunkIndex: number,
-    startFrom: number = 1
+    docIndex: number,
+    chunkIndex: number
   ): Paragraph[] {
-    const rawParagraphs = text
+    return text
       .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean);
-
-    return rawParagraphs.map((para, i) => ({
-      id: `c${chunkIndex}.p${i + startFrom}`,
-      text: para,
-    }));
+      .map((p, i) => ({
+        id: `d${docIndex}.c${chunkIndex}.p${i + 1}`,
+        text: p.trim(),
+      }))
+      .filter((p) => p.text);
   }
 
   function getSectionTitle(text: string): string | undefined {
-    const firstLine = text.split("\n")[0].trim();
-    const match = firstLine.match(
-      /^(?:(SECTION|ARTICLE|CLAUSE|SUBSECTION|ACT|RULE)\s+[IVXLCDM0-9]+[.)]?)/i
-    );
-    return match ? match[0] : undefined;
+    return text
+      .substring(0, 100)
+      .match(
+        /^(SECTION|ARTICLE|CLAUSE|SUBSECTION|ACT|RULE)\s+[IVXLCDM0-9]+[.)]?/i
+      )?.[0];
   }
 }

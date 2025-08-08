@@ -7,10 +7,14 @@ export type ChatMessages = {
   timestamp: Date;
 };
 
+export type Summary = {
+  text: string;
+  sourceParagraphs: string[];
+};
+
 export type SummaryItem = {
-  summary: string;
+  summary: Summary[];
   legalOntology: Ontology;
-  chunkIds: string;
 };
 
 export type Ontology = {

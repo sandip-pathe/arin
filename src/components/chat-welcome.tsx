@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth-context";
+import { useAuthStore } from "@/store/auth-store";
 
 export function ChatWelcome() {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthStore();
 
   const displayName = user?.displayName?.split(" ")[0] || "";
 

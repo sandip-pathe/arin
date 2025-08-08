@@ -1,5 +1,10 @@
 // components/welcome-modal.tsx
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   X,
   Paperclip,
@@ -36,11 +41,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -150,14 +150,18 @@ export function WelcomeModal({
       <DialogTitle className="sr-only">
         Welcome to Legal AI Assistant
       </DialogTitle>
+      <DialogDescription className="sr-only">
+        This is your personal legal assistant powered by AI. You can ask
+        questions, upload documents, and get summaries of legal texts.
+      </DialogDescription>
       <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
         <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
           <Logo />
           <div className="pt-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: 0.3 }}
             >
               <Card className="bg-white rounded-xl shadow-none border-dashed border-2 border-gray-200 overflow-hidden">
                 <CardContent className="md:p-6 border-none">
@@ -359,7 +363,15 @@ export function WelcomeModal({
                         onClick={onSend}
                       >
                         {isProcessing ? (
-                          <Loader2 className="h-5 w-5 animate-spin text-white" />
+                          <div className="flex items-center">
+                            <Loader2 className="h-5 w-5 animate-spin text-white mr-2" />
+                            <span className="font-medium text-lg">
+                              {typeof extractionProgress === "number" &&
+                              extractionProgress > 0
+                                ? `Extracting (${extractionProgress}%)`
+                                : "Processing"}
+                            </span>
+                          </div>
                         ) : (
                           <>
                             <ArrowUp className="h-5 w-5 text-white" size={24} />

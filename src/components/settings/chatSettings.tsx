@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FiSend } from "react-icons/fi";
-import { useAuth } from "@/contexts/auth-context";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth-store";
 
 export const ChatSettings = ({ onClose }: { onClose?: () => void }) => {
-  const { settings, updateSettings } = useAuth();
+  const { settings, updateSettings } = useAuthStore();
 
   const [conversationStyle, setConversationStyle] = useState(
     settings.chat.conversationStyle
