@@ -35,7 +35,6 @@ import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
 import { Summarize } from "@/lib/ChatGPT+api";
 import { produce } from "immer";
-import { ProgressStepper } from "@/components/ProgressStepper";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -51,7 +50,6 @@ export default function SessionPage() {
   const { toast } = useToast();
   const [extractionProgress, setExtractionProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
-  const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -70,6 +68,7 @@ export default function SessionPage() {
     setLoadingStates,
     inputText,
     setInputText,
+    userInput,
     setUserInput,
     attachments,
     setAttachments,
@@ -78,8 +77,12 @@ export default function SessionPage() {
     removeAttachment,
     chunks,
     setChunks,
+    paragraphs,
+    setParagraphs,
     summaries,
     setSummaries,
+    chatMessages,
+    setChatMessages,
     setIsChatCollapsed,
     isSidebarOpen,
     isChatOpen,
@@ -98,7 +101,6 @@ export default function SessionPage() {
   const documentManager = useRef<{ [id: string]: number }>({});
   const nextDocumentIndex = useRef(1);
   const sessionInitialized = useRef(false);
-
   const isProcessing = currentStep > 0;
 
   // Derived state for shared session
@@ -110,10 +112,11 @@ export default function SessionPage() {
     );
   }, [activeSession, user]);
 
-  // Session initialization
   useEffect(() => {
     if (!user) {
       console.error("User not authenticated");
+      router.push("/login");
+      return;
     }
 
     if (initialized) return;
@@ -121,22 +124,17 @@ export default function SessionPage() {
 
     const isNew = searchParams.get("new") === "true";
 
-    if (sessionId && !isNew) {
-      loadSessionData(sessionId);
-    } else if (sessionId && isNew) {
-      createNewSession(sessionId);
-    } else {
+    if (!sessionId) {
+      // Should never happen due to routing, but handle just in case
       const newId = uuidv4();
       router.replace(`/${newId}?new=true`);
+    } else if (isNew) {
+      createNewSession(sessionId);
+      setShowWelcomeModal(true);
+    } else {
+      loadSessionData(sessionId);
     }
   }, [user, sessionId, searchParams]);
-
-  // Handle modal after routing
-  useEffect(() => {
-    if (!sessionId) return;
-    const isNew = searchParams.get("new") === "true";
-    if (isNew) setShowWelcomeModal(true);
-  }, [sessionId, searchParams]);
 
   const createNewSession = useCallback(
     async (id: string) => {
@@ -159,6 +157,8 @@ export default function SessionPage() {
       try {
         await setDoc(doc(db, "sessions", id), newSession);
         setActiveSession(newSession);
+        console.log("New session created:", newSession.id);
+        router.replace(`/${id}`);
       } catch (error) {
         handleProcessingError("Create Session", error);
         toast({
@@ -168,7 +168,7 @@ export default function SessionPage() {
         });
       }
     },
-    [user, setActiveSession, toast]
+    [user, setActiveSession, toast, router]
   );
 
   const loadSessionData = useCallback(
@@ -183,7 +183,11 @@ export default function SessionPage() {
         const sessionDoc = await getDoc(sessionRef);
 
         if (!sessionDoc.exists()) {
-          createNewSession(id);
+          toast({
+            title: "Session not found",
+            description: "Creating new session",
+          });
+          await createNewSession(id);
           return;
         }
 
@@ -204,6 +208,9 @@ export default function SessionPage() {
 
         setActiveSession(sessionData);
         sessionIdRef.current = id;
+
+        // Remove any query parameters
+        router.replace(`/${id}`);
 
         if (sessionData.summaries) {
           setSummaries(sessionData.summaries);
@@ -424,12 +431,9 @@ export default function SessionPage() {
     []
   );
 
-  const resetSession = useCallback(() => {
-    setActiveSession(null);
-    setInputText("");
-    setAttachments([]);
-    setShowWelcomeModal(true);
-  }, []);
+  console.log(`paragraphs in SessionPage`, paragraphs);
+  console.log(`summaries in SessionPage`, summaries);
+  console.log(`activeSession in SessionPage`, activeSession);
 
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
@@ -469,7 +473,10 @@ export default function SessionPage() {
 
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
               <div ref={summaryRef} className="p-6">
-                {loadingStates.summary || isSummarizing || isProcessing ? (
+                {loadingStates.session ||
+                loadingStates.summary ||
+                isSummarizing ||
+                isProcessing ? (
                   <div className="space-y-4">
                     <SkeletonBox className="h-6 w-3/4" />
                     <SkeletonBox className="h-4 w-full" />
@@ -510,7 +517,7 @@ export default function SessionPage() {
               </div>
             </div>
             <div className="flex-1 min-h-0 overflow-auto">
-              {isLoading ? (
+              {loadingStates.session || isLoading ? (
                 <div className="p-4 space-y-3">
                   <SkeletonBox className="h-4 w-3/4" />
                   <SkeletonBox className="h-4 w-1/2" />
@@ -519,7 +526,8 @@ export default function SessionPage() {
                 </div>
               ) : (
                 <ChatWindow
-                  initialMessages={msgs}
+                  chatMessages={chatMessages}
+                  setChatMessages={setChatMessages}
                   setIsChatCollapsed={setIsChatCollapsed}
                   key={sessionId}
                   sessionId={sessionId!}
@@ -550,10 +558,7 @@ export default function SessionPage() {
         attachments={attachments}
         onFileAdded={handleFileAdded}
         onRemoveAttachment={handleRemoveAttachment}
-        onSend={() => {
-          handleSend();
-          setShowWelcomeModal(false);
-        }}
+        onSend={handleSend}
         isProcessing={isProcessingDocument}
         extractionProgress={extractionProgress}
         progressMessage={progressMessage}

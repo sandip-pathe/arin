@@ -10,23 +10,22 @@ import { useToast } from "@/hooks/use-toast";
 import { ChatWithOpenAI } from "@/lib/utils";
 
 interface ChatWindowProps {
-  initialMessages?: ChatMessages[];
+  chatMessages?: ChatMessages[];
+  setChatMessages: (messages: ChatMessages[]) => void;
   sessionId: string | null;
   context: string;
   setIsChatCollapsed: (val: boolean) => void;
 }
 
 export const ChatWindow = ({
-  initialMessages,
+  chatMessages,
   sessionId,
   context,
+  setChatMessages,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessageText, setInputMessageText] = useState("");
   const [isProcessingChat, setIsProcessingChat] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessages[]>(
-    initialMessages || []
-  );
   const { toast } = useToast();
 
   if (sessionId === null) {
@@ -64,7 +63,9 @@ export const ChatWindow = ({
       timestamp: new Date(),
     };
 
-    setChatMessages((prev) => [...prev, userMessage]);
+    setChatMessages(
+      chatMessages ? [...chatMessages, userMessage] : [userMessage]
+    );
     setInputMessageText("");
     setIsProcessingChat(true);
     saveChatMessage(userMessage, sessionId);
@@ -79,7 +80,9 @@ export const ChatWindow = ({
         timestamp: new Date(),
       };
 
-      setChatMessages((prev) => [...prev, aiMessage]);
+      setChatMessages(
+        chatMessages ? [...chatMessages, aiMessage] : [aiMessage]
+      );
       saveChatMessage(aiMessage, sessionId);
     } catch (error) {
       console.error(`[${context}]`, error);
@@ -99,30 +102,19 @@ export const ChatWindow = ({
     <>
       <div className="flex flex-col h-full border-none overflow-hidden">
         <div className="flex-1 min-h-0 overflow-y-auto p-4 pt-12 space-y-4">
-          {chatMessages.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <p className="text-lg text-gray-400 font-bold select-none">
-                Ask questions about your documents!
-              </p>
+          {[...(chatMessages ?? [])].map((message) => (
+            <div
+              key={message.id}
+              className={`flex p-2 rounded-lg ${
+                message.role === "user" ? "bg-blue-900 text-gray-200 ml-6" : ""
+              }`}
+            >
+              <div className="flex-1 text-sm break-words">
+                <div className="mb-1">{message.content}</div>
+              </div>
             </div>
-          ) : (
-            <>
-              {[...chatMessages].map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex p-2 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-blue-900 text-gray-200 ml-6"
-                      : ""
-                  }`}
-                >
-                  <div className="flex-1 text-sm break-words">
-                    <div className="mb-1">{message.content}</div>
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
+          ))}
+
           {isProcessingChat && (
             <div className="flex items-center p-2">
               <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></span>
@@ -132,9 +124,9 @@ export const ChatWindow = ({
           <div ref={messagesEndRef} />
         </div>
 
-        {chatMessages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            <p className="text-lg text-gray-400 font-bold select-none">
+        {chatMessages?.length === 0 && (
+          <div className="flex items-center justify-center h-full bg-white">
+            <p className="text-2xl select-none bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent text-center">
               Ask questions about your documents!
             </p>
           </div>

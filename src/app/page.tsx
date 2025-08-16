@@ -43,6 +43,7 @@ import { AccountSettingsModal } from "@/components/settings/accountSettings";
 import useSessionStore from "@/store/session-store";
 import { UnifiedSettingsModal } from "@/components/settings/settings";
 import { useAuthStore } from "@/store/auth-store";
+import { v4 as uuidv4 } from "uuid";
 
 export default function HomePage() {
   const { user, loading } = useAuthStore();
@@ -75,23 +76,26 @@ export default function HomePage() {
 
       setLoadingSessions(true);
       try {
-        // 1. Fetch user's own sessions (no orderBy)
+        // Create composite queries
         const userSessionsQuery = query(
           collection(db, "sessions"),
           where("userId", "==", user.uid),
-          limit(5)
+          limit(10)
         );
 
-        // 2. Fetch sessions shared with this user
-        const sharedSessionsQuery = query(
-          collection(db, "sessions"),
-          where("sharedWith", "array-contains", user.email),
-          limit(5)
-        );
+        let sharedSessionsQuery = null;
+        if (user.email) {
+          sharedSessionsQuery = query(
+            collection(db, "sessions"),
+            where("sharedWith", "array-contains", user.email),
+            limit(10)
+          );
+        }
 
+        // Execute queries in parallel
         const [userSnapshot, sharedSnapshot] = await Promise.all([
           getDocs(userSessionsQuery),
-          getDocs(sharedSessionsQuery),
+          sharedSessionsQuery ? getDocs(sharedSessionsQuery) : { docs: [] },
         ]);
 
         const allSessionsMap = new Map<string, MinimalSession>();
@@ -100,62 +104,49 @@ export default function HomePage() {
           const data = docSnap.data();
           const session: MinimalSession = {
             id: docSnap.id,
-            title: data.title ?? "Untitled",
+            title: data.title || "Untitled",
             updatedAt: data.updatedAt?.toMillis() || Date.now(),
             createdAt: data.createdAt?.toMillis() || Date.now(),
             userId: data.userId || user.uid,
-            isStarred: data.starred || false,
-            noOfAttachments: data.attachments?.length || 0,
+            isStarred: data.isStarred || false,
+            noOfAttachments:
+              data.attachments?.length || data.noOfAttachments || 0,
             folder: data.folder || "personal",
             sharedWith: data.sharedWith || [],
-            owner: data.userId || user.uid,
+            owner: data.owner || data.userId || user.uid,
           };
-
           allSessionsMap.set(session.id, session);
         };
 
         userSnapshot.forEach(processDoc);
-        sharedSnapshot.forEach(processDoc);
+        if ("forEach" in sharedSnapshot) sharedSnapshot.forEach(processDoc);
 
         let sessionsData = Array.from(allSessionsMap.values());
 
-        // 3. Sort sessions by updatedAt DESC (client-side)
-        sessionsData.sort(
-          (a, b) => (Number(b.updatedAt) || 0) - (Number(a.updatedAt) || 0)
-        );
-
-        // 4. Apply user-specific manual order (optional)
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists() && userDoc.data()?.sessionOrder) {
-          const sessionOrder: string[] = userDoc.data().sessionOrder;
-          sessionsData.sort((a, b) => {
-            const aIndex = sessionOrder.indexOf(a.id);
-            const bIndex = sessionOrder.indexOf(b.id);
-            if (aIndex === -1 && bIndex === -1) return 0;
-            if (aIndex === -1) return 1;
-            if (bIndex === -1) return -1;
-            return aIndex - bIndex;
-          });
-        }
-
-        // 5. Show only top 6 sessions (recent or starred)
+        // Apply client-side filtering
         sessionsData = sessionsData
           .filter((s) => s.folder !== "archived")
           .slice(0, 6);
 
         setSessions(sessionsData);
+        console.log("Fetched sessions:", sessionsData);
       } catch (error) {
         console.error("Error fetching sessions:", error);
+
+        // Check for missing index error
+        if (error instanceof Error && error.message.includes("index")) {
+          console.error(
+            "Firestore index missing. Create composite indexes for:"
+          );
+          console.error("1. userId (ascending), updatedAt (descending)");
+          console.error("2. sharedWith (ascending), updatedAt (descending)");
+        }
       } finally {
         setLoadingSessions(false);
       }
     };
 
-    if (!loading && user) {
-      fetchSessions();
-    }
+    if (user) fetchSessions();
   }, [user, loading]);
 
   const toggleStar = async (sessionId: string) => {
@@ -269,6 +260,11 @@ export default function HomePage() {
     { id: "archived", label: "Archived", icon: <FiArchive className="mr-2" /> },
   ];
 
+  const handleCreateNewSession = () => {
+    const newId = uuidv4();
+    router.push(`/${newId}?new=true`);
+  };
+
   return (
     <div className="min-h-screen bg-white overflow-hidden">
       <header className="sticky top-0 z-10 bg-white px-6 py-3 flex items-center justify-between">
@@ -288,7 +284,7 @@ export default function HomePage() {
           >
             <Avatar className="h-9 w-9 border-blue-600 border-2">
               <AvatarFallback className="font-medium bg-blue-50">
-                {user?.displayName?.charAt(0) || "U"}
+                {user?.displayName?.charAt(0)}
               </AvatarFallback>
             </Avatar>
           </button>
@@ -302,7 +298,7 @@ export default function HomePage() {
 
         <div className="w-full max-w-3xl mx-auto my-16">
           <button
-            onClick={() => router.push("/session?new=true")}
+            onClick={handleCreateNewSession}
             className="group w-full flex items-center justify-center gap-3 rounded-xl border border-neutral-300 bg-gradient-to-br from-white via-[#f9fafb] to-[#f1f5f9] text-neutral-800 shadow-sm hover:shadow-md hover:border-blue-900 hover:bg-white transition-all duration-200 py-4 px-6 font-semibold text-lg"
           >
             <FiArrowRight
@@ -346,11 +342,15 @@ export default function HomePage() {
         <div className="mb-16">
           {loadingSessions ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, idx) => (
+              {[...Array(6)].map((_, i) => (
                 <div
-                  key={idx}
-                  className="animate-pulse bg-gray-100 h-40 rounded-xl"
-                />
+                  key={i}
+                  className="transition-all rounded-lg bg-background mb-4 flex flex-row items-center border-none justify-between p-2"
+                >
+                  <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mb-3" />
+                  <div className="animate-pulse h-3 bg-gray-200 rounded w-full mb-2" />
+                  <div className="animate-pulse h-3 bg-gray-200 rounded w-5/6" />
+                </div>
               ))}
             </div>
           ) : sessions.length > 0 ? (
@@ -392,7 +392,7 @@ export default function HomePage() {
                 Create your first notebook to start organizing your ideas and
                 projects.
               </p>
-              <Button className="mt-4" onClick={() => router.push("/new")}>
+              <Button className="mt-4" onClick={handleCreateNewSession}>
                 Create Notebook
               </Button>
             </div>

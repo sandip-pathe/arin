@@ -6,6 +6,7 @@ import {
   SummaryItem,
   Session,
   ChatMessages,
+  Paragraph,
 } from "@/types/page";
 
 interface SessionState {
@@ -25,6 +26,7 @@ interface SessionState {
   inputText: string;
   userInput: string;
   attachments: Attachment[];
+  paragraphs: Paragraph[];
   chunks: DocumentChunk[];
   summaries: SummaryItem[];
   isInputCollapsed: boolean;
@@ -55,6 +57,7 @@ interface SessionState {
   setInputText: (text: string) => void;
   setUserInput: (text: string) => void;
   setAttachments: (attachments: Attachment[]) => void;
+  setParagraphs: (paragraphs: Paragraph[]) => void;
   setChunks: (chunks: DocumentChunk[]) => void;
   setSummaries: (summaries: SummaryItem[]) => void;
   setIsInputCollapsed: (collapsed: boolean) => void;
@@ -93,6 +96,7 @@ const useSessionStore = create<SessionState>((set) => ({
   inputText: "",
   userInput: "",
   attachments: [],
+  paragraphs: [],
   chunks: [],
   summaries: [],
   isInputCollapsed: false,
@@ -120,6 +124,7 @@ const useSessionStore = create<SessionState>((set) => ({
   setInputText: (inputText) => set({ inputText }),
   setUserInput: (userInput) => set({ userInput }),
   setAttachments: (attachments) => set({ attachments }),
+  setParagraphs: (paragraphs) => set({ paragraphs }),
   setChunks: (chunks) => set({ chunks }),
   setSummaries: (summaries) => set({ summaries }),
   setIsInputCollapsed: (isInputCollapsed) => set({ isInputCollapsed }),
@@ -152,13 +157,13 @@ const useSessionStore = create<SessionState>((set) => ({
   removeAttachment: (id) =>
     set((state) => ({
       attachments: state.attachments.filter((a) => a.id !== id),
-      chunks: state.chunks.filter((c) => c.id !== id),
+      paragraphs: state.paragraphs.filter((p) => p.id !== id),
     })),
 
   resetSessionState: () =>
     set({
       attachments: [],
-      chunks: [],
+      paragraphs: [],
       summaries: [],
       inputText: "",
       isInputCollapsed: false,
