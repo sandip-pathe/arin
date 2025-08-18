@@ -13,6 +13,7 @@ export type Summary = {
 };
 
 export type SummaryItem = {
+  title?: string;
   summary: Summary[];
   legalOntology: Ontology;
 };
@@ -40,6 +41,9 @@ export type Attachment = {
 export type Paragraph = {
   id: string;
   text: string;
+  markdown?: string;
+  html?: any;
+  sectionTitle?: string;
 };
 
 export type DocumentChunk = {
@@ -59,7 +63,7 @@ export type Session = {
   sharedWith: string[];
   isStarred: boolean;
   folder?: string;
-  noOfAttachments: number;
+  noOfAttachments?: number;
   attachments?: Attachment[];
   summaries?: SummaryItem[];
   chunks?: DocumentChunk[];

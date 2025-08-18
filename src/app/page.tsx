@@ -62,6 +62,7 @@ export default function HomePage() {
     setShowShareModal,
     showSettingsModal,
     setShowSettingsModal,
+    resetSessionState,
   } = useSessionStore();
 
   useEffect(() => {
@@ -262,6 +263,7 @@ export default function HomePage() {
 
   const handleCreateNewSession = () => {
     const newId = uuidv4();
+    resetSessionState();
     router.push(`/${newId}?new=true`);
   };
 

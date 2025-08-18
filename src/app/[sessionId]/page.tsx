@@ -5,14 +5,19 @@ import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa6";
 import { ChatWindow } from "@/components/follow-up-chat";
-import { Attachment, DocumentChunk, Paragraph, Session } from "@/types/page";
+import {
+  Attachment,
+  Paragraph,
+  Session,
+  Summary,
+  SummaryItem,
+} from "@/types/page";
 import { extractText } from "@/lib/extraction";
-import { chunkDocument } from "@/lib/chunk";
+import { processTextToParagraphs } from "@/lib/chunk";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 import { WelcomeModal } from "@/components/InputModal";
 import { useSearchParams } from "next/navigation";
-import { msgs } from "@/lib/data";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
 import TopNavbar from "@/components/navbar";
 import { FiSliders } from "react-icons/fi";
@@ -20,6 +25,7 @@ import { Sidebar } from "@/components/sidebar";
 import { IoChatbox } from "react-icons/io5";
 import { db } from "@/lib/firebase";
 import {
+  collection,
   doc,
   getDoc,
   serverTimestamp,
@@ -27,14 +33,18 @@ import {
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import { handleProcessingError, loadParagraphs } from "@/lib/functions";
+import {
+  handleProcessingError,
+  loadParagraphs,
+  saveParagraphsToFirestore,
+} from "@/lib/functions";
 import { GoShieldLock } from "react-icons/go";
 import { ChatSettingsModal } from "@/components/settings/chatSettings";
 import { SummarySettingsModal } from "@/components/settings/summarySettings";
 import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
-import { Summarize } from "@/lib/ChatGPT+api";
-import { produce } from "immer";
+import { summarizeParagraphs } from "@/lib/ChatGPT+api";
+import { S } from "@genkit-ai/googleai";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -53,6 +63,7 @@ export default function SessionPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [title, setTitle] = useState("");
 
   // Zustand store hooks
   const {
@@ -75,8 +86,6 @@ export default function SessionPage() {
     addAttachment,
     updateAttachment,
     removeAttachment,
-    chunks,
-    setChunks,
     paragraphs,
     setParagraphs,
     summaries,
@@ -113,7 +122,7 @@ export default function SessionPage() {
   }, [activeSession, user]);
 
   useEffect(() => {
-    if (!user) {
+    if (user === null) {
       console.error("User not authenticated");
       router.push("/login");
       return;
@@ -125,7 +134,6 @@ export default function SessionPage() {
     const isNew = searchParams.get("new") === "true";
 
     if (!sessionId) {
-      // Should never happen due to routing, but handle just in case
       const newId = uuidv4();
       router.replace(`/${newId}?new=true`);
     } else if (isNew) {
@@ -148,7 +156,7 @@ export default function SessionPage() {
         createdBy: user!.email ?? "Unknown",
         owner: user!.email ?? "Unknown",
         sharedWith: [],
-        folder: "all",
+        folder: "private",
         isStarred: false,
         noOfAttachments: 0,
         title: "New Session",
@@ -176,6 +184,8 @@ export default function SessionPage() {
       if (sessionInitialized.current) return;
       sessionInitialized.current = true;
 
+      console.log("Loading session data for:", id);
+
       setLoadingStates({ ...loadingStates, session: true });
 
       try {
@@ -185,12 +195,15 @@ export default function SessionPage() {
         if (!sessionDoc.exists()) {
           toast({
             title: "Session not found",
-            description: "Creating new session",
+            description: "The requested session could not be found.",
           });
-          await createNewSession(id);
           return;
         }
 
+        console.log("Session data loaded:", sessionDoc.id);
+        console.log(
+          `SessionData: ${JSON.stringify(sessionDoc.data(), null, 2)}`
+        );
         const sessionData = sessionDoc.data() as Session;
 
         if (
@@ -213,6 +226,7 @@ export default function SessionPage() {
         router.replace(`/${id}`);
 
         if (sessionData.summaries) {
+          console.log("Summaries found:", sessionData.summaries);
           setSummaries(sessionData.summaries);
           setContext(sessionData.summaries.map((s) => s.summary).join("\n\n"));
         }
@@ -221,6 +235,7 @@ export default function SessionPage() {
 
         // Only load paragraphs if user is owner
         if (sessionData.userId === user?.uid) {
+          console.log("Loading paragraphs for:", id);
           const loadedParagraphs = await loadParagraphs(id);
           setParagraphs(loadedParagraphs);
         }
@@ -245,29 +260,29 @@ export default function SessionPage() {
   const handleSend = useCallback(async () => {
     if (isProcessingDocument || isLoading) return;
     setIsLoading(true);
-
+    setIsSummarizing(true);
     try {
-      const allChunks = await processAllInputs();
-
-      setIsSummarizing(true);
-      const results = await Summarize(
-        allChunks,
-        (chunkResult, index, total) => {
-          setSummaries(
-            produce(summaries, (draft) => {
-              draft[index] = chunkResult;
-            })
-          );
-        }
+      const inputTextParagraphs = await processAllInputs();
+      setInputText("");
+      setShowWelcomeModal(false);
+      const result = await summarizeParagraphs(
+        inputTextParagraphs,
+        (progress) => setExtractionProgress(progress)
       );
-
-      // Finalize
-      await finalizeProcessing(results, allChunks);
-    } catch (err) {
-      handleProcessingError("Send Document", err);
+      setSummaries(result);
+      setContext(result.map((s) => s.summary).join("\n\n"));
+      setTitle(result[0].title!);
+      setParagraphs(inputTextParagraphs);
+      await saveToFirestore(inputTextParagraphs, result);
+    } catch (err: any) {
+      handleProcessingError("Summarization failed", err);
+      toast({
+        variant: "destructive",
+        title: "Summarization Error",
+        description: `${err.message}`,
+      });
     } finally {
       setIsLoading(false);
-      setCurrentStep(0);
       setIsSummarizing(false);
     }
   }, [
@@ -275,71 +290,45 @@ export default function SessionPage() {
     isLoading,
     inputText,
     attachments,
-    chunks,
+    paragraphs,
     summaries,
   ]);
 
   const processAllInputs = useCallback(async () => {
-    const textChunks = inputText.trim()
-      ? await processDocument(
-          uuidv4(),
-          inputText.trim(),
-          "Input_Text",
-          nextDocumentIndex.current++
-        )
+    const textParagraphs = inputText.trim()
+      ? processTextToParagraphs(inputText.trim(), nextDocumentIndex.current++)
       : [];
 
-    const fileChunks = await Promise.all(
-      attachments.map((att) =>
-        processDocument(
-          att.id,
-          att.text || "",
-          att.name,
-          documentManager.current[att.id]
-        )
+    const fileParagraphs = await Promise.all(
+      attachments.map((a) =>
+        processTextToParagraphs(a.text || "", documentManager.current[a.id])
       )
     );
 
-    const allChunks = [...chunks, ...textChunks, ...fileChunks.flat()];
-    setChunks(allChunks);
-    return allChunks;
-  }, [inputText, attachments, chunks]);
+    return [...textParagraphs, ...fileParagraphs.flat()];
+  }, [inputText, attachments]);
 
-  const finalizeProcessing = useCallback(
-    async (results: any[], allChunks: DocumentChunk[]) => {
+  const saveToFirestore = useCallback(
+    async (allParagraphs: Paragraph[], result: SummaryItem[]) => {
       const sessionId = sessionIdRef.current;
-      if (!sessionId) return;
+      if (!sessionId || !activeSession) return;
 
       try {
         const sessionRef = doc(db, "sessions", sessionId);
+
         await updateDoc(sessionRef, {
-          summaries: results.map((r) => r.data),
+          summaries: result,
           updatedAt: serverTimestamp(),
-          userInput: inputText.trim(),
           noOfAttachments: attachments.length,
-          title: activeSession?.title || "New Session",
+          title: title,
         });
 
-        // Update UI state
-        setInputText("");
-        setAttachments([]);
-        setShowWelcomeModal(false);
+        setActiveSession({
+          ...activeSession,
+          title: title,
+        });
 
-        // Update active session
-        setActiveSession(
-          produce(activeSession, (draft) => {
-            if (draft) {
-              draft.summaries = results.map((r) => r.data);
-              draft.userInput = inputText.trim();
-              draft.noOfAttachments = attachments.length;
-            }
-          })
-        );
-
-        // Update URL to remove new flag
-        if (searchParams.get("new") === "true") {
-          router.replace(`/${sessionId}`);
-        }
+        await saveParagraphsToFirestore(sessionId, allParagraphs);
       } catch (error) {
         handleProcessingError("Finalize Processing", error);
         toast({
@@ -347,17 +336,11 @@ export default function SessionPage() {
           title: "Save Error",
           description: "Failed to save session data",
         });
+      } finally {
+        console.log("Session data saved successfully");
       }
     },
-    [
-      inputText,
-      attachments,
-      activeSession,
-      setActiveSession,
-      setInputText,
-      searchParams,
-      router,
-    ]
+    [inputText, attachments, activeSession, setActiveSession, setInputText]
   );
 
   const handleFileAdded = useCallback(
@@ -407,34 +390,6 @@ export default function SessionPage() {
     [removeAttachment]
   );
 
-  const processDocument = useCallback(
-    async (
-      documentId: string,
-      text: string,
-      documentName: string,
-      documentIndex: number
-    ): Promise<DocumentChunk[]> => {
-      try {
-        return chunkDocument(text, {
-          maxChunkSize: 8000,
-          documentIndex,
-        }).map((chunk) => ({
-          ...chunk,
-          documentId,
-          documentName,
-        }));
-      } catch (error) {
-        handleProcessingError("Process Document", error);
-        return [];
-      }
-    },
-    []
-  );
-
-  console.log(`paragraphs in SessionPage`, paragraphs);
-  console.log(`summaries in SessionPage`, summaries);
-  console.log(`activeSession in SessionPage`, activeSession);
-
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
@@ -456,11 +411,14 @@ export default function SessionPage() {
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
           <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
             <div className="z-10 border-b flex items-center justify-between py-2">
-              <div className="flex items-center justify-start">
-                <div className="p-2 font-medium">Summary</div>
+              <div className="flex items-center">
+                <div className="p-2 ml-10 font-medium">Summary</div>
                 {(activeSession?.noOfAttachments ?? 0) > 0 && (
-                  <span className="h-6 w-6 bg-blue-200 flex items-center justify-center rounded-full text-xs font-semibold mr-2">
-                    {activeSession?.noOfAttachments ?? 0}
+                  <span className="text-sm mx-4">
+                    {activeSession?.noOfAttachments ?? 0}{" "}
+                    {activeSession?.noOfAttachments === 1
+                      ? "attachment"
+                      : "attachments"}
                   </span>
                 )}
               </div>

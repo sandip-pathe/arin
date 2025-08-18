@@ -10,22 +10,10 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-const createParagraphId = (
-  docIndex: number,
-  chunkIndex: number,
-  paragraphIndex: number
-) => `d${docIndex}.c${chunkIndex}.p${paragraphIndex}`;
-
 export const saveParagraphsToFirestore = async (
   sessionId: string,
-  documentChunks: DocumentChunk[],
-  docIndex: number = 1 // Optional for future multi-document support
+  paragraphs: Paragraph[]
 ) => {
-  if (documentChunks.length === 0) {
-    console.warn("No chunks to save");
-    return;
-  }
-
   const paragraphCollection = collection(
     db,
     "sessions",
@@ -33,39 +21,20 @@ export const saveParagraphsToFirestore = async (
     "paragraphs"
   );
   const batch = writeBatch(db);
-  let totalParagraphs = 0;
 
-  documentChunks.forEach((chunk, chunkIndex) => {
-    chunk.paragraphs.forEach((para, paragraphIndex) => {
-      const paragraphId = createParagraphId(
-        docIndex,
-        chunkIndex,
-        paragraphIndex
-      );
-      const paragraphRef = doc(paragraphCollection, paragraphId);
+  paragraphs.forEach((para, index) => {
+    const paraId = `p${index + 1}`;
+    const paragraphRef = doc(paragraphCollection, paraId);
 
-      const estimatedTokens = Math.ceil(para.text.length / 4);
-
-      const data = {
-        id: paragraphId,
-        text: para.text,
-        sectionTitle: chunk.sectionTitle ?? null,
-        tokenEstimate: estimatedTokens,
-        createdAt: serverTimestamp(),
-      };
-
-      batch.set(paragraphRef, data);
-      totalParagraphs++;
+    batch.set(paragraphRef, {
+      id: paraId,
+      text: para.text,
+      sectionTitle: para.sectionTitle || `Section ${index + 1}`,
+      createdAt: serverTimestamp(),
     });
   });
 
-  try {
-    await batch.commit();
-    console.log(`Saved ${totalParagraphs} paragraphs to Firestore`);
-  } catch (error) {
-    console.error("Error saving paragraphs:", error);
-    throw new Error("Failed to save paragraphs to Firestore");
-  }
+  await batch.commit();
 };
 
 export const loadParagraphs = async (
@@ -77,8 +46,9 @@ export const loadParagraphs = async (
   return snapshot.docs.map((doc) => {
     const data = doc.data();
     return {
-      id: doc.id,
+      id: data.id,
       text: data.text,
+      sectionTitle: data.sectionTitle || "Main Document",
     } as Paragraph;
   });
 };

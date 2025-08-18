@@ -1,274 +1,136 @@
-import { useAuthStore } from "@/store/auth-store";
-import { DocumentChunk, Paragraph } from "@/types/page";
 import { OpenAI } from "openai";
-import pLimit from "p-limit";
-
-export interface ChunkData {
-  summary: {
-    text: string;
-    sourceParagraphs: string[];
-  }[];
-  legalOntology: {
-    definitions: string[];
-    obligations: string[];
-    rights: string[];
-    conditions: string[];
-    clauses: string[];
-    dates: string[];
-    parties: string[];
-  };
-}
-
-interface ProcessOptions {
-  jurisdiction?: string;
-  summaryLength?: string;
-  documentType?: string;
-  customInstructions?: string;
-}
+import { Paragraph, SummaryItem } from "@/types/page";
+import { useAuthStore } from "@/store/auth-store";
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
-const limit = pLimit(10);
-
-function createPrompt(
+export async function summarizeParagraphs(
   paragraphs: Paragraph[],
-  sectionTitle: string | undefined,
-  options: ProcessOptions = {}
-): string {
+  progressCallback?: (percent: number) => void
+): Promise<SummaryItem[]> {
   const settings = useAuthStore.getState().settings.summary;
+  const BATCH_SIZE = 100; // 100 para * 200 words * 1.33 tokens = 26k + returned max_tokens (4k) == 30K
+  const batchResults: SummaryItem[] = [];
 
+  for (let i = 0; i < paragraphs.length; i += BATCH_SIZE) {
+    const batch = paragraphs.slice(i, i + BATCH_SIZE);
+    const result = await processBatch(batch, settings);
+    batchResults.push(result);
+
+    if (progressCallback) {
+      progressCallback(
+        Math.min(100, Math.round((i / paragraphs.length) * 100))
+      );
+    }
+  }
+
+  return batchResults;
+}
+
+async function processBatch(
+  paragraphs: Paragraph[],
+  settings: any
+): Promise<SummaryItem> {
+  const prompt = createPrompt(paragraphs, settings);
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.2,
+    response_format: { type: "json_object" },
+    max_tokens: 4000,
+  });
+
+  return parseResponse(response.choices[0]?.message?.content || "");
+}
+
+function createPrompt(paragraphs: Paragraph[], settings: any): string {
   const paragraphText = paragraphs
     .map((p) => `(${p.id}) ${p.text}`)
     .join("\n\n");
 
-  let contextInstructions = "Analyze the following legal section";
-
   return `
-    You are a legal AI assistant with expertise in legal document analysis.
-    titled "${sectionTitle || "Legal Section"}".
-    Your task is to analyze the provided text and extract key legal information.
-    Context: ${contextInstructions}
-    document type: ${settings.style || "general legal document"}
-    Jurisdiction: ${settings.style || "general"}
+    You are a legal AI assistant analyzing legal documents. 
+    Generate a concise summary and extract key legal information from these paragraphs:
+    Remember the whole Api call has lots of paragraphs but you have to treat them as one single documents so that you DO NOT create summary about the individual paragraphs or DO NOT loose context
 
-    Your tasks:
+    do not include any personal opinions or interpretations.
 
-    1. Write a ${settings.length} summary of the important information:
-      - DO NOT skip any critical legal information, facts, or clauses.
-      - DO NOT include information from irrelevant or non-informative paragraphs.
-      - Use proper legal terminology and maintain objectivity.
-      - For every summary sentence, cite the paragraph ID(s) it is derived from.
+    Tasks:
+    0. create a title around 7 words, make it unique || specific
+    1. Write ${settings.length} summaries
+    2. Extract and categorize legal entities
 
-    2. Extract and categorize legal entities:
-      - Definitions: Key legal definitions
-      - Obligations: Duties or responsibilities
-      - Rights: Entitlements or privileges
-      - Conditions: Preconditions or requirements
-      - Parties: Involved entities or persons
-      - Clauses/Sections: Important contractual clauses
-      - Dates/Events: Critical timelines or events
 
-    3. ${
-      options.customInstructions ||
-      "Focus on identifying legally binding elements and potential obligations."
-    }
-
-    Respond in valid JSON with this structure:
+    Respond with valid JSON:
 
     {
-      "summary": [
+      "title": "title",
+      "summaries": [
         {
-          "text": "<summary sentence>",
-          "sourceParagraphs": ["c1.p1", "c1.p3"]
-        },
-        ...
+          "text": "Summary",
+          "sourceParagraphs": ["d1.p1"]
+        }
       ],
       "legalOntology": {
-        "definitions": [...],
-        "obligations": [...],
-        "rights": [...],
-        "conditions": [...],
-        "parties": [...],
-        "clauses": [...],
-        "dates": [...]
+        "definitions": [],
+        "obligations": [],
+        "rights": [],
+        "conditions": [],
+        "clauses": [],
+        "dates": [],
+        "parties": []
       }
     }
 
-    Now analyze the text below:
-
+    Paragraphs:
     ${paragraphText}
   `;
 }
 
-export async function Summarize(
-  chunks: DocumentChunk[],
-  progressCallback?: (result: any, index: number, total: number) => void,
-  options: ProcessOptions = {}
-) {
-  const results: any[] = [];
-  const BATCH_SIZE = 4;
-  const modelQueue = [...chunks];
-
-  // Process chunks in batches with progress reporting
-  for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
-    const batch = modelQueue.slice(i, i + BATCH_SIZE);
-    const batchPromises = batch.map((chunk, idx) =>
-      processChunkWithFallback(chunk, options, i + idx)
-    );
-
-    const batchResults = await Promise.all(batchPromises);
-
-    batchResults.forEach((result, idx) => {
-      if (result) {
-        results.push(result);
-        if (progressCallback) {
-          progressCallback(result, i + idx, chunks.length);
-        }
-      }
-    });
-  }
-
-  return results;
-}
-
-async function processChunkWithFallback(
-  chunk: DocumentChunk,
-  options: ProcessOptions,
-  index: number
-) {
+function parseResponse(content: string): SummaryItem {
   try {
-    return await callModel(
-      chunk.paragraphs,
-      chunk.sectionTitle,
-      "gpt-4o-mini",
-      options
-    );
+    const parsed = JSON.parse(content);
+
+    return {
+      title: parsed.title || "",
+      summary: parsed.summaries || parsed.summary || [],
+      legalOntology: parsed.legalOntology || {
+        definitions: [],
+        obligations: [],
+        rights: [],
+        conditions: [],
+        clauses: [],
+        dates: [],
+        parties: [],
+      },
+    };
   } catch (error) {
-    console.warn(`Primary model failed, using fallback for chunk ${index}`);
-    return callModel(
-      chunk.paragraphs,
-      chunk.sectionTitle,
-      "gpt-4o-mini-2024-07-18",
-      options
-    );
-  }
-}
-
-async function callModel(
-  paragraphs: Paragraph[],
-  sectionTitle: string | undefined,
-  model: string,
-  options: ProcessOptions
-): Promise<ChunkData> {
-  const prompt = createPrompt(paragraphs, sectionTitle, options);
-
-  // Stream response for larger chunks
-  if (paragraphs.length > 10) {
-    return streamModelResponse(prompt, model);
-  }
-
-  // Standard request for smaller chunks
-  const response = await openai.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.2,
-    response_format: { type: "json_object" },
-    max_tokens: 5000,
-  });
-
-  return parseModelResponse(
-    response?.choices[0]?.message?.content ?? undefined
-  );
-}
-
-async function streamModelResponse(
-  prompt: string,
-  model: string
-): Promise<ChunkData> {
-  const stream = await openai.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.2,
-    stream: true,
-    response_format: { type: "json_object" },
-  });
-
-  let content = "";
-  for await (const chunk of stream) {
-    content += chunk.choices[0]?.delta?.content || "";
-  }
-
-  return parseModelResponse(content);
-}
-
-function parseModelResponse(content?: string): ChunkData {
-  if (!content) throw new Error("No response from model");
-
-  try {
-    return JSON.parse(content);
-  } catch {
+    // Fallback parsing
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    throw new Error("Invalid JSON response");
-  }
-}
-
-export function consolidateResults(
-  results: {
-    chunkId: string;
-    modelUsed: string;
-    data: ChunkData;
-  }[]
-) {
-  const consolidated: {
-    summary: { text: string; sources: string[] }[];
-    ontology: ChunkData["legalOntology"];
-  } = {
-    summary: [],
-    ontology: {
-      definitions: [],
-      obligations: [],
-      rights: [],
-      conditions: [],
-      clauses: [],
-      dates: [],
-      parties: [],
-    },
-  };
-
-  for (const result of results) {
-    // Consolidate summaries
-    for (const summaryItem of result.data.summary) {
-      consolidated.summary.push({
-        text: summaryItem.text,
-        sources: summaryItem.sourceParagraphs,
-      });
-    }
-
-    // Consolidate ontology
-    for (const category in result.data.legalOntology) {
-      const key = category as keyof typeof consolidated.ontology;
-      const items = result.data.legalOntology[key];
-      if (items && items.length > 0) {
-        consolidated.ontology[key] = [
-          ...consolidated.ontology[key],
-          ...items,
-        ] as any;
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return {
+          title: parsed.title || "",
+          summary: parsed.summaries || parsed.summary || [],
+          legalOntology: parsed.legalOntology || {
+            definitions: [],
+            obligations: [],
+            rights: [],
+            conditions: [],
+            clauses: [],
+            dates: [],
+            parties: [],
+          },
+        };
+      } catch {
+        throw new Error("Invalid JSON response");
       }
     }
+    throw new Error("Invalid JSON response: " + content.substring(0, 100));
   }
-
-  // Remove duplicates
-  consolidated.ontology.definitions = [
-    ...new Set(consolidated.ontology.definitions),
-  ];
-  consolidated.ontology.obligations = [
-    ...new Set(consolidated.ontology.obligations),
-  ];
-  // Repeat for other categories...
-
-  return consolidated;
 }

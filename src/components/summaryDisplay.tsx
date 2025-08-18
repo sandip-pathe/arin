@@ -33,9 +33,22 @@ export default function SummaryDisplay({
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const { generatePDF, isGeneratingPDF } = usePDFGenerator();
 
-  console.log(`paragraphs in <SummaryDisplay />`, paragraphs);
-  console.log(`summaries in <SummaryDisplay />`, summaries);
-  const mergedOntology = useMemo(() => mergeOntology(summaries), [summaries]);
+  const mergedOntology = useMemo(() => {
+    if (!Array.isArray(summaries)) {
+      console.error("summaries is not an array", summaries);
+      return {
+        definitions: [],
+        obligations: [],
+        rights: [],
+        conditions: [],
+        clauses: [],
+        dates: [],
+        parties: [],
+      };
+    }
+
+    return mergeOntology(summaries);
+  }, [summaries]);
 
   const handleDownload = async (options: DownloadOptions) => {
     setIsDownloadModalOpen(false);
@@ -48,6 +61,8 @@ export default function SummaryDisplay({
   };
 
   if (loading) return <SummaryLoading />;
+
+  console.log(paragraphs);
 
   return (
     <div className="space-y-6 h-full flex flex-col">
