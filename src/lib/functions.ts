@@ -23,11 +23,10 @@ export const saveParagraphsToFirestore = async (
   const batch = writeBatch(db);
 
   paragraphs.forEach((para, index) => {
-    const paraId = `p${index + 1}`;
-    const paragraphRef = doc(paragraphCollection, paraId);
+    const paragraphRef = doc(paragraphCollection, para.id);
 
     batch.set(paragraphRef, {
-      id: paraId,
+      id: para.id,
       text: para.text,
       sectionTitle: para.sectionTitle || `Section ${index + 1}`,
       createdAt: serverTimestamp(),

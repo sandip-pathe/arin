@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatMessages } from "@/types/page";
-import { v4 as uuidv4 } from "uuid";
+import { v7 } from "uuid";
 import { saveChatMessage } from "@/lib/functions";
 import { useToast } from "@/hooks/use-toast";
 import { ChatWithOpenAI } from "@/lib/utils";
@@ -57,7 +57,7 @@ export const ChatWindow = ({
     if (inputMessageText.trim() === "" || isProcessingChat) return;
 
     const userMessage: ChatMessages = {
-      id: uuidv4(),
+      id: v7(),
       role: "user",
       content: inputMessageText,
       timestamp: new Date(),
@@ -74,7 +74,7 @@ export const ChatWindow = ({
       console.log(`[${context}] Sending message to OpenAI:`, inputMessageText);
       const data = await ChatWithOpenAI(context, inputMessageText);
       const aiMessage: ChatMessages = {
-        id: uuidv4(),
+        id: v7(),
         role: "assistant",
         content: data,
         timestamp: new Date(),

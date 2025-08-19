@@ -55,7 +55,7 @@ function createPrompt(paragraphs: Paragraph[], settings: any): string {
   return `
     You are a legal AI assistant analyzing legal documents. 
     Generate a concise summary and extract key legal information from these paragraphs:
-    Remember the whole Api call has lots of paragraphs but you have to treat them as one single documents so that you DO NOT create summary about the individual paragraphs or DO NOT loose context
+    Remember the whole API call has lots of paragraphs but you have to treat them as one single document so that you DO NOT create summary about the individual paragraphs or DO NOT lose context
 
     do not include any personal opinions or interpretations.
 
@@ -81,8 +81,8 @@ function createPrompt(paragraphs: Paragraph[], settings: any): string {
         "rights": [],
         "conditions": [],
         "clauses": [],
-        "dates": [],
-        "parties": []
+        "dates": [], // also mention what date is for like "contract start date: dd-mm-yyyy"
+        "parties": [] 
       }
     }
 

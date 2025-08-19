@@ -181,3 +181,19 @@ textarea::-webkit-scrollbar-track {
 .citation-badge:hover {
   background-color: #bfdbfe;
 }
+
+@keyframes rainbow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(720deg); /* 2 full rotations */
+  }
+}
+
+/* Animate only 2 cycles, then freeze */
+.animate-rainbow {
+  animation: rainbow 4s linear 1; /* 4s total duration */
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards; /* freeze at end */
+}

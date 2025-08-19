@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Gavel, Scale, User, Shield, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { v4 as uuidv4 } from "uuid";
+import { v7 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 
 type TrialRole =
@@ -130,7 +130,7 @@ export const MockTrialChat = ({
     // Initialize with court opening if no messages
     if (chatMessages.length === 0) {
       const openingMessage: ChatMessage = {
-        id: uuidv4(),
+        id: v7(),
         role: "assistant",
         sender: getParticipant("bailiff"),
         content:
@@ -158,7 +158,7 @@ export const MockTrialChat = ({
     if (inputMessageText.trim() === "" || isProcessingChat) return;
 
     const userMessage: ChatMessage = {
-      id: uuidv4(),
+      id: v7(),
       role: "user",
       sender: getParticipant("defense"),
       content: inputMessageText,
@@ -204,21 +204,21 @@ export const MockTrialChat = ({
 
     const responses: ChatMessage[] = [
       {
-        id: uuidv4(),
+        id: v7(),
         role: "assistant" as "assistant",
         sender: prosecutor,
         content: `Objection, Your Honor! ${input} is leading the witness.`,
         timestamp: new Date(),
       },
       {
-        id: uuidv4(),
+        id: v7(),
         role: "assistant" as "assistant",
         sender: judge,
         content: "Objection sustained. Counsel, rephrase your question.",
         timestamp: new Date(),
       },
       {
-        id: uuidv4(),
+        id: v7(),
         role: "assistant" as "assistant",
         sender: witness,
         content: "Based on my expert analysis, the evidence suggests...",

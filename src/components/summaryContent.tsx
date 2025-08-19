@@ -2,25 +2,15 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { SummaryItem, Paragraph } from "@/types/page";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { formatContent } from "@/lib/content-formatting";
-import { MdVerified, MdGavel, MdEvent, MdPeople } from "react-icons/md";
+import { MdVerified, MdEvent, MdPeople } from "react-icons/md";
 import { TbFileDescription, TbArrowForwardUp } from "react-icons/tb";
 import { FaBalanceScale, FaBook } from "react-icons/fa";
 
 type SummaryContentProps = {
   summaries: SummaryItem[];
   paragraphs: Paragraph[];
-};
-
-const ONTOLOGY_ICONS: Record<string, JSX.Element> = {
-  definitions: <TbFileDescription size={14} className="text-gray-600" />,
-  obligations: <FaBalanceScale size={14} className="text-red-600" />,
-  rights: <MdVerified size={14} className="text-green-600" />,
-  conditions: <TbArrowForwardUp size={14} className="text-blue-600" />,
-  clauses: <FaBook size={14} className="text-purple-600" />,
-  dates: <MdEvent size={14} className="text-orange-600" />,
-  parties: <MdPeople size={14} className="text-pink-600" />,
 };
 
 export default function SummaryContent({
@@ -30,7 +20,6 @@ export default function SummaryContent({
   const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  // Build reference and paragraph maps in one pass
   const { refMap, paraMap } = React.useMemo(() => {
     const refMap = new Map<string, number>();
     const paraMap = new Map<string, Paragraph>();
@@ -74,24 +63,13 @@ export default function SummaryContent({
                           const refNum = refMap.get(id);
                           if (!refNum) return null;
 
-                          // Find which ontology bucket this ID belongs to
-                          let icon: JSX.Element = <MdVerified size={14} />;
-                          for (const [key, values] of Object.entries(
-                            summaryItem.legalOntology
-                          )) {
-                            if (values.includes(id)) {
-                              icon = ONTOLOGY_ICONS[key] ?? icon;
-                              break;
-                            }
-                          }
-
                           return (
                             <span
                               key={id}
-                              className="cursor-pointer ml-1 inline-flex items-center"
+                              className="w-5 h-5 justify-center rounded-full text-xs font-semibold cursor-pointer hover:scale-150 ml-1 inline-flex items-center bg-blue-200 p-0"
                               onClick={() => handleCitationClick(id)}
                             >
-                              {icon}
+                              {refNum}
                             </span>
                           );
                         })}
@@ -107,19 +85,49 @@ export default function SummaryContent({
         </CardContent>
       </Card>
 
-      {/* Source Display Sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetTitle className="sr-only">Source Reference</SheetTitle>
         <SheetContent side="right" className="overflow-y-auto p-6 sm:max-w-xl">
-          {currentSourceId && paraMap.has(currentSourceId) && (
-            <div className="prose">
-              <h2 className="text-xl font-bold mb-2">
-                Reference {refMap.get(currentSourceId)}
-              </h2>
-              <div className="whitespace-pre-wrap text-sm p-4 bg-gray-50 rounded-lg">
-                {formatContent(paraMap.get(currentSourceId)!.text)}
+          <div className="prose">
+            <button
+              onClick={() => setSheetOpen(false)}
+              className="fixed top-4 right-6 z-100 bg-gray-200 hover:bg-gray-300 rounded-full p-2 text-gray-700 shadow"
+              aria-label="Close"
+            >
+              &#10005;
+            </button>
+            <h2 className="text-lg font-semibold px-4 text-gray-700">
+              {summaries[0]?.title || "Sources"}
+            </h2>
+            {paragraphs.map((para) => (
+              <div
+                key={para.id}
+                ref={
+                  para.id === currentSourceId
+                    ? (el) => {
+                        if (el) {
+                          el.scrollIntoView({
+                            behavior: "instant",
+                            block: "center",
+                          });
+                        }
+                      }
+                    : undefined
+                }
+                className="rounded-none p-4"
+              >
+                <div
+                  className={` ${
+                    para.id === currentSourceId
+                      ? "bg-blue-100"
+                      : "bg-background"
+                  }`}
+                >
+                  {formatContent(para.text)}
+                </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
         </SheetContent>
       </Sheet>
     </>

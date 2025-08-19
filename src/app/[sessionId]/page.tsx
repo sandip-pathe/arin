@@ -15,7 +15,7 @@ import {
 import { extractText } from "@/lib/extraction";
 import { processTextToParagraphs } from "@/lib/chunk";
 import { useToast } from "@/hooks/use-toast";
-import { v4 as uuidv4 } from "uuid";
+import { v7 } from "uuid";
 import { WelcomeModal } from "@/components/InputModal";
 import { useSearchParams } from "next/navigation";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
@@ -63,7 +63,6 @@ export default function SessionPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const [title, setTitle] = useState("");
 
   // Zustand store hooks
   const {
@@ -134,7 +133,7 @@ export default function SessionPage() {
     const isNew = searchParams.get("new") === "true";
 
     if (!sessionId) {
-      const newId = uuidv4();
+      const newId = v7();
       router.replace(`/${newId}?new=true`);
     } else if (isNew) {
       createNewSession(sessionId);
@@ -271,7 +270,6 @@ export default function SessionPage() {
       );
       setSummaries(result);
       setContext(result.map((s) => s.summary).join("\n\n"));
-      setTitle(result[0].title!);
       setParagraphs(inputTextParagraphs);
       await saveToFirestore(inputTextParagraphs, result);
     } catch (err: any) {
@@ -316,16 +314,16 @@ export default function SessionPage() {
       try {
         const sessionRef = doc(db, "sessions", sessionId);
 
+        setActiveSession({
+          ...activeSession,
+          title: result[0].title! || "not found",
+        });
+
         await updateDoc(sessionRef, {
           summaries: result,
           updatedAt: serverTimestamp(),
           noOfAttachments: attachments.length,
-          title: title,
-        });
-
-        setActiveSession({
-          ...activeSession,
-          title: title,
+          title: result[0].title! || "not found",
         });
 
         await saveParagraphsToFirestore(sessionId, allParagraphs);
@@ -348,7 +346,7 @@ export default function SessionPage() {
       setIsProcessingDocument(true);
       setProgressMessage(`Processing ${file.name}...`);
 
-      const id = uuidv4();
+      const id = v7();
       const newAttachment: Attachment = {
         id,
         file,
@@ -395,7 +393,7 @@ export default function SessionPage() {
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
         <h2 className="m-1.5 ml-8 font-semibold text-xl text-gray-700">
-          {activeSession?.title || "New Session"}
+          {activeSession?.title || "unknown"}
         </h2>
         {isSharedWithUser && (
           <div className="flex items-center ml-2 px-2 py-1 rounded-lg bg-white">

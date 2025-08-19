@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,8 +10,8 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  getDoc,
   limit,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { MinimalSession } from "@/types/page";
@@ -43,7 +42,7 @@ import { AccountSettingsModal } from "@/components/settings/accountSettings";
 import useSessionStore from "@/store/session-store";
 import { UnifiedSettingsModal } from "@/components/settings/settings";
 import { useAuthStore } from "@/store/auth-store";
-import { v4 as uuidv4 } from "uuid";
+import { v7 } from "uuid";
 
 export default function HomePage() {
   const { user, loading } = useAuthStore();
@@ -81,7 +80,8 @@ export default function HomePage() {
         const userSessionsQuery = query(
           collection(db, "sessions"),
           where("userId", "==", user.uid),
-          limit(10)
+          orderBy("updatedAt", "desc"),
+          limit(6)
         );
 
         let sharedSessionsQuery = null;
@@ -89,7 +89,7 @@ export default function HomePage() {
           sharedSessionsQuery = query(
             collection(db, "sessions"),
             where("sharedWith", "array-contains", user.email),
-            limit(10)
+            limit(6)
           );
         }
 
@@ -110,11 +110,10 @@ export default function HomePage() {
             createdAt: data.createdAt?.toMillis() || Date.now(),
             userId: data.userId || user.uid,
             isStarred: data.isStarred || false,
-            noOfAttachments:
-              data.attachments?.length || data.noOfAttachments || 0,
-            folder: data.folder || "personal",
+            noOfAttachments: data.noOfAttachments || 0,
+            folder: data.folder || "all",
             sharedWith: data.sharedWith || [],
-            owner: data.owner || data.userId || user.uid,
+            owner: data.owner,
           };
           allSessionsMap.set(session.id, session);
         };
@@ -127,6 +126,7 @@ export default function HomePage() {
         // Apply client-side filtering
         sessionsData = sessionsData
           .filter((s) => s.folder !== "archived")
+          .sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0))
           .slice(0, 6);
 
         setSessions(sessionsData);
@@ -251,7 +251,6 @@ export default function HomePage() {
 
   const folderOptions = [
     { id: "all", label: "All", icon: <FiFolder className="mr-2" /> },
-    { id: "starred", label: "Starred", icon: <FiStar className="mr-2" /> },
     { id: "personal", label: "Personal", icon: <FiFolder className="mr-2" /> },
     {
       id: "shared",
@@ -262,18 +261,19 @@ export default function HomePage() {
   ];
 
   const handleCreateNewSession = () => {
-    const newId = uuidv4();
+    const newId = v7();
     resetSessionState();
     router.push(`/${newId}?new=true`);
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      <header className="sticky top-0 z-10 bg-white px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-white via-[#fafafa] to-[#f1f5f9] overflow-hidden">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md px-6 py-3 flex items-center justify-between">
         <div className="flex items-center">
           <Logo />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowSettingsModal(true)}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -284,8 +284,8 @@ export default function HomePage() {
             onClick={() => setShowAccountModal(true)}
             className="relative group"
           >
-            <Avatar className="h-9 w-9 border-blue-600 border-2">
-              <AvatarFallback className="font-medium bg-blue-50">
+            <Avatar className="h-9 w-9 border-blue-600 border-2 shadow-sm">
+              <AvatarFallback className="font-medium bg-blue-50 text-blue-700">
                 {user?.displayName?.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -293,33 +293,37 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="px-4 py-8 max-w-6xl mx-auto">
-        <div className="mx-auto flex w-full">
+      {/* Main */}
+      <main className="px-4 py-10 max-w-6xl mx-auto">
+        {/* Welcome banner */}
+        <div className="mx-auto flex w-full justify-center">
           <ChatWelcome />
         </div>
 
+        {/* Create new session */}
         <div className="w-full max-w-3xl mx-auto my-16">
           <button
             onClick={handleCreateNewSession}
-            className="group w-full flex items-center justify-center gap-3 rounded-xl border border-neutral-300 bg-gradient-to-br from-white via-[#f9fafb] to-[#f1f5f9] text-neutral-800 shadow-sm hover:shadow-md hover:border-blue-900 hover:bg-white transition-all duration-200 py-4 px-6 font-semibold text-lg"
+            className="group w-full flex items-center justify-center gap-3 rounded-2xl border border-neutral-200 bg-gradient-to-br from-white via-[#cee2f5] to-[#acd5fe] text-neutral-800 shadow-sm hover:shadow-md hover:border-blue-600 transition-all duration-200 py-5 px-6 font-semibold text-lg"
           >
             <FiArrowRight
               size={22}
-              className="group-hover:scale-110 transition-transform duration-200"
+              className="group-hover:translate-x-1 transition-transform duration-200"
             />
-            <span className="">Start Your Session</span>
+            <span>Start Your Session</span>
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between gap-4 my-6">
-          <div className="flex flex-wrap gap-1 md:gap-2">
+        {/* Filters & Sort */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+          <div className="flex flex-wrap gap-2">
             {folderOptions.map((folder) => (
               <button
                 key={folder.id}
-                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeFolder === folder.id
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-500 hover:bg-gray-100"
+                    ? "bg-blue-100 text-blue-700 border border-blue-300"
+                    : "text-gray-600 hover:bg-gray-100"
                 }`}
                 onClick={() => setActiveFolder(folder.id)}
               >
@@ -331,7 +335,7 @@ export default function HomePage() {
 
           <div className="flex items-center">
             <Select onValueChange={setSortOption} value={sortOption}>
-              <SelectTrigger className="text-sm h-10 w-40">
+              <SelectTrigger className="text-sm h-10 w-44 rounded-xl border border-neutral-300 shadow-sm focus:ring-2 focus:ring-blue-600">
                 <SelectValue placeholder="Sort" />
               </SelectTrigger>
               <SelectContent>
@@ -341,22 +345,24 @@ export default function HomePage() {
             </Select>
           </div>
         </div>
-        <div className="mb-16">
+
+        {/* Sessions grid */}
+        <div className="mb-20">
           {loadingSessions ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="transition-all rounded-lg bg-background mb-4 flex flex-row items-center border-none justify-between p-2"
+                  className="rounded-2xl bg-white p-4 shadow-sm border border-neutral-200"
                 >
-                  <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mb-3" />
-                  <div className="animate-pulse h-3 bg-gray-200 rounded w-full mb-2" />
-                  <div className="animate-pulse h-3 bg-gray-200 rounded w-5/6" />
+                  <div className="animate-pulse h-5 bg-gray-200 rounded w-3/4 mb-3" />
+                  <div className="animate-pulse h-4 bg-gray-200 rounded w-full mb-2" />
+                  <div className="animate-pulse h-4 bg-gray-200 rounded w-5/6" />
                 </div>
               ))}
             </div>
           ) : sessions.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {sortedSessions.map((session) => (
                 <NotebookCard
                   key={session.id}
@@ -367,11 +373,10 @@ export default function HomePage() {
                       ? session.updatedAt
                       : session.updatedAt.getTime()
                   }
-                  isStarred={session.isStarred}
+                  isShared={session.sharedWith?.length > 0}
                   folder={session.folder}
                   sharedCount={session.sharedWith?.length || 0}
                   onClick={() => router.push(`/${session.id}`)}
-                  onToggleStar={() => toggleStar(session.id)}
                   onMoveToFolder={(folder) => moveToFolder(session.id, folder)}
                   onArchive={() => moveToFolder(session.id, "archived")}
                   onDelete={() => deleteSession(session.id)}
@@ -383,18 +388,21 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FiFolder className="text-gray-400" size={24} />
+            <div className="text-center py-20">
+              <div className="bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5">
+                <FiFolder className="text-blue-500" size={28} />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-neutral-900 mb-2">
                 No notebooks yet
               </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
+              <p className="text-gray-500 max-w-md mx-auto mb-4">
                 Create your first notebook to start organizing your ideas and
                 projects.
               </p>
-              <Button className="mt-4" onClick={handleCreateNewSession}>
+              <Button
+                className="rounded-xl shadow-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3"
+                onClick={handleCreateNewSession}
+              >
                 Create Notebook
               </Button>
             </div>
@@ -402,9 +410,12 @@ export default function HomePage() {
         </div>
       </main>
 
+      {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 p-4">
         <Footer />
       </div>
+
+      {/* Modals */}
       <ShareModal
         isOpen={showShareModal}
         onOpenChange={setShowShareModal}

@@ -592,3 +592,61 @@
     text: "in 199 SC  ●   Avitel Post Studioz Ltd. & Ors v. HSBC PI Holdings (Mauritius) Ltd.,   (2020)  ibclaw. in 162 SC  Deccan Paper Mills Co. Ltd. v. Regency Mahavir Properties & Ors.,   (2020) ibclaw. in  163 SC  In   A. Ayyasamy v. A. Paramasivam & Ors.,   (2017) ibclaw. in 217 SC , the Hon’ble  Court has considered the matter in detail and laid down certain principles. As the relevant portions of the decision in   Ayyasamy   (supra) have been extracted in the subsequent decisions in   Ameet Lalchand Shah and Ors. v. Rishabh Enterprises and  Anr.,   (2018) ibclaw. in 195 SC , Rashid Raza v. Sadaf Akhtar,   (2019) ibclaw. in 199 SC  and Avitel Post Studioz Ltd. & Ors v. HSBC PI Holdings (Mauritius) Ltd.,   (2020)  ibclaw. in 162 SC , the Hon’ble Supreme Court is of the opinion that its judgment need  not be burdened by extracting excerpts from the judgment all over again. Instead, it seeks to restate the principles as follows:-",
   },
 ];
+
+//this is before the firestore, get the new data on loaded session from http://localhost:9002/33f39091-1830-428a-a09b-735445360d5f and then get the firestore data and compare.
+
+[
+  {
+    title: "Supreme Court Ruling on Arbitrability and Fraud",
+    legalOntology: {
+      definitions: [],
+      obligations: [],
+      rights: [],
+      conditions: [],
+      clauses: [],
+      dates: [
+        {
+          context: "Date of decision",
+          date: "05-Aug-25",
+        },
+      ],
+      parties: [
+        {
+          name: "Bihar State Food and Civil Supply Corporation Ltd.",
+          role: "Appellant",
+        },
+        {
+          name: "Sanjay Kumar",
+          role: "Respondent",
+        },
+        {
+          role: "Judge",
+          name: "Mr. Justice P.S. Narasimha",
+        },
+        {
+          role: "Judge",
+          name: "Mr. Justice Manoj Misra",
+        },
+      ],
+    },
+    summary: [
+      {
+        text: "The Supreme Court of India addressed the principles governing the arbitrability of disputes involving serious fraud allegations, particularly in the context of ongoing or potential criminal proceedings. The court referenced several prior decisions to clarify the legal stance on initiating arbitration under such circumstances.",
+        sourceParagraphs: ["d1.p1", "d1.p2"],
+      },
+    ],
+  },
+];
+
+[
+  {
+    id: "p1",
+    text: "(2025) ibclaw. in 297 SC  IN THE SUPREME COURT OF INDIA  The Managing Director Bihar State Food and Civil Supply Corporation Ltd. and Anr. v.  Sanjay Kumar  Civil Appeal No. 10116 of 2025 (SLP (C) No. 10455 of 2020) and Ors. Decided on 05-Aug-25  Mr. Justice P.S. Narasimha and Mr. Justice Manoj Misra  Brief about the decision:  A. Principles governing arbitrability in cases involving allegations of serious fraud  The position of law as it applies to initiation of arbitral proceedings in the teeth of allegations of criminality involved in the dispute, where criminal proceedings are either pending or to be initiated is considered in several decisions:  ●   Abdul Kadir Shamsuddin Bubere v. Madhav Prabhakar Oak,   (2017) ibclaw. in  559 SC  ●   N. Radhakrishnan v. Maestro Engineers & Ors.,   (2017) ibclaw. in 566 SC  ●   Swiss Timing Ltd. v. Organising Committee Commonwealth Games 2010  Delhi,   (2017) ibclaw. in 570 SC  ●   A. Ayyasamy v. A. Paramasivam & Ors.,   (2017) ibclaw. in 217 SC  ●   Meguin Gmbh v. Nandan Petrochem Ltd.   (2017) ibclaw. in 1201 SC  ●   Ameet Lalchand Shah and Ors. v. Rishabh Enterprises and Anr.,   (2018)  ibclaw. in 195 SC  ●   Rashid Raza v. Sadaf Akhtar,   (2019) ibclaw.",
+    sectionTitle: "Section 1",
+  },
+  {
+    id: "p2",
+    text: "in 199 SC  ●   Avitel Post Studioz Ltd. & Ors v. HSBC PI Holdings (Mauritius) Ltd.,   (2020)  ibclaw. in 162 SC  Deccan Paper Mills Co. Ltd. v. Regency Mahavir Properties & Ors.,   (2020) ibclaw. in  163 SC  In   A. Ayyasamy v. A. Paramasivam & Ors.,   (2017) ibclaw. in 217 SC , the Hon’ble  Court has considered the matter in detail and laid down certain principles. As the relevant portions of the decision in   Ayyasamy   (supra) have been extracted in the subsequent decisions in   Ameet Lalchand Shah and Ors. v. Rishabh Enterprises and  Anr.,   (2018) ibclaw. in 195 SC , Rashid Raza v. Sadaf Akhtar,   (2019) ibclaw. in 199 SC  and Avitel Post Studioz Ltd. & Ors v. HSBC PI Holdings (Mauritius) Ltd.,   (2020)  ibclaw. in 162 SC , the Hon’ble Supreme Court is of the opinion that its judgment need  not be burdened by extracting excerpts from the judgment all over again. Instead, it seeks to restate the principles as follows:-",
+    sectionTitle: "Section 2",
+  },
+];
