@@ -1,6 +1,7 @@
 import mammoth from "mammoth";
 import * as XLSX from "xlsx";
 import { createWorker, createScheduler } from "tesseract.js";
+import { endTimer, logPerf, startTimer } from "@/lib/hi"; // Adjust path as needed
 
 type ProgressHandler = (progress: number, message?: string) => void;
 
@@ -14,49 +15,64 @@ export async function extractText(
   file: File,
   progressHandler?: ProgressHandler
 ): Promise<string> {
+  const extractTimer = startTimer(`ExtractText-${file.name}`);
+  logPerf("Starting text extraction", {
+    fileName: file.name,
+    fileType: file.type,
+    fileSize: file.size,
+  });
+
   try {
     const extension = file.name.split(".").pop()?.toLowerCase() || "";
     const mimeType = file.type;
 
-    if (extension === "pdf" || mimeType === "application/pdf") {
-      return await extractFromPDF(file, progressHandler);
-    }
+    let result: string;
 
-    if (
+    if (extension === "pdf" || mimeType === "application/pdf") {
+      result = await extractFromPDF(file, progressHandler);
+    } else if (
       extension === "docx" ||
       mimeType ===
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
-      return await extractFromDocx(file, progressHandler);
-    }
-
-    if (
+      result = await extractFromDocx(file, progressHandler);
+    } else if (
       extension === "xlsx" ||
       mimeType ===
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) {
-      return await extractFromXlsx(file, progressHandler);
-    }
-
-    if (
+      result = await extractFromXlsx(file, progressHandler);
+    } else if (
       ["jpg", "jpeg", "png"].includes(extension) ||
       mimeType.startsWith("image/")
     ) {
-      return await extractFromImage(file, progressHandler);
-    }
-
-    if (["txt", "md"].includes(extension) || mimeType === "text/plain") {
+      result = await extractFromImage(file, progressHandler);
+    } else if (["txt", "md"].includes(extension) || mimeType === "text/plain") {
       progressHandler?.(100);
-      return await file.text();
+      result = await file.text();
+    } else {
+      throw new Error("Unsupported file type");
     }
 
-    throw new Error("Unsupported file type");
-  } catch (error) {
+    logPerf("Text extraction completed", {
+      fileName: file.name,
+      textLength: result.length,
+    });
+
+    return result;
+  } catch (error: any) {
+    logPerf("Text extraction failed", {
+      fileName: file.name,
+      error: error.message,
+    });
+
     throw new Error(
       `Failed to extract text: ${
         error instanceof Error ? error.message : String(error)
       }`
     );
+  } finally {
+    endTimer(extractTimer);
   }
 }
 
@@ -64,50 +80,59 @@ async function extractFromPDF(
   file: File,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  // Dynamically import PDF.js
-  // @ts-expect-error
-  const pdfjs = await import("pdfjs-dist/build/pdf");
-  // @ts-expect-error
-  const pdfjsWorker = await import("pdfjs-dist/build/pdf.worker.min.mjs");
+  const pdfTimer = startTimer(`ExtractFromPDF-${file.name}`);
 
-  pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
-
-  const arrayBuffer = await file.arrayBuffer();
-  const typedArray = new Uint8Array(arrayBuffer);
-
-  const pdf = await pdfjs.getDocument({
-    data: typedArray,
-    disableAutoFetch: true,
-    disableStream: true,
-  }).promise;
-
-  // First try to extract as regular PDF
   try {
-    progressHandler?.(5, "Extracting text from PDF...");
-    const text = await extractTextFromPDF(pdf, pdfjs, progressHandler);
+    // Dynamically import PDF.js
+    // @ts-expect-error
+    const pdfjs = await import("pdfjs-dist/build/pdf");
+    // @ts-expect-error
+    const pdfjsWorker = await import("pdfjs-dist/build/pdf.worker.min.mjs");
 
-    // Check if we got meaningful text
-    if (text.trim().length > 100 || pdf.numPages === 1) {
-      return text;
+    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const typedArray = new Uint8Array(arrayBuffer);
+
+    const loadTimer = startTimer("PDFLoading");
+    const pdf = await pdfjs.getDocument({
+      data: typedArray,
+      disableAutoFetch: true,
+      disableStream: true,
+    }).promise;
+    endTimer(loadTimer);
+
+    logPerf("PDF loaded", { pageCount: pdf.numPages });
+
+    // First try to extract as regular PDF
+    try {
+      progressHandler?.(5, "Extracting text from PDF...");
+      const text = await extractTextFromPDF(pdf, pdfjs, progressHandler);
+
+      // Check if we got meaningful text
+      if (text.trim().length > 100 || pdf.numPages === 1) {
+        return text;
+      }
+    } catch (error: any) {
+      logPerf("Regular PDF extraction failed, trying scanned detection", {
+        error: error.message,
+      });
     }
-  } catch (error) {
-    console.log(
-      "Regular PDF extraction failed, trying scanned detection",
-      error
-    );
+
+    // If regular extraction failed or got little text, check if scanned
+    progressHandler?.(10, "Analyzing PDF content...");
+    const isScanned = await isScannedPDF(pdf, pdfjs, progressHandler);
+    logPerf("PDF analysis completed", { isScanned });
+
+    if (isScanned) {
+      return await extractScannedPDF(pdf, file.name, pdfjs, progressHandler);
+    }
+
+    // Final fallback to regular extraction
+    return await extractTextFromPDF(pdf, pdfjs, progressHandler);
+  } finally {
+    endTimer(pdfTimer);
   }
-
-  // If regular extraction failed or got little text, check if scanned
-  progressHandler?.(10, "Analyzing PDF content...");
-  const isScanned = await isScannedPDF(pdf, pdfjs, progressHandler);
-  console.log(isScanned ? "Scanned PDF detected" : "Regular PDF detected");
-
-  if (isScanned) {
-    return await extractScannedPDF(pdf, file.name, pdfjs, progressHandler);
-  }
-
-  // Final fallback to regular extraction
-  return await extractTextFromPDF(pdf, pdfjs, progressHandler);
 }
 
 // Improved scanned PDF detection
@@ -116,6 +141,8 @@ async function isScannedPDF(
   pdfjs: any,
   progressHandler?: ProgressHandler
 ): Promise<boolean> {
+  const scanDetectTimer = startTimer("ScannedPDFDetection");
+
   try {
     let scannedPageCount = 0;
     const pagesToCheck = Math.min(3, pdf.numPages); // Check first 3 pages
@@ -138,14 +165,18 @@ async function isScannedPDF(
     }
 
     return scannedPageCount > 0;
-  } catch (error) {
-    console.error("Error checking PDF type:", error);
+  } catch (error: any) {
+    logPerf("Error checking PDF type", { error: error.message });
     return false;
+  } finally {
+    endTimer(scanDetectTimer);
   }
 }
 
 // More accurate page scanning detection
 async function isScannedPage(page: any, pdfjs: any): Promise<boolean> {
+  const pageScanTimer = startTimer("PageScanDetection");
+
   try {
     const textContent = await page.getTextContent();
     const viewport = page.getViewport({ scale: 1.0 });
@@ -185,9 +216,11 @@ async function isScannedPage(page: any, pdfjs: any): Promise<boolean> {
       // High image-to-text ratio
       (containsImages && textDensity < 0.001)
     );
-  } catch (error) {
-    console.error("Error checking if page is scanned:", error);
+  } catch (error: any) {
+    logPerf("Error checking if page is scanned", { error: error.message });
     return false;
+  } finally {
+    endTimer(pageScanTimer);
   }
 }
 
@@ -197,27 +230,33 @@ async function extractTextFromPDF(
   pdfjs: any,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  const numPages = pdf.numPages;
-  let extractedText = "";
-  let lastReportedProgress = -1;
+  const textExtractTimer = startTimer("TextExtractionFromPDF");
 
-  for (let i = 1; i <= numPages; i++) {
-    const progress = Math.round((i / numPages) * 90); // Reserve 10% for completion
+  try {
+    const numPages = pdf.numPages;
+    let extractedText = "";
+    let lastReportedProgress = -1;
 
-    // Only report progress every 10% or on last page
-    if (progress - lastReportedProgress >= 10 || i === numPages) {
-      progressHandler?.(progress, `Extracting page ${i}/${numPages}...`);
-      lastReportedProgress = progress;
+    for (let i = 1; i <= numPages; i++) {
+      const progress = Math.round((i / numPages) * 90); // Reserve 10% for completion
+
+      // Only report progress every 10% or on last page
+      if (progress - lastReportedProgress >= 10 || i === numPages) {
+        progressHandler?.(progress, `Extracting page ${i}/${numPages}...`);
+        lastReportedProgress = progress;
+      }
+
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      extractedText +=
+        textContent.items.map((item: any) => item.str).join(" ") + "\n";
     }
 
-    const page = await pdf.getPage(i);
-    const textContent = await page.getTextContent();
-    extractedText +=
-      textContent.items.map((item: any) => item.str).join(" ") + "\n";
+    progressHandler?.(100, "Text extraction complete");
+    return extractedText;
+  } finally {
+    endTimer(textExtractTimer);
   }
-
-  progressHandler?.(100, "Text extraction complete");
-  return extractedText;
 }
 
 // Scanned PDF extraction with optimized progress
@@ -227,77 +266,83 @@ async function extractScannedPDF(
   pdfjs: any,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  const numPages = pdf.numPages;
-  const scheduler = createScheduler();
-  const worker = await createWorker("eng");
-  scheduler.addWorker(worker);
-
-  let fullText = "";
-  let currentPage = 0;
-  let lastReportedProgress = -1;
-
-  // Create optimized progress tracker
-  const progressTracker = (progress: number) => {
-    if (!currentPage) return;
-
-    const pageProgress = Math.min(progress * 0.7, 0.7);
-    const totalProgress = Math.round(
-      ((currentPage - 1 + pageProgress) / numPages) * 90 + 10
-    );
-
-    // Only update if significant change
-    if (totalProgress - lastReportedProgress >= 5 || totalProgress >= 95) {
-      progressHandler?.(
-        Math.min(totalProgress, 99),
-        `Processing page ${currentPage}/${numPages}...`
-      );
-      lastReportedProgress = totalProgress;
-    }
-  };
+  const ocrTimer = startTimer("OCRTextExtraction");
 
   try {
-    // @ts-ignore-next-line
-    worker.onProgress = progressTracker;
+    const numPages = pdf.numPages;
+    const scheduler = createScheduler();
+    const worker = await createWorker("eng");
+    scheduler.addWorker(worker);
 
-    for (let i = 1; i <= numPages; i++) {
-      currentPage = i;
+    let fullText = "";
+    let currentPage = 0;
+    let lastReportedProgress = -1;
 
-      // Only report page start every 10% or first/last page
-      if (i === 1 || i % Math.ceil(numPages / 10) === 0 || i === numPages) {
+    // Create optimized progress tracker
+    const progressTracker = (progress: number) => {
+      if (!currentPage) return;
+
+      const pageProgress = Math.min(progress * 0.7, 0.7);
+      const totalProgress = Math.round(
+        ((currentPage - 1 + pageProgress) / numPages) * 90 + 10
+      );
+
+      // Only update if significant change
+      if (totalProgress - lastReportedProgress >= 5 || totalProgress >= 95) {
         progressHandler?.(
-          Math.round((i / numPages) * 10) + 10,
-          `Processing page ${i}/${numPages}...`
+          Math.min(totalProgress, 99),
+          `Processing page ${currentPage}/${numPages}...`
         );
+        lastReportedProgress = totalProgress;
+      }
+    };
+
+    try {
+      // @ts-ignore-next-line
+      worker.onProgress = progressTracker;
+
+      for (let i = 1; i <= numPages; i++) {
+        currentPage = i;
+
+        // Only report page start every 10% or first/last page
+        if (i === 1 || i % Math.ceil(numPages / 10) === 0 || i === numPages) {
+          progressHandler?.(
+            Math.round((i / numPages) * 10) + 10,
+            `Processing page ${i}/${numPages}...`
+          );
+        }
+
+        // Render page to canvas
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 }); // Reduced scale for faster rendering
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Failed to get canvas context");
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        // Convert to image with lower quality for faster OCR
+        const imageData = canvas.toDataURL("image/jpeg", 0.7);
+        const blob = dataURLtoBlob(imageData);
+        const imageFile = new File([blob], `${filename}_page_${i}.jpg`, {
+          type: "image/jpeg",
+        });
+
+        // OCR processing
+        const { data } = await scheduler.addJob("recognize", imageFile);
+        fullText += data.text + "\n\n";
       }
 
-      // Render page to canvas
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 1.5 }); // Reduced scale for faster rendering
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (!context) throw new Error("Failed to get canvas context");
-
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-      await page.render({ canvasContext: context, viewport }).promise;
-
-      // Convert to image with lower quality for faster OCR
-      const imageData = canvas.toDataURL("image/jpeg", 0.7);
-      const blob = dataURLtoBlob(imageData);
-      const imageFile = new File([blob], `${filename}_page_${i}.jpg`, {
-        type: "image/jpeg",
-      });
-
-      // OCR processing
-      const { data } = await scheduler.addJob("recognize", imageFile);
-      fullText += data.text + "\n\n";
+      progressHandler?.(100, "OCR complete");
+      return fullText;
+    } finally {
+      await scheduler.terminate();
     }
-
-    progressHandler?.(100, "OCR complete");
-    return fullText;
   } finally {
-    await scheduler.terminate();
+    endTimer(ocrTimer);
   }
 }
 
@@ -322,60 +367,81 @@ async function extractFromDocx(
   file: File,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  progressHandler?.(10, "Processing DOCX document...");
-  const arrayBuffer = await file.arrayBuffer();
-  const result = await mammoth.extractRawText({ arrayBuffer });
-  progressHandler?.(100);
-  return result.value;
+  const docxTimer = startTimer(`ExtractFromDOCX-${file.name}`);
+
+  try {
+    progressHandler?.(10, "Processing DOCX document...");
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    progressHandler?.(100);
+    return result.value;
+  } finally {
+    endTimer(docxTimer);
+  }
 }
 
 async function extractFromXlsx(
   file: File,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  progressHandler?.(10, "Processing spreadsheet...");
-  const arrayBuffer = await file.arrayBuffer();
-  const workbook = XLSX.read(arrayBuffer, { type: "array", sheetStubs: true });
+  const xlsxTimer = startTimer(`ExtractFromXLSX-${file.name}`);
 
-  let text = "";
-  const sheetCount = workbook.SheetNames.length;
+  try {
+    progressHandler?.(10, "Processing spreadsheet...");
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, {
+      type: "array",
+      sheetStubs: true,
+    });
 
-  for (let index = 0; index < sheetCount; index++) {
-    const progress = Math.round(((index + 1) / sheetCount) * 100);
-    progressHandler?.(
-      progress,
-      `Processing sheet ${index + 1}/${sheetCount}...`
-    );
+    let text = "";
+    const sheetCount = workbook.SheetNames.length;
 
-    const sheetName = workbook.SheetNames[index];
-    const worksheet = workbook.Sheets[sheetName];
-    text += XLSX.utils.sheet_to_csv(worksheet, { skipHidden: true }) + "\n\n";
+    for (let index = 0; index < sheetCount; index++) {
+      const progress = Math.round(((index + 1) / sheetCount) * 100);
+      progressHandler?.(
+        progress,
+        `Processing sheet ${index + 1}/${sheetCount}...`
+      );
+
+      const sheetName = workbook.SheetNames[index];
+      const worksheet = workbook.Sheets[sheetName];
+      text += XLSX.utils.sheet_to_csv(worksheet, { skipHidden: true }) + "\n\n";
+    }
+
+    progressHandler?.(100);
+    return text;
+  } finally {
+    endTimer(xlsxTimer);
   }
-
-  progressHandler?.(100);
-  return text;
 }
 
 async function extractFromImage(
   file: File,
   progressHandler?: ProgressHandler
 ): Promise<string> {
-  const worker = await createWorker("eng");
-  try {
-    let lastProgress = 0;
-    // @ts-ignore-next-line
-    worker.onProgress = (progress: any) => {
-      const currentProgress = Math.round(progress * 100);
-      if (currentProgress > lastProgress) {
-        lastProgress = currentProgress;
-        progressHandler?.(currentProgress, "Processing image with OCR...");
-      }
-    };
+  const imageTimer = startTimer(`ExtractFromImage-${file.name}`);
 
-    const { data } = await worker.recognize(file);
-    progressHandler?.(100);
-    return data.text;
+  try {
+    const worker = await createWorker("eng");
+    try {
+      let lastProgress = 0;
+      // @ts-ignore-next-line
+      worker.onProgress = (progress: any) => {
+        const currentProgress = Math.round(progress * 100);
+        if (currentProgress > lastProgress) {
+          lastProgress = currentProgress;
+          progressHandler?.(currentProgress, "Processing image with OCR...");
+        }
+      };
+
+      const { data } = await worker.recognize(file);
+      progressHandler?.(100);
+      return data.text;
+    } finally {
+      await worker.terminate();
+    }
   } finally {
-    await worker.terminate();
+    endTimer(imageTimer);
   }
 }

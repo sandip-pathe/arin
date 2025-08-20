@@ -15,7 +15,7 @@ import SummaryContent from "./summaryContent";
 
 type Props = {
   paragraphs: Paragraph[];
-  summaries: SummaryItem[];
+  summary: SummaryItem | null;
   loading?: boolean;
 };
 
@@ -27,15 +27,14 @@ export type DownloadOptions = {
 
 export default function SummaryDisplay({
   paragraphs,
-  summaries,
+  summary,
   loading,
 }: Props) {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const { generatePDF, isGeneratingPDF } = usePDFGenerator();
 
   const mergedOntology = useMemo(() => {
-    if (!Array.isArray(summaries)) {
-      console.error("summaries is not an array", summaries);
+    if (!summary) {
       return {
         definitions: [],
         obligations: [],
@@ -47,13 +46,13 @@ export default function SummaryDisplay({
       };
     }
 
-    return mergeOntology(summaries);
-  }, [summaries]);
+    return summary.legalOntology;
+  }, [summary]);
 
   const handleDownload = async (options: DownloadOptions) => {
     setIsDownloadModalOpen(false);
     await generatePDF({
-      summaries,
+      summaries: summary ? [summary] : [],
       paragraphs,
       ontology: mergedOntology,
       options,
@@ -61,12 +60,11 @@ export default function SummaryDisplay({
   };
 
   if (loading) return <SummaryLoading />;
-
-  console.log(paragraphs);
+  if (!summary) return <div>No summary available</div>;
 
   return (
     <div className="space-y-6 h-full flex flex-col">
-      <SummaryContent summaries={summaries} paragraphs={paragraphs} />
+      <SummaryContent summary={summary} paragraphs={paragraphs} />
       <OntologyDisplay ontology={mergedOntology} />
       <DownloadSummaryModal
         open={isDownloadModalOpen}

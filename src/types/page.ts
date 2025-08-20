@@ -65,8 +65,7 @@ export type Session = {
   folder?: string;
   noOfAttachments?: number;
   attachments?: Attachment[];
-  summaries?: SummaryItem[];
-  chunks?: DocumentChunk[];
+  summaries?: SummaryItem | null;
   chats?: ChatMessages[];
   title?: string;
   userInput?: string;

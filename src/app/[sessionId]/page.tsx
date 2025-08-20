@@ -5,13 +5,7 @@ import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa6";
 import { ChatWindow } from "@/components/follow-up-chat";
-import {
-  Attachment,
-  Paragraph,
-  Session,
-  Summary,
-  SummaryItem,
-} from "@/types/page";
+import { Attachment, Paragraph, Session, SummaryItem } from "@/types/page";
 import { extractText } from "@/lib/extraction";
 import { processTextToParagraphs } from "@/lib/chunk";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +19,6 @@ import { Sidebar } from "@/components/sidebar";
 import { IoChatbox } from "react-icons/io5";
 import { db } from "@/lib/firebase";
 import {
-  collection,
   doc,
   getDoc,
   serverTimestamp,
@@ -44,7 +37,8 @@ import { SummarySettingsModal } from "@/components/settings/summarySettings";
 import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
 import { summarizeParagraphs } from "@/lib/ChatGPT+api";
-import { S } from "@genkit-ai/googleai";
+import { endTimer, logPerf, startTimer } from "@/lib/hi";
+import { PerformanceMonitor } from "@/components/PERFORMANCE-monitor";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -121,26 +115,35 @@ export default function SessionPage() {
   }, [activeSession, user]);
 
   useEffect(() => {
+    const initTimer = startTimer("SessionInitialization");
     if (user === null) {
-      console.error("User not authenticated");
+      logPerf("User not authenticated - redirecting to login");
       router.push("/login");
       return;
     }
 
-    if (initialized) return;
+    if (initialized) {
+      endTimer(initTimer);
+      return;
+    }
     setInitialized(true);
 
     const isNew = searchParams.get("new") === "true";
+    logPerf(`Session initialization params`, { sessionId, isNew });
 
     if (!sessionId) {
+      logPerf("Generating new session ID");
       const newId = v7();
       router.replace(`/${newId}?new=true`);
     } else if (isNew) {
+      logPerf("Creating new session");
       createNewSession(sessionId);
       setShowWelcomeModal(true);
     } else {
+      logPerf("Loading existing session");
       loadSessionData(sessionId);
     }
+    endTimer(initTimer);
   }, [user, sessionId, searchParams]);
 
   const createNewSession = useCallback(
@@ -180,6 +183,8 @@ export default function SessionPage() {
 
   const loadSessionData = useCallback(
     async (id: string) => {
+      const loadTimer = startTimer("LoadSessionData");
+      logPerf("Starting session load", { id });
       if (sessionInitialized.current) return;
       sessionInitialized.current = true;
 
@@ -188,8 +193,16 @@ export default function SessionPage() {
       setLoadingStates({ ...loadingStates, session: true });
 
       try {
+        const docTimer = startTimer("FirestoreGetDoc");
         const sessionRef = doc(db, "sessions", id);
         const sessionDoc = await getDoc(sessionRef);
+
+        endTimer(docTimer);
+
+        logPerf("Session document loaded", {
+          exists: sessionDoc.exists(),
+          size: JSON.stringify(sessionDoc.data())?.length,
+        });
 
         if (!sessionDoc.exists()) {
           toast({
@@ -227,22 +240,29 @@ export default function SessionPage() {
         if (sessionData.summaries) {
           console.log("Summaries found:", sessionData.summaries);
           setSummaries(sessionData.summaries);
-          setContext(sessionData.summaries.map((s) => s.summary).join("\n\n"));
+          setContext(
+            sessionData.summaries.summary.map((s) => s.text).join("\n\n")
+          );
         }
 
         if (sessionData.userInput) setUserInput(sessionData.userInput);
 
         // Only load paragraphs if user is owner
         if (sessionData.userId === user?.uid) {
-          console.log("Loading paragraphs for:", id);
+          const paraTimer = startTimer("LoadParagraphs");
           const loadedParagraphs = await loadParagraphs(id);
+          endTimer(paraTimer);
+          logPerf("Paragraphs loaded", { count: loadedParagraphs.length });
           setParagraphs(loadedParagraphs);
         }
       } catch (error) {
+        logPerf("Session load error", { error });
         handleProcessingError("Load Session Data", error);
         router.push("/");
       } finally {
         setLoadingStates({ ...loadingStates, session: false });
+        logPerf("Session load completed");
+        endTimer(loadTimer);
       }
     },
     [
@@ -257,22 +277,40 @@ export default function SessionPage() {
   );
 
   const handleSend = useCallback(async () => {
+    const sendTimer = startTimer("HandleSend");
     if (isProcessingDocument || isLoading) return;
     setIsLoading(true);
     setIsSummarizing(true);
     try {
+      const inputTimer = startTimer("ProcessInputs");
       const inputTextParagraphs = await processAllInputs();
       setInputText("");
       setShowWelcomeModal(false);
+      endTimer(inputTimer);
+      logPerf("Input processing completed", {
+        paragraphCount: inputTextParagraphs.length,
+      });
+
+      const summarizeTimer = startTimer("Summarization");
       const result = await summarizeParagraphs(
         inputTextParagraphs,
-        (progress) => setExtractionProgress(progress)
+        (progress) => {
+          logPerf("Summarization progress", { progress });
+          setExtractionProgress(progress);
+        }
       );
+      endTimer(summarizeTimer);
+      logPerf("Summarization completed", { itemCount: result.summary.length });
       setSummaries(result);
-      setContext(result.map((s) => s.summary).join("\n\n"));
+      setContext(result.summary.map((s) => s.text).join("\n\n"));
       setParagraphs(inputTextParagraphs);
+
+      const saveTimer = startTimer("FirestoreSave");
       await saveToFirestore(inputTextParagraphs, result);
+      endTimer(saveTimer);
+      logPerf("Firestore save completed");
     } catch (err: any) {
+      logPerf("Summarization error", { error: err.message });
       handleProcessingError("Summarization failed", err);
       toast({
         variant: "destructive",
@@ -282,6 +320,8 @@ export default function SessionPage() {
     } finally {
       setIsLoading(false);
       setIsSummarizing(false);
+      logPerf("HandleSend completed");
+      endTimer(sendTimer);
     }
   }, [
     isProcessingDocument,
@@ -307,7 +347,7 @@ export default function SessionPage() {
   }, [inputText, attachments]);
 
   const saveToFirestore = useCallback(
-    async (allParagraphs: Paragraph[], result: SummaryItem[]) => {
+    async (allParagraphs: Paragraph[], result: SummaryItem) => {
       const sessionId = sessionIdRef.current;
       if (!sessionId || !activeSession) return;
 
@@ -316,14 +356,14 @@ export default function SessionPage() {
 
         setActiveSession({
           ...activeSession,
-          title: result[0].title! || "not found",
+          title: result.title || "not found",
         });
 
         await updateDoc(sessionRef, {
-          summaries: result,
+          summaries: [result], // Wrap in array for backward compatibility if needed
           updatedAt: serverTimestamp(),
           noOfAttachments: attachments.length,
-          title: result[0].title! || "not found",
+          title: result.title || "not found",
         });
 
         await saveParagraphsToFirestore(sessionId, allParagraphs);
@@ -343,6 +383,12 @@ export default function SessionPage() {
 
   const handleFileAdded = useCallback(
     async (file: File) => {
+      const fileTimer = startTimer(`ProcessFile-${file.name}`);
+      logPerf("Starting file processing", {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      });
       setIsProcessingDocument(true);
       setProgressMessage(`Processing ${file.name}...`);
 
@@ -359,18 +405,29 @@ export default function SessionPage() {
       documentManager.current[id] = nextDocumentIndex.current++;
 
       try {
+        const extractTimer = startTimer(`TextExtraction-${file.name}`);
         const text = await extractText(file, (progress, message) => {
+          logPerf("Extraction progress", {
+            file: file.name,
+            progress,
+            message,
+          });
           setExtractionProgress(progress);
           setProgressMessage(message || `Processing ${file.name}...`);
         });
+        endTimer(extractTimer);
+        logPerf("Text extraction completed", { length: text.length });
 
         updateAttachment(id, { status: "extracted", text });
         return text;
       } catch (error: any) {
+        logPerf("File processing error", { file: file.name, error });
         updateAttachment(id, { status: "error", error: error.message });
         throw error;
       } finally {
         setIsProcessingDocument(false);
+        logPerf("File processing completed", { name: file.name });
+        endTimer(fileTimer);
       }
     },
     [addAttachment, updateAttachment, setIsProcessingDocument]
@@ -390,6 +447,7 @@ export default function SessionPage() {
 
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
+      <PerformanceMonitor />
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
         <h2 className="m-1.5 ml-8 font-semibold text-xl text-gray-700">
@@ -443,7 +501,7 @@ export default function SessionPage() {
                 ) : (
                   <SummaryDisplay
                     paragraphs={paragraphs}
-                    summaries={summaries}
+                    summary={summaries}
                     loading={isSummarizing}
                   />
                 )}

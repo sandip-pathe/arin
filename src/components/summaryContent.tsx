@@ -9,12 +9,12 @@ import { TbFileDescription, TbArrowForwardUp } from "react-icons/tb";
 import { FaBalanceScale, FaBook } from "react-icons/fa";
 
 type SummaryContentProps = {
-  summaries: SummaryItem[];
+  summary: SummaryItem;
   paragraphs: Paragraph[];
 };
 
 export default function SummaryContent({
-  summaries,
+  summary,
   paragraphs,
 }: SummaryContentProps) {
   const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
@@ -37,50 +37,49 @@ export default function SummaryContent({
     setSheetOpen(true);
   };
 
-  console.log("summaries", summaries);
-  console.log("paragraphs", paragraphs);
-
   return (
     <>
       <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
         <CardContent className="max-w-3xl">
           <div className="prose max-w-none">
-            {summaries.map((summaryItem, idx) => (
-              <div key={idx}>
-                {/* Flatten into inline prose */}
-                {summaryItem.summary.map((part, partIndex) => {
-                  const uniqueSources = new Set(part.sourceParagraphs);
-                  const isParagraphBreak =
-                    (partIndex + 1) % 4 === 0 &&
-                    partIndex !== summaryItem.summary.length - 1;
+            {/* Render the single summary */}
+            <div>
+              {/* Title if available */}
+              {summary.title && <h2>{summary.title}</h2>}
 
-                  return (
-                    <React.Fragment key={partIndex}>
-                      <span className="inline">
-                        {part.text}
-                        {/* Citations inline */}
-                        {[...uniqueSources].map((id) => {
-                          const refNum = refMap.get(id);
-                          if (!refNum) return null;
+              {/* Flatten into inline prose */}
+              {summary.summary.map((part, partIndex) => {
+                const uniqueSources = new Set(part.sourceParagraphs);
+                const isParagraphBreak =
+                  (partIndex + 1) % 4 === 0 &&
+                  partIndex !== summary.summary.length - 1;
 
-                          return (
-                            <span
-                              key={id}
-                              className="w-5 h-5 justify-center rounded-full text-xs font-semibold cursor-pointer hover:scale-150 ml-1 inline-flex items-center bg-blue-200 p-0"
-                              onClick={() => handleCitationClick(id)}
-                            >
-                              {refNum}
-                            </span>
-                          );
-                        })}
-                        {partIndex < summaryItem.summary.length - 1 && " "}
-                      </span>
-                      {isParagraphBreak && <br />}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            ))}
+                return (
+                  <React.Fragment key={partIndex}>
+                    <span className="inline">
+                      {part.text}
+                      {/* Citations inline */}
+                      {[...uniqueSources].map((id) => {
+                        const refNum = refMap.get(id);
+                        if (!refNum) return null;
+
+                        return (
+                          <span
+                            key={id}
+                            className="w-5 h-5 justify-center rounded-full text-xs font-semibold cursor-pointer hover:scale-150 ml-1 inline-flex items-center bg-blue-200 p-0"
+                            onClick={() => handleCitationClick(id)}
+                          >
+                            {refNum}
+                          </span>
+                        );
+                      })}
+                      {partIndex < summary.summary.length - 1 && " "}
+                    </span>
+                    {isParagraphBreak && <br />}
+                  </React.Fragment>
+                );
+              })}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -97,7 +96,7 @@ export default function SummaryContent({
               &#10005;
             </button>
             <h2 className="text-lg font-semibold px-4 text-gray-700">
-              {summaries[0]?.title || "Sources"}
+              {summary.title || "Sources"}
             </h2>
             {paragraphs.map((para) => (
               <div

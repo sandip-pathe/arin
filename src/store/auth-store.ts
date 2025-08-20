@@ -3,6 +3,7 @@ import { devtools, persist } from "zustand/middleware";
 import type { User } from "firebase/auth";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { endTimer, logPerf, startTimer } from "@/lib/hi";
 
 export type MembershipType = "trial" | "plus" | "pro" | "enterprise";
 export type MembershipStatus = "active" | "expired" | "pending";
@@ -72,14 +73,26 @@ export const useAuthStore = create<AuthState>()(
         setLoading: (loading) => set({ loading }),
 
         initializeAuth: async (user) => {
+          const authTimer = startTimer("AuthInitialization");
+          logPerf("Starting auth initialization", { userId: user.uid });
+
           set({ loading: true });
 
           try {
             const userRef = doc(db, `users/${user.uid}`);
+            const dbTimer = startTimer("FirestoreUserFetch");
             const snapshot = await getDoc(userRef);
+            endTimer(dbTimer);
+            logPerf("Firestore user document fetched", {
+              exists: snapshot.exists(),
+            });
 
             if (snapshot.exists()) {
               const userData = snapshot.data();
+              logPerf("Existing user found", {
+                hasSettings: !!userData.settings,
+                hasMembership: !!userData.membership,
+              });
 
               set({
                 dbUser: userData,
@@ -97,6 +110,7 @@ export const useAuthStore = create<AuthState>()(
               });
             } else {
               // New user
+              logPerf("Creating new user document");
               const newMembership: MembershipDetails = {
                 type: "trial",
                 status: "active",
@@ -117,17 +131,24 @@ export const useAuthStore = create<AuthState>()(
                 membership: newMembership,
               };
 
+              const createTimer = startTimer("FirestoreUserCreate");
               await setDoc(userRef, newUser);
+              endTimer(createTimer);
+
               set({
                 dbUser: newUser,
                 settings: defaultSettings,
                 membership: newMembership,
               });
+
+              logPerf("New user created successfully");
             }
-          } catch (error) {
+          } catch (error: any) {
+            logPerf("Auth initialization failed", { error: error.message });
             console.error("Failed to initialize auth store", error);
           } finally {
             set({ loading: false });
+            endTimer(authTimer);
           }
         },
 

@@ -1,3 +1,4 @@
+// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -111,7 +112,7 @@ export default function HomePage() {
             userId: data.userId || user.uid,
             isStarred: data.isStarred || false,
             noOfAttachments: data.noOfAttachments || 0,
-            folder: data.folder || "all",
+            folder: data.folder || "personal", // Default to personal
             sharedWith: data.sharedWith || [],
             owner: data.owner,
           };
@@ -123,7 +124,7 @@ export default function HomePage() {
 
         let sessionsData = Array.from(allSessionsMap.values());
 
-        // Apply client-side filtering
+        // Apply client-side filtering - don't show archived in main view
         sessionsData = sessionsData
           .filter((s) => s.folder !== "archived")
           .sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0))
@@ -236,8 +237,10 @@ export default function HomePage() {
   };
 
   const filteredSessions = sessions.filter((session) => {
-    if (activeFolder === "starred") return session.isStarred;
     if (activeFolder === "all") return true;
+    if (activeFolder === "starred") return session.isStarred;
+    if (activeFolder === "shared") return session.sharedWith.length > 0;
+    if (activeFolder === "archived") return session.folder === "archived";
     return session.folder === activeFolder;
   });
 
@@ -252,6 +255,7 @@ export default function HomePage() {
   const folderOptions = [
     { id: "all", label: "All", icon: <FiFolder className="mr-2" /> },
     { id: "personal", label: "Personal", icon: <FiFolder className="mr-2" /> },
+    { id: "starred", label: "Starred", icon: <FiStar className="mr-2" /> },
     {
       id: "shared",
       label: "Shared with me",
@@ -373,10 +377,11 @@ export default function HomePage() {
                       ? session.updatedAt
                       : session.updatedAt.getTime()
                   }
-                  isShared={session.sharedWith?.length > 0}
+                  isStarred={session.isStarred}
                   folder={session.folder}
                   sharedCount={session.sharedWith?.length || 0}
                   onClick={() => router.push(`/${session.id}`)}
+                  onToggleStar={() => toggleStar(session.id)}
                   onMoveToFolder={(folder) => moveToFolder(session.id, folder)}
                   onArchive={() => moveToFolder(session.id, "archived")}
                   onDelete={() => deleteSession(session.id)}

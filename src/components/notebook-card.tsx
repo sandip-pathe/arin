@@ -19,12 +19,13 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 
 interface Props {
   id: string;
   title: string;
   updatedAt: number;
-  isShared: boolean;
+  isStarred: boolean;
   folder: string;
   sharedCount: number;
   onClick: () => void;
@@ -32,6 +33,7 @@ interface Props {
   onDelete: () => void;
   onArchive: () => void;
   onShare: () => void;
+  onToggleStar: () => void;
 }
 
 const NotebookCard: FC<Props> = ({
@@ -43,7 +45,8 @@ const NotebookCard: FC<Props> = ({
   onMoveToFolder,
   onDelete,
   onShare,
-  isShared,
+  isStarred,
+  onToggleStar,
 }) => {
   return (
     <ContextMenu>
@@ -87,6 +90,16 @@ const NotebookCard: FC<Props> = ({
               className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-blue-50"
             >
               <FiShare2 size={16} className="text-blue-600" />
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleStar();
+                }}
+                className="ml-2 cursor-pointer"
+                title={isStarred ? "Unstar" : "Star"}
+              >
+                {isStarred ? <MdOutlineStar /> : <MdOutlineStarBorder />}
+              </span>
             </button>
           </div>
         </div>
