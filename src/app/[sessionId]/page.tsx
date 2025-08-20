@@ -39,6 +39,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { summarizeParagraphs } from "@/lib/ChatGPT+api";
 import { endTimer, logPerf, startTimer } from "@/lib/hi";
 import { PerformanceMonitor } from "@/components/PERFORMANCE-monitor";
+import { ThinkingLoader } from "@/components/ProgressStepper";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
@@ -54,9 +55,10 @@ export default function SessionPage() {
   const { toast } = useToast();
   const [extractionProgress, setExtractionProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
-  const [currentStep, setCurrentStep] = useState(0);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [thinkingStartTime, setThinkingStartTime] = useState(0);
+  const [currentThinkingTime, setCurrentThinkingTime] = useState(0);
 
   // Zustand store hooks
   const {
@@ -103,8 +105,7 @@ export default function SessionPage() {
   const documentManager = useRef<{ [id: string]: number }>({});
   const nextDocumentIndex = useRef(1);
   const sessionInitialized = useRef(false);
-  const isProcessing = currentStep > 0;
-
+  const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // Derived state for shared session
   const isSharedWithUser = useMemo(() => {
     if (!activeSession || !user) return false;
@@ -239,10 +240,18 @@ export default function SessionPage() {
 
         if (sessionData.summaries) {
           console.log("Summaries found:", sessionData.summaries);
-          setSummaries(sessionData.summaries);
-          setContext(
-            sessionData.summaries.summary.map((s) => s.text).join("\n\n")
-          );
+
+          // Handle both array and single object formats
+          let summaryData;
+          if (Array.isArray(sessionData.summaries)) {
+            // For backward compatibility with old array format
+            summaryData = sessionData.summaries[0];
+          } else {
+            // For new single object format
+            summaryData = sessionData.summaries;
+          }
+
+          setSummaries(summaryData);
         }
 
         if (sessionData.userInput) setUserInput(sessionData.userInput);
@@ -302,7 +311,6 @@ export default function SessionPage() {
       endTimer(summarizeTimer);
       logPerf("Summarization completed", { itemCount: result.summary.length });
       setSummaries(result);
-      setContext(result.summary.map((s) => s.text).join("\n\n"));
       setParagraphs(inputTextParagraphs);
 
       const saveTimer = startTimer("FirestoreSave");
@@ -445,6 +453,37 @@ export default function SessionPage() {
     [removeAttachment]
   );
 
+  useEffect(() => {
+    return () => {
+      if (thinkingIntervalRef.current) {
+        clearInterval(thinkingIntervalRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (thinkingIntervalRef.current) {
+      clearInterval(thinkingIntervalRef.current);
+      thinkingIntervalRef.current = null;
+    }
+
+    if (isSummarizing) {
+      setThinkingStartTime(performance.now());
+      thinkingIntervalRef.current = setInterval(() => {
+        setCurrentThinkingTime(performance.now() - thinkingStartTime);
+      }, 100);
+    } else {
+      setCurrentThinkingTime(0);
+    }
+  }, [isSummarizing]);
+
+  const wordsCount = useMemo(() => {
+    return paragraphs.reduce(
+      (count, para) => count + para.text.split(/\s+/).length,
+      0
+    );
+  }, [paragraphs]);
+
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
       <PerformanceMonitor />
@@ -489,14 +528,27 @@ export default function SessionPage() {
               <div ref={summaryRef} className="p-6">
                 {loadingStates.session ||
                 loadingStates.summary ||
-                isSummarizing ||
-                isProcessing ? (
-                  <div className="space-y-4">
-                    <SkeletonBox className="h-6 w-3/4" />
-                    <SkeletonBox className="h-4 w-full" />
-                    <SkeletonBox className="h-4 w-5/6" />
-                    <SkeletonBox className="h-6 w-1/2 mt-8" />
-                    <SkeletonBox className="h-4 w-full" />
+                isSummarizing ? (
+                  <div className="space-y-6">
+                    {isSummarizing && (
+                      <ThinkingLoader
+                        totalTime={currentThinkingTime}
+                        paragraphsCount={paragraphs.length}
+                        wordsCount={wordsCount}
+                        currentModel="GPT-4o"
+                      />
+                    )}
+
+                    {/* Show only one loader at a time */}
+                    {!isSummarizing && (
+                      <div className="space-y-4">
+                        <SkeletonBox className="h-6 w-3/4" />
+                        <SkeletonBox className="h-4 w-full" />
+                        <SkeletonBox className="h-4 w-5/6" />
+                        <SkeletonBox className="h-6 w-1/2 mt-8" />
+                        <SkeletonBox className="h-4 w-full" />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <SummaryDisplay

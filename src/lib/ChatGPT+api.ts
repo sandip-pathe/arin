@@ -192,7 +192,7 @@ async function aggregateResults(
 
     const AggApiTimer = startTimer("OpenAIAggregationAPIRequest");
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.1,
       response_format: { type: "json_object" },
@@ -203,7 +203,7 @@ async function aggregateResults(
     logPerf("Aggregation API response received", {
       usage: response.usage,
       responseLength: response.choices[0]?.message?.content?.length || 0,
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
     });
 
     return parseSummaryItem(response.choices[0]?.message?.content || "");

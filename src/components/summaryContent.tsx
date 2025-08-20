@@ -4,9 +4,7 @@ import { Card, CardContent } from "./ui/card";
 import { SummaryItem, Paragraph } from "@/types/page";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { formatContent } from "@/lib/content-formatting";
-import { MdVerified, MdEvent, MdPeople } from "react-icons/md";
-import { TbFileDescription, TbArrowForwardUp } from "react-icons/tb";
-import { FaBalanceScale, FaBook } from "react-icons/fa";
+import { logPerf } from "@/lib/hi";
 
 type SummaryContentProps = {
   summary: SummaryItem;
@@ -37,17 +35,14 @@ export default function SummaryContent({
     setSheetOpen(true);
   };
 
+  logPerf("SummaryContent rendered", summary);
+
   return (
     <>
       <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
         <CardContent className="max-w-3xl">
           <div className="prose max-w-none">
-            {/* Render the single summary */}
             <div>
-              {/* Title if available */}
-              {summary.title && <h2>{summary.title}</h2>}
-
-              {/* Flatten into inline prose */}
               {summary.summary.map((part, partIndex) => {
                 const uniqueSources = new Set(part.sourceParagraphs);
                 const isParagraphBreak =

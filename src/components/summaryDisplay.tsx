@@ -2,14 +2,11 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Paragraph, SummaryItem } from "@/types/page";
-import { mergeOntology } from "@/lib/ontology-utils";
 import PDFGenerationLoader from "./PDFGenerationLoader";
 import SummaryLoading from "./summaryLoading";
 import OntologyDisplay from "./ontologyDisplay";
 import DownloadSummaryModal from "./downloadSummaryModal";
-import { GrDocumentPdf } from "react-icons/gr";
 import { usePDFGenerator } from "../hooks/use-pdf-generate";
 import SummaryContent from "./summaryContent";
 
@@ -60,7 +57,7 @@ export default function SummaryDisplay({
   };
 
   if (loading) return <SummaryLoading />;
-  if (!summary) return <div>No summary available</div>;
+  if (!summary) return;
 
   return (
     <div className="space-y-6 h-full flex flex-col">
