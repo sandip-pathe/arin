@@ -44,6 +44,7 @@ import useSessionStore from "@/store/session-store";
 import { UnifiedSettingsModal } from "@/components/settings/settings";
 import { useAuthStore } from "@/store/auth-store";
 import { v7 } from "uuid";
+import { ThinkingLoader } from "@/components/ProgressStepper";
 
 export default function HomePage() {
   const { user, loading } = useAuthStore();
@@ -304,6 +305,12 @@ export default function HomePage() {
           <ChatWelcome />
         </div>
 
+        <ThinkingLoader
+          totalTime={1454}
+          paragraphsCount={254}
+          wordsCount={2512}
+          currentModel="GPT-4o"
+        />
         {/* Create new session */}
         <div className="w-full max-w-3xl mx-auto my-16">
           <button

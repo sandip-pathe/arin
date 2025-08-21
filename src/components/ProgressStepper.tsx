@@ -1,6 +1,6 @@
-// components/ThinkingLoader.tsx
-import React, { useState, useEffect } from "react";
-import { Brain, Search, BookOpen, Scale, Zap, Sparkles } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { LuCheckCheck } from "react-icons/lu";
 
 interface ThinkingLoaderProps {
   totalTime: number;
@@ -9,146 +9,120 @@ interface ThinkingLoaderProps {
   currentModel: string;
 }
 
+// Step definitions
+const steps = [
+  "Reading Document",
+  "Finding Information",
+  "Identifying Clauses",
+  "Collecting Info",
+  "Compiling Analysis",
+];
+
+// Time estimation formula based on your performance data
+const estimateTotalTime = (paragraphsCount: number): number => {
+  // Base time for setup and processing
+  const baseTime = 2000; // 2 seconds
+
+  // Time for batch processing (from logs: ~4.4s per 100 paragraphs)
+  const batchProcessingTime = (paragraphsCount / 100) * 4400;
+
+  // Time for aggregation (from logs: ~3.8s)
+  const aggregationTime = 3800;
+
+  // Calculate total estimated time in ms
+  const estimatedTime = baseTime + batchProcessingTime + aggregationTime;
+
+  // Ensure minimum time of 8 seconds and maximum of 60 seconds
+  return Math.min(Math.max(estimatedTime, 8000), 60000);
+};
+
 export function ThinkingLoader({
   totalTime,
   paragraphsCount,
   wordsCount,
   currentModel,
 }: ThinkingLoaderProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [displayedText, setDisplayedText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [estimatedTotalTime] = useState(() =>
+    estimateTotalTime(paragraphsCount)
+  );
 
-  const thinkingSteps = [
-    {
-      icon: Search,
-      text: "Analyzing legal concepts and terminology",
-      subtext: "Identifying key legal principles and definitions",
-    },
-    {
-      icon: BookOpen,
-      text: "Reading through document sections",
-      subtext: "Processing paragraphs and understanding context",
-    },
-    {
-      icon: Scale,
-      text: "Extracting rights and obligations",
-      subtext: "Identifying legal relationships and responsibilities",
-    },
-    {
-      icon: Brain,
-      text: "Synthesizing complex legal information",
-      subtext: "Connecting concepts across multiple sections",
-    },
-    {
-      icon: Zap,
-      text: "Structuring the legal analysis",
-      subtext: "Organizing findings into coherent summary",
-    },
-    {
-      icon: Sparkles,
-      text: "Finalizing comprehensive summary",
-      subtext: "Ensuring accuracy and completeness",
-    },
-  ];
+  // Calculate progress percentage (0 to 1)
+  const progress = Math.min(totalTime / estimatedTotalTime, 1);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStep((prev) => (prev + 1) % thinkingSteps.length);
-    }, 4000); // Change step every 4 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const current = thinkingSteps[currentStep];
-    const fullText = isDeleting ? "" : current.text;
-    const speed = isDeleting ? 50 : 100;
-
-    const timer = setTimeout(() => {
-      setDisplayedText(
-        fullText.substring(0, displayedText.length + (isDeleting ? -1 : 1))
-      );
-
-      if (!isDeleting && displayedText === fullText) {
-        setTimeout(() => setIsDeleting(true), 1500);
-      } else if (isDeleting && displayedText === "") {
-        setIsDeleting(false);
-        setCurrentStep((prev) => (prev + 1) % thinkingSteps.length);
-      }
-    }, speed);
-
-    return () => clearTimeout(timer);
-  }, [currentStep, displayedText, isDeleting]);
-
-  const CurrentIcon = thinkingSteps[currentStep].icon;
+  // Determine which steps should be visible based on progress
+  const visibleSteps = Math.floor(progress * steps.length);
 
   return (
-    <div className="">
-      <div className="flex items-start gap-6">
-        {/* Animated brain icon */}
-        <div className="flex-shrink-0">
-          <div className="relative">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-              <CurrentIcon className="w-8 h-8 text-blue-600" />
-            </div>
-            <div className="absolute -inset-2 bg-blue-200 rounded-2xl opacity-50 animate-pulse"></div>
-            <div className="absolute -inset-1 bg-blue-100 rounded-2xl opacity-30 animate-ping"></div>
-          </div>
+    <AnimatePresence>
+      <motion.div
+        className="w-full font-sans my-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Document info */}
+        <div className="text-xs text-gray-500 mb-2 text-center">
+          Analyzing {paragraphsCount} paragraphs ({wordsCount} words) with{" "}
+          {currentModel}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Analyzing Legal Document
-            </h3>
-
-            {/* Typewriter text */}
-            <div className="text-gray-600 mb-1 h-8 flex items-center">
-              <span className="font-medium">{displayedText}</span>
-              <span className="animate-blink bg-gray-600 w-0.5 h-5 ml-1 inline-block"></span>
-            </div>
-
-            <p className="text-sm text-gray-500">
-              {thinkingSteps[currentStep].subtext}
-            </p>
-          </div>
-
-          {/* Progress and stats */}
-          <div className="space-y-3">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-1000 ease-out"
-                style={{
-                  width: `${Math.min(100, (totalTime / 60000) * 100)}%`,
-                }}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-xs text-gray-500">
-              <span>Processing with {currentModel}</span>
-              <span>{Math.round(totalTime / 1000)}s</span>
-            </div>
-
-            <div className="flex items-center gap-4 text-xs text-gray-500">
-              <span>{paragraphsCount} paragraphs</span>
-              <span>•</span>
-              <span>{wordsCount.toLocaleString()} words</span>
-              <span>•</span>
-              <span>{Math.ceil(wordsCount / 500)} estimated pages</span>
-            </div>
-          </div>
+        <div className="w-full bg-gray-200 h-px mb-8 relative overflow-hidden">
+          <motion.div
+            className="absolute top-0 left-0 h-full bg-gray-800"
+            style={{ width: "40%" }}
+            initial={{ x: "-100%" }}
+            animate={{ x: ["-100%", "350%"] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          />
         </div>
-      </div>
 
-      {/* Floating elements for visual interest */}
-      <div className="absolute top-4 right-4 opacity-30">
-        <Scale className="w-6 h-6 text-blue-400 animate-float" />
-      </div>
-      <div className="absolute bottom-4 left-4 opacity-20">
-        <BookOpen className="w-5 h-5 text-purple-400 animate-float-delayed" />
-      </div>
-    </div>
+        {/* Steps under loader */}
+        <div className="flex flex-col items-start gap-1 mt-2">
+          {steps.map((step, index) => {
+            const isComplete = index < visibleSteps;
+            const isCurrent = index === visibleSteps;
+
+            return (
+              <AnimatePresence key={index}>
+                {(isComplete || isCurrent) && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-2"
+                  >
+                    {isComplete ? (
+                      // 🎉 Animated icon on completion
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: [0, 1.3, 1] }} // pop effect
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                      >
+                        <LuCheckCheck
+                          className="text-gray-500 w-4 h-4"
+                          size={12}
+                        />
+                      </motion.div>
+                    ) : (
+                      <span className="text-sm text-blue-600">
+                        {step}
+                        <span className="inline-flex ml-2"></span>
+                        {
+                          [".", ". .", ". . ."][
+                            Math.floor((totalTime / 600) % 3)
+                          ]
+                        }
+                      </span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            );
+          })}
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

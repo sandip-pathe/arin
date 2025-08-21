@@ -40,10 +40,16 @@ import { summarizeParagraphs } from "@/lib/ChatGPT+api";
 import { endTimer, logPerf, startTimer } from "@/lib/hi";
 import { PerformanceMonitor } from "@/components/PERFORMANCE-monitor";
 import { ThinkingLoader } from "@/components/ProgressStepper";
+import { motion, AnimatePresence } from "framer-motion";
 
 function SkeletonBox({ className = "" }: { className?: string }) {
   return (
-    <div className={`bg-gray-200 rounded-md animate-pulse ${className}`} />
+    <motion.div
+      initial={{ opacity: 0.5 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+      className={`bg-gray-200 rounded-md ${className}`}
+    />
   );
 }
 
@@ -55,7 +61,7 @@ export default function SessionPage() {
   const { toast } = useToast();
   const [extractionProgress, setExtractionProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
-  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const [thinkingStartTime, setThinkingStartTime] = useState(0);
   const [currentThinkingTime, setCurrentThinkingTime] = useState(0);
@@ -106,6 +112,7 @@ export default function SessionPage() {
   const nextDocumentIndex = useRef(1);
   const sessionInitialized = useRef(false);
   const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Derived state for shared session
   const isSharedWithUser = useMemo(() => {
     if (!activeSession || !user) return false;
@@ -114,6 +121,28 @@ export default function SessionPage() {
       activeSession.sharedWith?.includes(user?.email ?? "")
     );
   }, [activeSession, user]);
+
+  // Animation variants
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.3 },
+  };
+
+  const slideIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+    transition: { duration: 0.4, ease: "easeOut" },
+  };
+
+  const scaleIn = {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.95 },
+    transition: { duration: 0.3, ease: "easeOut" },
+  };
 
   useEffect(() => {
     const initTimer = startTimer("SessionInitialization");
@@ -489,14 +518,24 @@ export default function SessionPage() {
       <PerformanceMonitor />
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
-        <h2 className="m-1.5 ml-8 font-semibold text-xl text-gray-700">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="m-1.5 ml-8 font-semibold text-xl text-gray-700"
+        >
           {activeSession?.title || "unknown"}
-        </h2>
+        </motion.h2>
         {isSharedWithUser && (
-          <div className="flex items-center ml-2 px-2 py-1 rounded-lg bg-white">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center ml-2 px-2 py-1 rounded-lg bg-white"
+          >
             <GoShieldLock className="font-semibold" size={18} />
             <span className="text-sm ml-1 font-semibold">Shared with you</span>
-          </div>
+          </motion.div>
         )}
       </div>
 
@@ -504,141 +543,252 @@ export default function SessionPage() {
         <Sidebar sessionId={sessionId!} />
 
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
-          <div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white"
+          >
             <div className="z-10 border-b flex items-center justify-between py-2">
               <div className="flex items-center">
                 <div className="p-2 ml-10 font-medium">Summary</div>
                 {(activeSession?.noOfAttachments ?? 0) > 0 && (
-                  <span className="text-sm mx-4">
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-sm mx-4"
+                  >
                     {activeSession?.noOfAttachments ?? 0}{" "}
                     {activeSession?.noOfAttachments === 1
                       ? "attachment"
                       : "attachments"}
-                  </span>
+                  </motion.span>
                 )}
               </div>
-              <FiSliders
-                size={18}
-                className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                onClick={() => setShowSummarySettingsModal(true)}
-              />
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FiSliders
+                  size={18}
+                  className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                  onClick={() => setShowSummarySettingsModal(true)}
+                />
+              </motion.div>
             </div>
 
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
               <div ref={summaryRef} className="p-6">
-                {loadingStates.session ||
-                loadingStates.summary ||
-                isSummarizing ? (
-                  <div className="space-y-6">
-                    {isSummarizing && (
-                      <ThinkingLoader
-                        totalTime={currentThinkingTime}
-                        paragraphsCount={paragraphs.length}
-                        wordsCount={wordsCount}
-                        currentModel="GPT-4o"
-                      />
-                    )}
+                <AnimatePresence mode="wait">
+                  {loadingStates.session ||
+                  loadingStates.summary ||
+                  isSummarizing ? (
+                    <motion.div
+                      key="loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-6"
+                    >
+                      {isSummarizing && (
+                        <ThinkingLoader
+                          totalTime={currentThinkingTime}
+                          paragraphsCount={paragraphs.length}
+                          wordsCount={wordsCount}
+                          currentModel="GPT-4o"
+                        />
+                      )}
 
-                    {/* Show only one loader at a time */}
-                    {!isSummarizing && (
-                      <div className="space-y-4">
-                        <SkeletonBox className="h-6 w-3/4" />
-                        <SkeletonBox className="h-4 w-full" />
-                        <SkeletonBox className="h-4 w-5/6" />
-                        <SkeletonBox className="h-6 w-1/2 mt-8" />
-                        <SkeletonBox className="h-4 w-full" />
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <SummaryDisplay
-                    paragraphs={paragraphs}
-                    summary={summaries}
-                    loading={isSummarizing}
-                  />
-                )}
+                      {/* Show only one loader at a time */}
+                      {!isSummarizing && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.1 }}
+                          className="space-y-4"
+                        >
+                          <SkeletonBox className="h-6 w-3/4" />
+                          <SkeletonBox className="h-4 w-full" />
+                          <SkeletonBox className="h-4 w-5/6" />
+                          <SkeletonBox className="h-6 w-1/2 mt-8" />
+                          <SkeletonBox className="h-4 w-full" />
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="content"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <SummaryDisplay
+                        paragraphs={paragraphs}
+                        summary={summaries}
+                        loading={isSummarizing}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
-          </div>
+          </motion.div>
         </main>
 
-        {isChatOpen ? (
-          <aside className="w-1/4 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
-            <div className="z-10 border-b flex items-center justify-between">
-              <div className="flex items-center justify-start gap-2">
-                <BsLayoutSidebarInsetReverse
-                  className="cursor-pointer m-2 text-gray-600"
-                  size={24}
-                  onClick={toggleChat}
-                />
-                <div className="p-4 font-medium">Chat</div>
-              </div>
-              <div className="flex items-center justify-start">
-                <FaLock size={18} className="text-green-600 m-2" />
-                <FiSliders
-                  size={18}
-                  className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                  onClick={() => setShowChatSettingsModal(true)}
-                />
-              </div>
-            </div>
-            <div className="flex-1 min-h-0 overflow-auto">
-              {loadingStates.session || isLoading ? (
-                <div className="p-4 space-y-3">
-                  <SkeletonBox className="h-4 w-3/4" />
-                  <SkeletonBox className="h-4 w-1/2" />
-                  <SkeletonBox className="h-32 w-full mt-4" />
-                  <SkeletonBox className="h-8 w-full mt-4" />
+        <AnimatePresence mode="wait">
+          {isChatOpen ? (
+            <motion.aside
+              key="chat-open"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+              className="w-1/4 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
+            >
+              <div className="z-10 border-b flex items-center justify-between">
+                <div className="flex items-center justify-start gap-2">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <BsLayoutSidebarInsetReverse
+                      className="cursor-pointer m-2 text-gray-600"
+                      size={24}
+                      onClick={toggleChat}
+                    />
+                  </motion.div>
+                  <div className="p-4 font-medium">Chat</div>
                 </div>
-              ) : (
-                <ChatWindow
-                  chatMessages={chatMessages}
-                  setChatMessages={setChatMessages}
-                  setIsChatCollapsed={setIsChatCollapsed}
-                  key={sessionId}
-                  sessionId={sessionId!}
-                  context={context}
-                />
-              )}
-            </div>
-          </aside>
-        ) : (
-          <aside className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col">
-            <div className="z-10 border-b flex items-center py-2 justify-center">
-              <IoChatbox
-                className="cursor-pointer m-2"
-                size={24}
-                onClick={toggleChat}
-              />
-            </div>
-            <div className="flex-1 overflow-auto p-4"> </div>
-          </aside>
-        )}
+                <div className="flex items-center justify-start">
+                  <FaLock size={18} className="text-green-600 m-2" />
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FiSliders
+                      size={18}
+                      className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                      onClick={() => setShowChatSettingsModal(true)}
+                    />
+                  </motion.div>
+                </div>
+              </div>
+              <div className="flex-1 min-h-0 overflow-auto">
+                {loadingStates.session || isLoading ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="p-4 space-y-3"
+                  >
+                    <SkeletonBox className="h-4 w-3/4" />
+                    <SkeletonBox className="h-4 w-1/2" />
+                    <SkeletonBox className="h-32 w-full mt-4" />
+                    <SkeletonBox className="h-8 w-full mt-4" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <ChatWindow
+                      chatMessages={chatMessages}
+                      setChatMessages={setChatMessages}
+                      setIsChatCollapsed={setIsChatCollapsed}
+                      key={sessionId}
+                      sessionId={sessionId!}
+                      context={context}
+                    />
+                  </motion.div>
+                )}
+              </div>
+            </motion.aside>
+          ) : (
+            <motion.aside
+              key="chat-closed"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
+            >
+              <div className="z-10 border-b flex items-center py-2 justify-center">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <IoChatbox
+                    className="cursor-pointer m-2"
+                    size={24}
+                    onClick={toggleChat}
+                  />
+                </motion.div>
+              </div>
+              <div className="flex-1 overflow-auto p-4"> </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
       </div>
 
-      <WelcomeModal
-        isOpen={showWelcomeModal}
-        onOpenChange={setShowWelcomeModal}
-        inputText={inputText}
-        onInputTextChange={setInputText}
-        attachments={attachments}
-        onFileAdded={handleFileAdded}
-        onRemoveAttachment={handleRemoveAttachment}
-        onSend={handleSend}
-        isProcessing={isProcessingDocument}
-        extractionProgress={extractionProgress}
-        progressMessage={progressMessage}
-      />
+      <AnimatePresence>
+        {showWelcomeModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <WelcomeModal
+              isOpen={showWelcomeModal}
+              onOpenChange={setShowWelcomeModal}
+              inputText={inputText}
+              onInputTextChange={setInputText}
+              attachments={attachments}
+              onFileAdded={handleFileAdded}
+              onRemoveAttachment={handleRemoveAttachment}
+              onSend={handleSend}
+              isProcessing={isProcessingDocument}
+              extractionProgress={extractionProgress}
+              progressMessage={progressMessage}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <ChatSettingsModal
-        isOpen={showChatSettingsModal}
-        onOpenChange={setShowChatSettingsModal}
-      />
+      <AnimatePresence>
+        {showChatSettingsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChatSettingsModal
+              isOpen={showChatSettingsModal}
+              onOpenChange={setShowChatSettingsModal}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <SummarySettingsModal
-        isOpen={showSummarySettingsModal}
-        onOpenChange={setShowSummarySettingsModal}
-      />
+      <AnimatePresence>
+        {showSummarySettingsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SummarySettingsModal
+              isOpen={showSummarySettingsModal}
+              onOpenChange={setShowSummarySettingsModal}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
