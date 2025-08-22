@@ -5,7 +5,7 @@ import ClientInit from "@/components/clientInit";
 
 export const metadata: Metadata = {
   title: "Anaya",
-  description: "Your AI Legal Assistant",
+  description: "Legal Doc Summarizer",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased h-full bg-background">
+      <body className="font-[Source Sans 3] antialiased h-full bg-background">
         <ClientInit />
         {children}
         <Toaster />

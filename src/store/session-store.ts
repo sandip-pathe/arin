@@ -42,7 +42,9 @@ interface SessionState {
   showShareModal: boolean;
 
   // Actions
-  setChatMessages: (messages: ChatMessages[]) => void;
+  setChatMessages: (
+    messages: ChatMessages[] | ((prev: ChatMessages[]) => ChatMessages[])
+  ) => void;
   setContext: (context: string) => void;
   setActiveSession: (session: Session | null) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -113,7 +115,13 @@ const useSessionStore = create<SessionState>((set) => ({
   // Actions
 
   // Setters
-  setChatMessages: (chatMessages) => set({ chatMessages }),
+  setChatMessages: (updater) =>
+    set((state) => ({
+      chatMessages:
+        typeof updater === "function"
+          ? updater(state.chatMessages ?? [])
+          : updater,
+    })),
   setContext: (context) => set({ context }),
   setActiveSession: (activeSession) => set({ activeSession }),
   setIsLoading: (isLoading) => set({ isLoading }),

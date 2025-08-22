@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 import { Paragraph, SummaryItem } from "@/types/page";
-import PDFGenerationLoader from "./PDFGenerationLoader";
+import PDFGenerationLoader from "./pdf-loader";
 import SummaryLoading from "./summaryLoading";
 import OntologyDisplay from "./ontologyDisplay";
 import DownloadSummaryModal from "./downloadSummaryModal";
@@ -48,12 +48,16 @@ export default function SummaryDisplay({
 
   const handleDownload = async (options: DownloadOptions) => {
     setIsDownloadModalOpen(false);
-    await generatePDF({
-      summaries: summary ? [summary] : [],
-      paragraphs,
-      ontology: mergedOntology,
-      options,
-    });
+    try {
+      await generatePDF({
+        summary,
+        paragraphs,
+        ontology: mergedOntology,
+        options,
+      });
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
   };
 
   if (loading) return <SummaryLoading />;

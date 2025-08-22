@@ -5,6 +5,8 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
+  query,
   serverTimestamp,
   writeBatch,
 } from "firebase/firestore";
@@ -69,13 +71,33 @@ export const saveChatMessage = async (
 export const loadChatMessages = async (
   sessionId: string
 ): Promise<ChatMessages[]> => {
-  const snapshot = await getDocs(
-    collection(db, "sessions", sessionId, "chats")
+  const q = query(
+    collection(db, "sessions", sessionId, "chats"),
+    orderBy("timestamp", "asc")
   );
+  const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as ChatMessages[];
+};
+
+// Add a function to delete chats
+export const deleteChatMessages = async (sessionId: string) => {
+  try {
+    const chatsRef = collection(db, "sessions", sessionId, "chats");
+    const snapshot = await getDocs(chatsRef);
+    const batch = writeBatch(db);
+
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+  } catch (error) {
+    console.error("Error deleting chat messages:", error);
+    throw error;
+  }
 };
 
 export const handleProcessingError = (context: string, error: unknown) => {

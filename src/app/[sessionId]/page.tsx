@@ -28,6 +28,7 @@ import {
 } from "firebase/firestore";
 import {
   handleProcessingError,
+  loadChatMessages,
   loadParagraphs,
   saveParagraphsToFirestore,
 } from "@/lib/functions";
@@ -38,20 +39,11 @@ import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
 import { summarizeParagraphs } from "@/lib/ChatGPT+api";
 import { endTimer, logPerf, startTimer } from "@/lib/hi";
-import { PerformanceMonitor } from "@/components/PERFORMANCE-monitor";
+import { PerformanceMonitor } from "@/components/monitor";
 import { ThinkingLoader } from "@/components/ProgressStepper";
 import { motion, AnimatePresence } from "framer-motion";
-
-function SkeletonBox({ className = "" }: { className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0.5 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-      className={`bg-gray-200 rounded-md ${className}`}
-    />
-  );
-}
+import { SkeletonBox } from "@/components/Skeleton";
+import { set } from "date-fns";
 
 export default function SessionPage() {
   const params = useParams();
@@ -61,10 +53,8 @@ export default function SessionPage() {
   const { toast } = useToast();
   const [extractionProgress, setExtractionProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
-  const [isSummarizing, setIsSummarizing] = useState(true);
+  const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const [thinkingStartTime, setThinkingStartTime] = useState(0);
-  const [currentThinkingTime, setCurrentThinkingTime] = useState(0);
 
   // Zustand store hooks
   const {
@@ -80,10 +70,8 @@ export default function SessionPage() {
     setLoadingStates,
     inputText,
     setInputText,
-    userInput,
     setUserInput,
     attachments,
-    setAttachments,
     addAttachment,
     updateAttachment,
     removeAttachment,
@@ -111,7 +99,6 @@ export default function SessionPage() {
   const documentManager = useRef<{ [id: string]: number }>({});
   const nextDocumentIndex = useRef(1);
   const sessionInitialized = useRef(false);
-  const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Derived state for shared session
   const isSharedWithUser = useMemo(() => {
@@ -121,28 +108,6 @@ export default function SessionPage() {
       activeSession.sharedWith?.includes(user?.email ?? "")
     );
   }, [activeSession, user]);
-
-  // Animation variants
-  const fadeIn = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: { duration: 0.3 },
-  };
-
-  const slideIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-    transition: { duration: 0.4, ease: "easeOut" },
-  };
-
-  const scaleIn = {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.95 },
-    transition: { duration: 0.3, ease: "easeOut" },
-  };
 
   useEffect(() => {
     const initTimer = startTimer("SessionInitialization");
@@ -289,6 +254,8 @@ export default function SessionPage() {
         if (sessionData.userId === user?.uid) {
           const paraTimer = startTimer("LoadParagraphs");
           const loadedParagraphs = await loadParagraphs(id);
+          const loadedChatMessages = await loadChatMessages(id);
+          setChatMessages(loadedChatMessages);
           endTimer(paraTimer);
           logPerf("Paragraphs loaded", { count: loadedParagraphs.length });
           setParagraphs(loadedParagraphs);
@@ -342,6 +309,7 @@ export default function SessionPage() {
       setSummaries(result);
       setParagraphs(inputTextParagraphs);
 
+      setIsSummarizing(false);
       const saveTimer = startTimer("FirestoreSave");
       await saveToFirestore(inputTextParagraphs, result);
       endTimer(saveTimer);
@@ -356,7 +324,6 @@ export default function SessionPage() {
       });
     } finally {
       setIsLoading(false);
-      setIsSummarizing(false);
       logPerf("HandleSend completed");
       endTimer(sendTimer);
     }
@@ -482,50 +449,21 @@ export default function SessionPage() {
     [removeAttachment]
   );
 
-  useEffect(() => {
-    return () => {
-      if (thinkingIntervalRef.current) {
-        clearInterval(thinkingIntervalRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (thinkingIntervalRef.current) {
-      clearInterval(thinkingIntervalRef.current);
-      thinkingIntervalRef.current = null;
-    }
-
-    if (isSummarizing) {
-      setThinkingStartTime(performance.now());
-      thinkingIntervalRef.current = setInterval(() => {
-        setCurrentThinkingTime(performance.now() - thinkingStartTime);
-      }, 100);
-    } else {
-      setCurrentThinkingTime(0);
-    }
-  }, [isSummarizing]);
-
-  const wordsCount = useMemo(() => {
-    return paragraphs.reduce(
-      (count, para) => count + para.text.split(/\s+/).length,
-      0
-    );
-  }, [paragraphs]);
-
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
       <PerformanceMonitor />
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
-        <motion.h2
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="m-1.5 ml-8 font-semibold text-xl text-gray-700"
-        >
-          {activeSession?.title || "unknown"}
-        </motion.h2>
+        {activeSession?.title && (
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="m-1.5 ml-8 font-semibold text-xl text-gray-700"
+          >
+            {activeSession?.title}
+          </motion.h2>
+        )}
         {isSharedWithUser && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -581,45 +519,60 @@ export default function SessionPage() {
             <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
               <div ref={summaryRef} className="p-6">
                 <AnimatePresence mode="wait">
-                  {loadingStates.session ||
-                  loadingStates.summary ||
-                  isSummarizing ? (
+                  {/* Initial loading state (session data) */}
+                  {loadingStates.session ? (
                     <motion.div
-                      key="loading"
+                      key="session-loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <SkeletonBox className="h-6 w-3/4" />
+                      <SkeletonBox className="h-4 w-full" />
+                      <SkeletonBox className="h-4 w-5/6" />
+                      <SkeletonBox className="h-6 w-1/2 mt-8" />
+                      <SkeletonBox className="h-4 w-full" />
+                    </motion.div>
+                  ) : isSummarizing ? (
+                    <motion.div
+                      key="summarizing"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       className="space-y-6"
                     >
-                      {isSummarizing && (
-                        <ThinkingLoader
-                          totalTime={currentThinkingTime}
-                          paragraphsCount={paragraphs.length}
-                          wordsCount={wordsCount}
-                          currentModel="GPT-4o"
-                        />
-                      )}
-
-                      {/* Show only one loader at a time */}
-                      {!isSummarizing && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.1 }}
-                          className="space-y-4"
-                        >
-                          <SkeletonBox className="h-6 w-3/4" />
-                          <SkeletonBox className="h-4 w-full" />
-                          <SkeletonBox className="h-4 w-5/6" />
-                          <SkeletonBox className="h-6 w-1/2 mt-8" />
-                          <SkeletonBox className="h-4 w-full" />
-                        </motion.div>
-                      )}
+                      <ThinkingLoader
+                        isSummarizing={isSummarizing}
+                        paragraphsCount={paragraphs.length}
+                      />
                     </motion.div>
-                  ) : (
+                  ) : !summaries && user?.uid === activeSession?.userId ? (
                     <motion.div
-                      key="content"
+                      key="no-summary"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4 }}
+                      className="flex flex-col items-center justify-center h-full text-center p-8"
+                    >
+                      <div className="text-gray-500 mb-4">
+                        No summary yet. Get started by adding content.
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowWelcomeModal(true)}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                      >
+                        Get Started
+                      </motion.button>
+                    </motion.div>
+                  ) : summaries ? (
+                    <motion.div
+                      key="summary-content"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -631,7 +584,18 @@ export default function SessionPage() {
                         loading={isSummarizing}
                       />
                     </motion.div>
-                  )}
+                  ) : user?.uid !== activeSession?.userId ? (
+                    <motion.div
+                      key="no-access"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center justify-center h-full text-gray-500"
+                    >
+                      No summary available for this shared session
+                    </motion.div>
+                  ) : null}
                 </AnimatePresence>
               </div>
             </div>
@@ -677,7 +641,7 @@ export default function SessionPage() {
                 </div>
               </div>
               <div className="flex-1 min-h-0 overflow-auto">
-                {loadingStates.session || isLoading ? (
+                {loadingStates.session ? (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -690,6 +654,7 @@ export default function SessionPage() {
                   </motion.div>
                 ) : (
                   <motion.div
+                    className="p-4 flex flex-col h-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}

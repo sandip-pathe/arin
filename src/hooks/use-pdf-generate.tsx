@@ -1,10 +1,10 @@
-// usePDFGenerator.ts
+// hooks/use-pdf-generator.ts
 import { useState } from "react";
 import { pdf } from "@react-pdf/renderer";
 import saveAs from "file-saver";
 import { generateIEEECitation } from "@/lib/citation-utils";
 import { Paragraph, SummaryItem, Ontology } from "@/types/page";
-import PDFGenerator from "@/components/PDFGenerator";
+import PDFDocument from "@/components/pdf-document";
 
 type PDFOptions = {
   summary: boolean;
@@ -13,7 +13,7 @@ type PDFOptions = {
 };
 
 type PDFData = {
-  summaries: SummaryItem[];
+  summary: SummaryItem | null;
   paragraphs: Paragraph[];
   ontology: Ontology;
   options: PDFOptions;
@@ -32,29 +32,25 @@ export function usePDFGenerator() {
         return acc;
       }, {} as Record<string, string>);
 
-      // Generate PDF in chunks to prevent blocking
-      const pdfBlob = await new Promise<Blob>(async (resolve) => {
-        // Use setTimeout to break up work and prevent blocking
-        setTimeout(async () => {
-          const doc = (
-            <PDFGenerator
-              summaries={data.summaries}
-              paragraphs={data.paragraphs}
-              ontology={data.ontology}
-              options={data.options}
-              citations={citations}
-            />
-          );
+      // Create PDF document
+      const doc = (
+        <PDFDocument
+          summary={data.summary}
+          paragraphs={data.paragraphs}
+          ontology={data.ontology}
+          options={data.options}
+          citations={citations}
+        />
+      );
 
-          const blob = await pdf(doc).toBlob();
-          resolve(blob);
-        }, 0);
-      });
+      // Generate PDF blob
+      const pdfBlob = await pdf(doc).toBlob();
 
       // Save the file
-      saveAs(pdfBlob, "document-summary.pdf");
+      saveAs(pdfBlob, "legal-document-summary.pdf");
     } catch (error) {
       console.error("Failed to generate PDF:", error);
+      throw new Error("PDF generation failed");
     } finally {
       setIsGeneratingPDF(false);
     }

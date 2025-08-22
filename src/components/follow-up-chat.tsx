@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Shield, Trash2 } from "lucide-react"; // Added Trash2 icon
 import { Button } from "@/components/ui/button";
 import { ChatMessages } from "@/types/page";
 import { v7 } from "uuid";
-import { saveChatMessage } from "@/lib/functions";
+import { saveChatMessage, deleteChatMessages } from "@/lib/functions"; // Import delete function
 import { useToast } from "@/hooks/use-toast";
 import { ChatWithOpenAI } from "@/lib/utils";
 
 interface ChatWindowProps {
   chatMessages?: ChatMessages[];
-  setChatMessages: (messages: ChatMessages[]) => void;
+  setChatMessages: (
+    messages: ChatMessages[] | ((prev: ChatMessages[]) => ChatMessages[])
+  ) => void;
   sessionId: string | null;
   context: string;
   setIsChatCollapsed: (val: boolean) => void;
@@ -27,16 +29,6 @@ export const ChatWindow = ({
   const [inputMessageText, setInputMessageText] = useState("");
   const [isProcessingChat, setIsProcessingChat] = useState(false);
   const { toast } = useToast();
-
-  if (sessionId === null) {
-    console.error("Session ID not found.");
-    toast({
-      title: "Session Error",
-      description: "Session ID is required to use the chat feature.",
-      variant: "destructive",
-    });
-    return null;
-  }
 
   useEffect(() => {
     scrollToBottom();
@@ -54,6 +46,11 @@ export const ChatWindow = ({
   };
 
   const handleChatSubmit = async () => {
+    if (sessionId === null) {
+      console.error("Session ID not found in chat.");
+      return null;
+    }
+
     if (inputMessageText.trim() === "" || isProcessingChat) return;
 
     const userMessage: ChatMessages = {
@@ -63,16 +60,14 @@ export const ChatWindow = ({
       timestamp: new Date(),
     };
 
-    setChatMessages(
-      chatMessages ? [...chatMessages, userMessage] : [userMessage]
-    );
+    setChatMessages((prev) => [...(prev ?? []), userMessage]);
     setInputMessageText("");
     setIsProcessingChat(true);
     saveChatMessage(userMessage, sessionId);
 
     try {
-      console.log(`[${context}] Sending message to OpenAI:`, inputMessageText);
       const data = await ChatWithOpenAI(context, inputMessageText);
+
       const aiMessage: ChatMessages = {
         id: v7(),
         role: "assistant",
@@ -80,13 +75,10 @@ export const ChatWindow = ({
         timestamp: new Date(),
       };
 
-      setChatMessages(
-        chatMessages ? [...chatMessages, aiMessage] : [aiMessage]
-      );
+      setChatMessages((prev) => [...(prev ?? []), aiMessage]);
       saveChatMessage(aiMessage, sessionId);
     } catch (error) {
       console.error(`[${context}]`, error);
-
       toast({
         title: `${context} Failed`,
         description:
@@ -98,19 +90,60 @@ export const ChatWindow = ({
     }
   };
 
+  const handleDeleteChats = async () => {
+    if (!sessionId) return;
+
+    try {
+      await deleteChatMessages(sessionId);
+      setChatMessages([]);
+      toast({
+        title: "Chats Cleared",
+        description: "All chat messages have been deleted.",
+      });
+    } catch (error) {
+      console.error("Error deleting chats:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete chats.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col h-full border-none overflow-hidden">
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 pt-12 space-y-4">
+        <div className="flex items-center justify-between p-2 border-b">
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Shield className="h-4 w-4" />
+            <span>Secure Chat</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDeleteChats}
+            disabled={!chatMessages || chatMessages.length === 0}
+          >
+            <Trash2 className="h-4 w-4 mr-1" />
+            Clear Chats
+          </Button>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
           {[...(chatMessages ?? [])].map((message) => (
-            <div
-              key={message.id}
-              className={`flex p-2 rounded-lg ${
-                message.role === "user" ? "bg-blue-900 text-gray-200 ml-6" : ""
-              }`}
-            >
-              <div className="flex-1 text-sm break-words">
-                <div className="mb-1">{message.content}</div>
+            <div key={message.id} className="flex rounded-lg">
+              <div className="flex-1 text-base break-words">
+                <div
+                  className={`flex rounded-lg ${
+                    message.role === "user"
+                      ? `text-blue-900 w-[calc(100%-2rem)] font-semibold text-lg justify-end ${
+                          message.content.length < 20 ? "ml-auto" : ""
+                        }`
+                      : "w-full"
+                  }`}
+                >
+                  {message.content}
+                </div>
               </div>
             </div>
           ))}

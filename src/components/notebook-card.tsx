@@ -98,7 +98,11 @@ const NotebookCard: FC<Props> = ({
                 className="ml-2 cursor-pointer"
                 title={isStarred ? "Unstar" : "Star"}
               >
-                {isStarred ? <MdOutlineStar /> : <MdOutlineStarBorder />}
+                {isStarred ? (
+                  <MdOutlineStar size={16} className="text-blue-600" />
+                ) : (
+                  <MdOutlineStarBorder size={16} className="text-blue-600" />
+                )}
               </span>
             </button>
           </div>
@@ -106,7 +110,7 @@ const NotebookCard: FC<Props> = ({
       </ContextMenuTrigger>
 
       {/* Context Menu */}
-      <ContextMenuContent className="w-48">
+      <ContextMenuContent className="w-48 bg-white">
         <ContextMenuItem
           onClick={(e) => {
             e.stopPropagation();
@@ -128,7 +132,7 @@ const NotebookCard: FC<Props> = ({
         </ContextMenuItem>
 
         <ContextMenuSub>
-          <ContextMenuSubTrigger>
+          <ContextMenuSubTrigger className="bg-white">
             <div className="flex items-start w-full">
               <FiMove className="mr-2" size={16} />
               Move to
