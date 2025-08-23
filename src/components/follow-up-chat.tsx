@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Shield, Trash2 } from "lucide-react"; // Added Trash2 icon
+import { ArrowUp, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatMessages } from "@/types/page";
 import { v7 } from "uuid";
-import { saveChatMessage, deleteChatMessages } from "@/lib/functions"; // Import delete function
+import { saveChatMessage } from "@/lib/functions";
 import { useToast } from "@/hooks/use-toast";
 import { ChatWithOpenAI } from "@/lib/utils";
 
@@ -90,44 +90,10 @@ export const ChatWindow = ({
     }
   };
 
-  const handleDeleteChats = async () => {
-    if (!sessionId) return;
-
-    try {
-      await deleteChatMessages(sessionId);
-      setChatMessages([]);
-      toast({
-        title: "Chats Cleared",
-        description: "All chat messages have been deleted.",
-      });
-    } catch (error) {
-      console.error("Error deleting chats:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete chats.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col h-full border-none overflow-hidden">
-        <div className="flex items-center justify-between p-2 border-b">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Shield className="h-4 w-4" />
-            <span>Secure Chat</span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDeleteChats}
-            disabled={!chatMessages || chatMessages.length === 0}
-          >
-            <Trash2 className="h-4 w-4 mr-1" />
-            Clear Chats
-          </Button>
-        </div>
+        {/* Secure message indicator */}
 
         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
           {[...(chatMessages ?? [])].map((message) => (

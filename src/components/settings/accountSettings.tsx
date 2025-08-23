@@ -20,6 +20,17 @@ import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { updateProfile, signOut } from "firebase/auth";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuthStore } from "@/store/auth-store";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
   const { dbUser } = useAuthStore();
@@ -73,6 +84,8 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
       console.error("Logout failed", err);
     }
   };
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDeleteAccount = async () => {
     if (!dbUser?.uid) return;
@@ -149,13 +162,41 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
             >
               Logout
             </Button>
-            <Button
-              onClick={handleDeleteAccount}
-              variant="ghost"
-              className="rounded-full px-4 py-2 transition-colors bg-white text-red-500 hover:bg-red-600 hover:text-white"
+            <AlertDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
             >
-              Delete Account
-            </Button>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="rounded-full px-4 py-2 transition-colors bg-white text-red-500 hover:bg-red-600 hover:text-white"
+                >
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete your account? This action
+                    cannot be undone. All your content will be lost and cannot
+                    be retrieved.{" "}
+                    <span className="hover:underline cursor-pointer text-blue-600">
+                      Read our data policy
+                    </span>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-600 text-white hover:bg-red-700"
+                    onClick={handleDeleteAccount}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
 

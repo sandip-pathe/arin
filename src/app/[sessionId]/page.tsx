@@ -3,7 +3,7 @@
 import useSessionStore from "@/store/session-store";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { FaLock } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa6";
 import { ChatWindow } from "@/components/follow-up-chat";
 import { Attachment, Paragraph, Session, SummaryItem } from "@/types/page";
 import { extractText } from "@/lib/extraction";
@@ -27,6 +27,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import {
+  deleteChatMessages,
   handleProcessingError,
   loadChatMessages,
   loadParagraphs,
@@ -43,7 +44,17 @@ import { PerformanceMonitor } from "@/components/monitor";
 import { ThinkingLoader } from "@/components/ProgressStepper";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonBox } from "@/components/Skeleton";
-import { set } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 export default function SessionPage() {
   const params = useParams();
@@ -55,6 +66,7 @@ export default function SessionPage() {
   const [progressMessage, setProgressMessage] = useState("");
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Zustand store hooks
   const {
@@ -449,6 +461,25 @@ export default function SessionPage() {
     [removeAttachment]
   );
 
+  const handleDeleteChats = async () => {
+    if (!sessionId) return;
+    try {
+      await deleteChatMessages(sessionId);
+      setChatMessages([]);
+      toast({
+        title: "Chats Cleared",
+        description: "All chat messages have been deleted.",
+      });
+    } catch (error) {
+      console.error("Error deleting chats:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete chats.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
       <PerformanceMonitor />
@@ -627,7 +658,43 @@ export default function SessionPage() {
                   <div className="p-4 font-medium">Chat</div>
                 </div>
                 <div className="flex items-center justify-start">
-                  <FaLock size={18} className="text-green-600 m-2" />
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <AlertDialog
+                      open={deleteDialogOpen}
+                      onOpenChange={setDeleteDialogOpen}
+                    >
+                      <AlertDialogTrigger asChild>
+                        <FaTrash
+                          size={18}
+                          className="text-gray-600 hover:text-red-600 m-2"
+                        />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Chats</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete your conversation?
+                            This action cannot be undone.{" "}
+                            <span className="hover:underline cursor-pointer text-blue-600">
+                              Read our data policy
+                            </span>
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-red-600 text-white hover:bg-red-700"
+                            onClick={handleDeleteChats}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </motion.div>
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}

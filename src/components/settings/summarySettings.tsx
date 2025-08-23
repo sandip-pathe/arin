@@ -36,8 +36,8 @@ export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
   ];
   const toneOptions = [
     { value: "professional", label: "Professional" },
-    { value: "medium", label: "Formal" },
-    { value: "long", label: "Casual" },
+    { value: "formal", label: "Formal" },
+    { value: "casual", label: "Casual" },
   ];
 
   const styleOptions = [

@@ -15,6 +15,7 @@ const BATCH_SIZE = 100;
  * - Processes paragraphs in batches
  * - Consolidates into one final result
  */
+
 export async function summarizeParagraphs(
   paragraphs: Paragraph[],
   progressCallback?: (percent: number) => void
@@ -76,47 +77,55 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
       .map((p) => `(${p.id}) ${p.text}`)
       .join("\n\n");
 
-    const prompt = `
-    You are a legal AI assistant analyzing legal documents.
-    - Generate a concise summary and extract key legal information from these paragraphs
-    - Remember the whole API call has lots of paragraphs but you have to treat them as one single document so that you DO NOT create summary about the individual paragraphs or DO NOT lose context
-    - do not include any personal opinions or interpretations.
-    - we are using citations and backtracking hence return from which para you summarized the text from. this is not strict you can skip the paragraphs who have no relevant information.
+    const PROCESS_BATCH_SYSTEM_PROMPT = `
+      You are a specialized legal AI assistant. Your role is to extract legal information with absolute precision. 
+      Do not provide legal advice, commentary, or interpretation. Only summarize what is explicitly in the text. 
 
-    Respond ONLY in valid JSON:
+      STRICT PRINCIPLES:
+        1. EXTRACT-ONLY: Do not invent or infer clauses. If uncertain, include the ambiguity as-is.
+        2. TRACEABILITY: Every item must include sourceParagraph IDs.
+        3. COMPLETENESS: Capture all legally relevant details — obligations, rights, definitions, conditions, clauses, dates, parties. 
+        4. SKIP: If a paragraph has no substantive legal content, skip it.
+        5. CONSISTENCY: Use legal terminology faithfully; preserve ambiguity and contradictions.
 
-    {
-      "summaries": [
-        {
-          "text": "Summary",
-          "sourceParagraphs": ["d1.p1"]
+      SCHEMA (respond ONLY in JSON):
+      {
+        "summaries": [
+          {
+            "text": "Summary",
+            "sourceParagraphs": ["d1.p1"]
+          }
+        ],
+        "ontologyCandidates": {
+          "definitions": [],
+          "obligations": [],
+          "rights": [],
+          "conditions": [],
+          "clauses": [],
+          "dates": [],
+          "parties": []
         }
-      ],
-      "ontologyCandidates": {
-        "definitions": [],
-        "obligations": [],
-        "rights": [],
-        "conditions": [],
-        "clauses": [],
-        "dates": [],
-        "parties": []
       }
-    }
+      `;
 
-
-    Paragraphs:
-    ${paragraphText}
-  `;
-
-    logPerf("Prompt created", { promptLength: prompt.length });
+    logPerf("Prompt created", {
+      promptLength: PROCESS_BATCH_SYSTEM_PROMPT.length,
+    });
 
     const apiTimer = startTimer("OpenAIAPIRequest");
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.2,
+      messages: [
+        { role: "system", content: PROCESS_BATCH_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `\n\n${paragraphText}`,
+        },
+      ],
+      temperature: 0.1,
       response_format: { type: "json_object" },
-      max_tokens: 3500,
+      max_tokens: 4000,
     });
     endTimer(apiTimer);
 
@@ -154,49 +163,63 @@ async function aggregateResults(
 
     const inputJson = JSON.stringify(batchResults, null, 2);
 
-    const prompt = `
-    You are a legal AI assistant consolidating multiple partial analyses.
-    Your job:
-    - Merge all "chunkSummary" fields into a single structured summary.
-    - Deduplicate and normalize "ontologyCandidates" across all chunks.
-      * If duplicate terms/parties/dates/rights exist, merge them into one.
-      * Ensure consistent legal phrasing and formatting.
-    - Maintain citations (sourceParagraphs) if provided in the chunks.
+    const AGGREGATE_SYSTEM_PROMPT = `
+      You are a senior legal analyst consolidating multiple batch analyses into a master structured summary.
+      Do not provide legal advice. Summarize faithfully without inventing content. 
 
-    Respond ONLY with valid JSON:
+      CORE RESPONSIBILITIES:
+        1. MERGE comprehensively: include all items across batches; do not drop information.
+        2. DEDUPLICATE carefully: merge only if identical in meaning. If parties, dates, or conditions differ, keep separate.
+        3. TRACEABILITY: Preserve all sourceParagraph citations.
+        4. CRITICAL CLAUSES: Verify presence/absence of indemnity, liability, termination, payment, confidentiality, governing law, dispute resolution. If not found, output "not found".
+        5. CONFLICTS: If contradictory clauses exist, output them separately in a "conflicts" section.
+        6. COMPLETENESS CHECK: Ensure all ontology items from Stage 1 appear in the final ontology.
+        7. PLAIN ENGLISH LAYER: Add accessible explanations, but keep legal fidelity.
+        8. NEUTRALITY: Do not give advice or opinions.
 
-    {
-      "title": "7-word unique title",
-      "summaries": [
-        {
-          "text": "Merged summary text",
-          "sourceParagraphs": ["d1.p1", "d1.p2", "..."]
+
+      USER SETTINGS:
+        - Length: ${settings.length} // short, medium, long
+        - Tone: ${settings.tone} // formal, professional, casual
+        - Jurisdiction: ${settings.jurisdiction} // e.g. "United States"
+        - Style: ${settings.style} // detailed, concise, narrative
+
+      FINAL OUTPUT SCHEMA (JSON only):
+      {
+        "title": "7-word unique title",
+        "summaries": [
+          {
+            "text": "induplicated summary text",
+            "sourceParagraphs": ["d1.p1", "d1.p2", "..."]
+          }
+        ],
+        "legalOntology": {
+          "definitions": [],
+          "obligations": [],
+          "rights": [],
+          "conditions": [],
+          "clauses": [],
+          "dates": [],
+          "parties": []
         }
-      ],
-      "legalOntology": {
-        "definitions": [],
-        "obligations": [],
-        "rights": [],
-        "conditions": [],
-        "clauses": [],
-        "dates": [],
-        "parties": []
-      }
     }
-
-    Batch Results:
-    ${inputJson}
-  `;
+      `;
 
     logPerf("Aggregation prompt created", { promptLength: prompt.length });
 
     const AggApiTimer = startTimer("OpenAIAggregationAPIRequest");
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        { role: "system", content: AGGREGATE_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `\n\n${inputJson}`,
+        },
+      ],
       temperature: 0.1,
       response_format: { type: "json_object" },
-      max_tokens: 5000,
+      max_tokens: 4000,
     });
     endTimer(AggApiTimer);
 

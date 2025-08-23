@@ -25,7 +25,7 @@ export const UnifiedSettingsModal = ({
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="chat">Chat</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
-              <TabsTrigger value="membership">Membership</TabsTrigger>
+              {/* <TabsTrigger value="membership">Membership</TabsTrigger> */}
             </TabsList>
 
             {/* Tab Panels */}

@@ -19,7 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Attachment } from "@/types/page";
 import {
@@ -41,6 +41,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useAuthStore } from "@/store/auth-store";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -69,12 +70,34 @@ export function WelcomeModal({
   extractionProgress,
   progressMessage,
 }: WelcomeModalProps) {
+  const { settings, updateSettings } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [selectedJurisdiction, setSelectedJurisdiction] =
     useState("indian-law");
   const [selectedResponseType, setSelectedResponseType] = useState("auto");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  useEffect(() => {
+    setSelectedJurisdiction(settings.jurisdiction);
+    setSelectedResponseType(settings.responseType);
+  }, [settings]);
+
+  const hasChanges = useMemo(() => {
+    return (
+      selectedJurisdiction !== settings.summary.jurisdiction ||
+      selectedResponseType !== settings.summary.responseType
+    );
+  }, [selectedJurisdiction, selectedResponseType, settings]);
+
+  const handleSave = async () => {
+    if (!hasChanges) return;
+    await updateSettings({
+      summary: {
+        jurisdiction: selectedJurisdiction,
+        responseType: selectedResponseType,
+      },
+    });
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
