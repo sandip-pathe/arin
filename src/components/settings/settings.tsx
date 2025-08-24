@@ -23,7 +23,7 @@ export const UnifiedSettingsModal = ({
             {/* Tab Bar */}
             <TabsList className="mb-4 flex justify-center items-center gap-2 w-full overflow-x-auto">
               <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="chat">Chat</TabsTrigger>
+              <TabsTrigger value="chat">Conversation</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
               {/* <TabsTrigger value="membership">Membership</TabsTrigger> */}
             </TabsList>

@@ -26,6 +26,8 @@ export const defaultSettings = {
     complexity: "balanced",
     tone: "professional",
     style: "detailed",
+    jurisdiction: "",
+    response: "auto",
   },
   chat: {
     conversationStyle: "balanced",
@@ -53,7 +55,10 @@ interface AuthState {
   setDbUser: (data: any) => void;
   setLoading: (loading: boolean) => void;
   initializeAuth: (user: User) => Promise<void>;
-  updateSettings: (newSettings: Partial<typeof defaultSettings>) => void;
+  updateSettings: (newSettings: {
+    summary?: Partial<typeof defaultSettings.summary>;
+    chat?: Partial<typeof defaultSettings.chat>;
+  }) => void;
   updateMembership: (newMembership: Partial<MembershipDetails>) => void;
   resetAuth: () => void;
 }
@@ -152,20 +157,21 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
+        // In your auth-store.ts, modify the updateSettings function
         updateSettings: (newSettings) =>
-          set((state) => ({
-            settings: {
+          set((state) => {
+            const updatedSettings = {
               summary: { ...state.settings.summary, ...newSettings.summary },
               chat: { ...state.settings.chat, ...newSettings.chat },
-            },
-            dbUser: {
-              ...state.dbUser,
-              settings: {
-                ...state.settings,
-                ...newSettings,
+            };
+            return {
+              settings: updatedSettings,
+              dbUser: {
+                ...state.dbUser,
+                settings: updatedSettings,
               },
-            },
-          })),
+            };
+          }),
 
         updateMembership: (newMembership) =>
           set((state) => ({

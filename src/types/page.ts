@@ -26,6 +26,11 @@ export type Ontology = {
   clauses: string[];
   dates: string[];
   parties: string[];
+  proceduralPosture: string[];
+  courtAndJudges: string[];
+  conflicts: string[];
+  implications: string[];
+  citationsAndPrecedents: string[];
 };
 
 export type Attachment = {

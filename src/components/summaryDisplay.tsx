@@ -62,6 +62,7 @@ export default function SummaryDisplay({
 
   if (loading) return <SummaryLoading />;
   if (!summary) return;
+  console.log("Rendering SummaryDisplay with data:", summary);
 
   return (
     <div className="space-y-6 h-full flex flex-col">

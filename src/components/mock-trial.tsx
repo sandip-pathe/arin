@@ -121,7 +121,7 @@ export const MockTrialChat = ({
       console.error("Session ID not found.");
       toast({
         title: "Session Error",
-        description: "Session ID is required to use the chat feature.",
+        description: "Session ID is required to use the conversation feature.",
         variant: "destructive",
       });
       return;

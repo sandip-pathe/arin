@@ -38,7 +38,7 @@ import { ChatSettingsModal } from "@/components/settings/chatSettings";
 import { SummarySettingsModal } from "@/components/settings/summarySettings";
 import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
-import { summarizeParagraphs } from "@/lib/ChatGPT+api";
+import { summarizeParagraphs } from "@/lib/summary+api";
 import { endTimer, logPerf, startTimer } from "@/lib/hi";
 import { PerformanceMonitor } from "@/components/monitor";
 import { ThinkingLoader } from "@/components/ProgressStepper";
@@ -67,11 +67,10 @@ export default function SessionPage() {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [paragraphCount, setParagraphCount] = useState(0);
 
   // Zustand store hooks
   const {
-    context,
-    setContext,
     activeSession,
     setActiveSession,
     isLoading,
@@ -282,15 +281,7 @@ export default function SessionPage() {
         endTimer(loadTimer);
       }
     },
-    [
-      user,
-      setActiveSession,
-      setSummaries,
-      setContext,
-      setUserInput,
-      toast,
-      router,
-    ]
+    [user, setActiveSession, setSummaries, setUserInput, toast, router]
   );
 
   const handleSend = useCallback(async () => {
@@ -302,6 +293,7 @@ export default function SessionPage() {
       const inputTimer = startTimer("ProcessInputs");
       const inputTextParagraphs = await processAllInputs();
       setInputText("");
+      setParagraphCount(inputTextParagraphs.length);
       setShowWelcomeModal(false);
       endTimer(inputTimer);
       logPerf("Input processing completed", {
@@ -317,7 +309,7 @@ export default function SessionPage() {
         }
       );
       endTimer(summarizeTimer);
-      logPerf("Summarization completed", { itemCount: result.summary.length });
+      logPerf("Summarization completed", result);
       setSummaries(result);
       setParagraphs(inputTextParagraphs);
 
@@ -512,12 +504,7 @@ export default function SessionPage() {
         <Sidebar sessionId={sessionId!} />
 
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white"
-          >
+          <motion.div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
             <div className="z-10 border-b flex items-center justify-between py-2">
               <div className="flex items-center">
                 <div className="p-2 ml-10 font-medium">Summary</div>
@@ -637,10 +624,7 @@ export default function SessionPage() {
           {isChatOpen ? (
             <motion.aside
               key="chat-open"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2 }}
               className="w-1/4 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
             >
               <div className="z-10 border-b flex items-center justify-between">
@@ -732,7 +716,7 @@ export default function SessionPage() {
                       setIsChatCollapsed={setIsChatCollapsed}
                       key={sessionId}
                       sessionId={sessionId!}
-                      context={context}
+                      summary={summaries}
                     />
                   </motion.div>
                 )}

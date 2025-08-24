@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ChatMessages } from "@/types/page";
+import { ChatMessages, SummaryItem } from "@/types/page";
 import { v7 } from "uuid";
 import { saveChatMessage } from "@/lib/functions";
 import { useToast } from "@/hooks/use-toast";
-import { ChatWithOpenAI } from "@/lib/utils";
+import { ChatWithOpenAI } from "@/lib/chat+api";
 
 interface ChatWindowProps {
   chatMessages?: ChatMessages[];
@@ -15,14 +15,14 @@ interface ChatWindowProps {
     messages: ChatMessages[] | ((prev: ChatMessages[]) => ChatMessages[])
   ) => void;
   sessionId: string | null;
-  context: string;
+  summary: SummaryItem | null;
   setIsChatCollapsed: (val: boolean) => void;
 }
 
 export const ChatWindow = ({
   chatMessages,
   sessionId,
-  context,
+  summary,
   setChatMessages,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -66,7 +66,7 @@ export const ChatWindow = ({
     saveChatMessage(userMessage, sessionId);
 
     try {
-      const data = await ChatWithOpenAI(context, inputMessageText);
+      const data = await ChatWithOpenAI(summary!, inputMessageText);
 
       const aiMessage: ChatMessages = {
         id: v7(),
@@ -78,9 +78,9 @@ export const ChatWindow = ({
       setChatMessages((prev) => [...(prev ?? []), aiMessage]);
       saveChatMessage(aiMessage, sessionId);
     } catch (error) {
-      console.error(`[${context}]`, error);
+      console.error(`[${summary}]`, error);
       toast({
-        title: `${context} Failed`,
+        title: `${summary} Failed`,
         description:
           error instanceof Error ? error.message : "Unexpected error occurred",
         variant: "destructive",
@@ -140,12 +140,15 @@ export const ChatWindow = ({
               value={inputMessageText}
               onChange={(e) => setInputMessageText(e.target.value)}
               onKeyDown={handleKeyDown}
-              autoFocus
             />
             <Button
               size="icon"
               className="rounded-full h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              disabled={isProcessingChat || inputMessageText.trim() === ""}
+              disabled={
+                isProcessingChat ||
+                inputMessageText.trim() === "" ||
+                summary === null
+              }
               onClick={handleChatSubmit}
             >
               <ArrowUp className="h-5 w-5 text-white" />

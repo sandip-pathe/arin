@@ -1,102 +1,116 @@
 // OntologyDisplay.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Ontology } from "@/types/page";
-import { ONTOLOGY_COLORS } from "@/lib/data";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { FaStarOfLife } from "react-icons/fa";
 
 type OntologyDisplayProps = {
   ontology: Ontology;
 };
 
-export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
-  const nonEmptyOntology = Object.entries(ontology)
-    .filter(([_, values]) => values.length > 0)
-    .map(([key, values]) => ({
-      key: key as keyof Ontology,
-      values,
-      title: key.charAt(0).toUpperCase() + key.slice(1),
-      color: ONTOLOGY_COLORS[key as keyof Ontology],
-    }));
+// Define the desired sequence of ontology categories
+const ONTOLOGY_SEQUENCE = [
+  "parties",
+  "obligations",
+  "rights",
+  "conditions",
+  "clauses",
+  "definitions",
+  "dates",
+  "proceduralPosture",
+  "courtAndJudges",
+  "conflicts",
+  "implications",
+  "citationsAndPrecedents",
+] as const;
 
-  const sortedOntology = [...nonEmptyOntology].sort(
-    (a, b) => b.values.length - a.values.length
+export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
+  // Filter and order ontology categories according to sequence
+  const orderedOntology = ONTOLOGY_SEQUENCE.filter(
+    (key) => ontology[key]?.length > 0
+  ).map((key) => ({
+    key,
+    values: ontology[key],
+    title: key.charAt(0).toUpperCase() + key.slice(1),
+  }));
+
+  // Track which sections are open (first one open by default)
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+    () => {
+      const initialOpen: Record<string, boolean> = {};
+      if (orderedOntology.length > 0) {
+        initialOpen[orderedOntology[0].key] = true;
+      }
+      return initialOpen;
+    }
   );
 
-  if (nonEmptyOntology.length === 0) return null;
+  const toggleSection = (key: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  if (orderedOntology.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-md p-4 max-w-4xl gap-6 grid grid-cols-1 md:grid-cols-2">
-      {sortedOntology.map(({ key, values, title, color }) => (
-        <div key={key} className="w-auto">
-          <h3
-            className={`text-lg font-semibold mb-2 flex items-center gap-2 ${
-              key === "definitions"
-                ? "text-blue-600"
-                : key === "obligations"
-                ? "text-green-600"
-                : key === "rights"
-                ? "text-yellow-600"
-                : key === "conditions"
-                ? "text-purple-600"
-                : key === "clauses"
-                ? "text-pink-600"
-                : key === "dates"
-                ? "text-indigo-600"
-                : "text-teal-600"
-            }`}
-          >
-            <div className="w-3 h-3 rounded-full bg-current" />
-            {title}
-          </h3>
-          <ul className="space-y-1 pl-1">
+    <div className="w-full pt-6 max-w-4xl mx-auto space-y-1">
+      {orderedOntology.map(({ key, values, title }) => (
+        <Collapsible
+          key={key}
+          open={openSections[key]}
+          onOpenChange={() => toggleSection(key)}
+          className="border-b bg-white/60 backdrop-blur-sm hover:shadow-md transition-shadow"
+        >
+          <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 rounded-full bg-gradient-to-br from-gray-100 to-gray-200">
+                <FaStarOfLife className="w-3 h-3 text-gray-500" />
+              </div>
+              <h3 className="text-lg font-semibold tracking-tight text-gray-900">
+                {title}
+                <span className="text-sm text-gray-500 ml-2 font-normal">
+                  {values.length}
+                </span>
+              </h3>
+            </div>
+            {openSections[key] ? (
+              <ChevronDown className="h-5 w-5 text-gray-400" />
+            ) : (
+              <ChevronRight className="h-5 w-5 text-gray-400" />
+            )}
+          </CollapsibleTrigger>
+
+          <CollapsibleContent className="px-6 pb-5 space-y-3">
             {values.map((value, i) => (
-              <li key={i} className="leading-relaxed">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <span
-                      className={`inline-block text-sm rounded-none px-2 bg-opacity-30 cursor-pointer ${
-                        key === "definitions"
-                          ? "bg-blue-200 dark:bg-blue-800"
-                          : key === "obligations"
-                          ? "bg-green-200 dark:bg-green-800"
-                          : key === "rights"
-                          ? "bg-yellow-200 dark:bg-yellow-800"
-                          : key === "conditions"
-                          ? "bg-purple-200 dark:bg-purple-800"
-                          : key === "clauses"
-                          ? "bg-pink-200 dark:bg-pink-800"
-                          : key === "dates"
-                          ? "bg-indigo-200 dark:bg-indigo-800"
-                          : "bg-teal-200 dark:bg-teal-800"
-                      }`}
-                    >
-                      {typeof value === "string"
-                        ? value
-                        : Object.values(value).join(", ")}
-                    </span>
-                  </PopoverTrigger>
-                  <PopoverContent className="max-w-md text-sm">
-                    {typeof value === "string" ? (
-                      value
-                    ) : (
-                      <div className="flex flex-col text-sm">
-                        {Object.entries(value).map(([k, v]) => (
-                          <span key={k}>
-                            <strong>{k}:</strong> {String(v)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
-              </li>
+              <div
+                key={i}
+                className="text-sm p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-inner"
+              >
+                {typeof value === "string" ? (
+                  <p className="text-gray-700 leading-relaxed">{value}</p>
+                ) : (
+                  <div className="space-y-1">
+                    {Object.entries(value).map(([k, v]) => (
+                      <p key={k}>
+                        <span className="font-medium capitalize text-gray-800">
+                          {k}:
+                        </span>{" "}
+                        <span className="text-gray-600">{String(v)}</span>
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
-          </ul>
-        </div>
+          </CollapsibleContent>
+        </Collapsible>
       ))}
     </div>
   );

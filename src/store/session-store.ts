@@ -175,6 +175,18 @@ const useSessionStore = create<SessionState>((set) => ({
       summaries: null,
       inputText: "",
       isInputCollapsed: false,
+      chatMessages: [],
+      activeSession: null,
+      isLoading: false,
+      isProcessingDocument: false,
+      loadingStates: {
+        chunks: false,
+        chats: false,
+        session: false,
+        summary: false,
+      },
+      isProcessingChat: false,
+      userInput: "",
     }),
 }));
 

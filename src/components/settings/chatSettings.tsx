@@ -93,7 +93,9 @@ export const ChatSettings = ({ onClose }: { onClose?: () => void }) => {
     >
       <Card className="border-0">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Chat Settings</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            Conversation Settings
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -172,7 +174,7 @@ export const ChatSettingsModal = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTitle className="sr-only">Chat Settings</DialogTitle>
+      <DialogTitle className="sr-only">Conversation Settings</DialogTitle>
       <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
         <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
           <ChatSettings onClose={() => onOpenChange(false)} />

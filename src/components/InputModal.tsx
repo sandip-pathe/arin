@@ -17,6 +17,7 @@ import {
   File,
   FileSpreadsheet,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef, useState, useEffect, useMemo } from "react";
@@ -42,6 +43,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/auth-store";
+import { FaPaperclip } from "react-icons/fa6";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -72,32 +74,78 @@ export function WelcomeModal({
 }: WelcomeModalProps) {
   const { settings, updateSettings } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedJurisdiction, setSelectedJurisdiction] =
-    useState("indian-law");
-  const [selectedResponseType, setSelectedResponseType] = useState("auto");
+  const [jurisdiction, setJurisdiction] = useState("indian-law");
+  const [response, setResponse] = useState("auto");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [cameraPermission, setCameraPermission] =
+    useState<PermissionState | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    setSelectedJurisdiction(settings.jurisdiction);
-    setSelectedResponseType(settings.responseType);
+    const checkMobile = () => {
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    setJurisdiction(settings.summary.jurisdiction);
+    setResponse(settings.summary.response);
   }, [settings]);
+
+  // Check camera permissions
+  useEffect(() => {
+    const checkCameraPermission = async () => {
+      try {
+        if (navigator.permissions && navigator.permissions.query) {
+          const permissionStatus = await navigator.permissions.query({
+            name: "camera" as PermissionName,
+          });
+          setCameraPermission(permissionStatus.state);
+
+          permissionStatus.onchange = () => {
+            setCameraPermission(permissionStatus.state);
+          };
+        } else {
+          // Fallback for browsers that don't support Permissions API
+          setCameraPermission("prompt");
+        }
+      } catch (error) {
+        console.error("Error checking camera permission:", error);
+        setCameraPermission("prompt");
+      }
+    };
+
+    checkCameraPermission();
+  }, []);
 
   const hasChanges = useMemo(() => {
     return (
-      selectedJurisdiction !== settings.summary.jurisdiction ||
-      selectedResponseType !== settings.summary.responseType
+      jurisdiction !== settings.summary.jurisdiction ||
+      response !== settings.summary.response
     );
-  }, [selectedJurisdiction, selectedResponseType, settings]);
+  }, [jurisdiction, response, settings]);
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!hasChanges) return;
-    await updateSettings({
+    updateSettings({
       summary: {
-        jurisdiction: selectedJurisdiction,
-        responseType: selectedResponseType,
+        jurisdiction: jurisdiction,
+        response: response,
       },
     });
   };
+
+  useEffect(() => {
+    if (hasChanges) {
+      handleSave();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jurisdiction, response]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -108,9 +156,9 @@ export function WelcomeModal({
       if (inputText.length > 200) {
         textareaRef.current.style.fontSize = "1rem";
       } else if (inputText.length > 100) {
-        textareaRef.current.style.fontSize = "1.2rem";
-      } else {
         textareaRef.current.style.fontSize = "1.5rem";
+      } else {
+        textareaRef.current.style.fontSize = "1.7rem";
       }
     }
   }, [inputText]);
@@ -123,6 +171,49 @@ export function WelcomeModal({
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handleCameraCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => onFileAdded(file));
+
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = "";
+    }
+  };
+
+  const requestCameraAccess = async () => {
+    try {
+      // For mobile devices, we'll rely on the native camera app
+      if (isMobile) {
+        cameraInputRef.current?.click();
+        return;
+      }
+
+      // For desktop, we need to request camera permission
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      // Close the stream immediately since we just needed to request permission
+      stream.getTracks().forEach((track) => track.stop());
+
+      // Update permission status
+      if (navigator.permissions) {
+        const permissionStatus = await navigator.permissions.query({
+          name: "camera" as PermissionName,
+        });
+        setCameraPermission(permissionStatus.state);
+      }
+
+      // Trigger camera input click if permission is granted
+      cameraInputRef.current?.click();
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      setCameraPermission("denied");
+      alert(
+        "Camera access is required to capture images. Please enable camera permissions in your browser settings."
+      );
     }
   };
 
@@ -189,6 +280,7 @@ export function WelcomeModal({
               <Card className="bg-white rounded-xl shadow-none border-dashed border-2 border-gray-200 overflow-hidden">
                 <CardContent className="md:p-6 border-none">
                   <div className="flex flex-col border-none">
+                    {/* Regular file input for non-mobile or when user wants to select from files */}
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -196,6 +288,17 @@ export function WelcomeModal({
                       className="hidden"
                       accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.png,.jpg,.jpeg"
                       multiple
+                      {...(isMobile ? {} : {})}
+                    />
+
+                    {/* Camera-specific input for mobile devices */}
+                    <input
+                      type="file"
+                      ref={cameraInputRef}
+                      onChange={handleCameraCapture}
+                      className="hidden"
+                      accept="image/*"
+                      capture="environment"
                     />
 
                     {/* Text input area */}
@@ -203,7 +306,7 @@ export function WelcomeModal({
                       <Textarea
                         ref={textareaRef}
                         autoFocus
-                        placeholder="Type your message or question here..."
+                        placeholder="Paste the text here. . ."
                         className={`
                           w-full bg-white border-none focus:ring-0 focus:outline-0 
                           placeholder:text-gray-300 placeholder:text-2xl resize-none p-4 rounded-lg transition-all duration-200
@@ -221,6 +324,7 @@ export function WelcomeModal({
                           minHeight: "120px",
                           lineHeight: "1.5",
                           overflowY: "auto",
+                          outline: "none",
                         }}
                       />
                       {inputText.length > 0 && (
@@ -303,43 +407,11 @@ export function WelcomeModal({
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={isProcessing}
                               >
-                                <Paperclip className="h-5 w-5" />
+                                <FaPaperclip size={30} className="h-10 w-10" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Upload File</p>
-                            </TooltipContent>
-                          </Tooltip>
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full h-10 w-10"
-                                disabled={isProcessing}
-                              >
-                                <Link className="h-5 w-5" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Add Link</p>
-                            </TooltipContent>
-                          </Tooltip>
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full h-10 w-10"
-                                disabled={isProcessing}
-                              >
-                                <Camera className="h-5 w-5" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Capture Image</p>
                             </TooltipContent>
                           </Tooltip>
 
@@ -416,17 +488,15 @@ export function WelcomeModal({
                     <Button
                       key={option.value}
                       variant={
-                        selectedJurisdiction === option.value
-                          ? "default"
-                          : "outline"
+                        jurisdiction === option.value ? "default" : "outline"
                       }
                       className={cn(
                         "rounded-full px-4 py-2 transition-colors",
-                        selectedJurisdiction === option.value
+                        jurisdiction === option.value
                           ? "bg-blue-600 text-white"
                           : "bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
                       )}
-                      onClick={() => setSelectedJurisdiction(option.value)}
+                      onClick={() => setJurisdiction(option.value)}
                     >
                       {option.label}
                     </Button>
@@ -437,17 +507,15 @@ export function WelcomeModal({
                     <Button
                       key={option.value}
                       variant={
-                        selectedResponseType === option.value
-                          ? "default"
-                          : "outline"
+                        response === option.value ? "default" : "outline"
                       }
                       className={cn(
                         "rounded-full px-4 py-2 transition-colors",
-                        selectedResponseType === option.value
+                        response === option.value
                           ? "bg-blue-600 text-white"
                           : "bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
                       )}
-                      onClick={() => setSelectedResponseType(option.value)}
+                      onClick={() => setResponse(option.value)}
                     >
                       {option.label}
                     </Button>
