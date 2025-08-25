@@ -224,3 +224,52 @@ textarea::-webkit-scrollbar-track {
 .animate-float-delayed {
   animation: float-delayed 4s ease-in-out infinite;
 }
+
+@layer utilities {
+  /* Gradient text fill (lux legal palette) */
+  .anaya-gradient {
+    background-image: linear-gradient(
+      90deg,
+      #0f172a 0%,
+      #2563eb 25%,
+      #7c3aed 50%,
+      #2563eb 75%,
+      #0f172a 100%
+    );
+    background-size: 200% 100%;               /* room to shimmer */
+    background-position: 200% 0;              /* starting position */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;                       /* fill = gradient */
+    -webkit-text-fill-color: transparent;     /* Safari, just in case */
+  }
+
+  /* Underline gradient (subtle prestige) */
+  .anaya-underline-bar {
+    background: linear-gradient(
+      90deg,
+      rgba(37,99,235,0) 0%,
+      rgba(37,99,235,.7) 20%,
+      rgba(124,58,237,.8) 80%,
+      rgba(124,58,237,0) 100%
+    );
+  }
+}
+
+/* Keyframes live globally, so no scoping issues */
+@keyframes anaya-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes anaya-underline-grow {
+  0%   { width: 0%;   opacity: .6; }
+  40%  { width: 76%;  opacity: 1;  }
+  60%  { width: 76%;  opacity: 1;  }
+  100% { width: 0%;   opacity: .6; }
+}
+
+/* Motion respect (users who prefer less motion) */
+@media (prefers-reduced-motion: reduce) {
+  .anaya-gradient { animation: none !important; }
+  .anaya-underline { animation: none !important; }
+}

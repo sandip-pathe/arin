@@ -53,9 +53,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DEBUG_PERF, logPerf, startTimer, endTimer } from "@/lib/hi";
+import MasterLoader from "@/components/home-loader";
 
 export default function HomePage() {
   const timerId = startTimer("HomePage Render");
+  const [pageLoading, setPageLoading] = useState(true);
   const { user, loading } = useAuthStore();
   const router = useRouter();
   const [sessions, setSessions] = useState<MinimalSession[]>([]);
@@ -351,6 +353,15 @@ export default function HomePage() {
     resetSessionState();
     router.push(`/${newId}?new=true`);
   };
+
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => setPageLoading(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (pageLoading) return <MasterLoader />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#fafafa] to-[#f1f5f9]">
