@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -57,8 +56,7 @@ import MasterLoader from "@/components/home-loader";
 
 export default function HomePage() {
   const timerId = startTimer("HomePage Render");
-  const [pageLoading, setPageLoading] = useState(true);
-  const { user, loading } = useAuthStore();
+  const { user, loading: authLoading } = useAuthStore();
   const router = useRouter();
   const [sessions, setSessions] = useState<MinimalSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
@@ -80,10 +78,10 @@ export default function HomePage() {
   } = useSessionStore();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, authLoading, router]);
 
   const fetchNonarchived = async () => {
     const fetchTimer = startTimer("fetchNonarchived");
@@ -202,7 +200,7 @@ export default function HomePage() {
     };
 
     if (user) fetchSessions();
-  }, [user, loading]);
+  }, [user, authLoading]);
 
   useEffect(() => {
     if (active === "archived" && archived.length === 0) {
@@ -354,14 +352,9 @@ export default function HomePage() {
     router.push(`/${newId}?new=true`);
   };
 
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => setPageLoading(false), 800);
-      return () => clearTimeout(timer);
-    }
-  }, [loading]);
-
-  if (pageLoading) return <MasterLoader />;
+  if (!user) {
+    return <MasterLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#fafafa] to-[#f1f5f9]">
@@ -489,7 +482,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-            ) : sessions.length > 0 ? (
+            ) : sortedSessions.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {sortedSessions.map((session) => (
                   <NotebookCard

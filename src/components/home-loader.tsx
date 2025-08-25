@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function MasterLoader() {
   return (
-    <div className="fixed inset-0 z-[9999] grid place-items-center bg-neutral-50">
+    <div className="fixed inset-0 z-[9999] grid place-items-center bg-gradient-to-br from-white via-[#fafafa] to-[#f1f5f9]">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -40,7 +40,7 @@ export default function MasterLoader() {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.45 }}
-          className="mt-5 text-neutral-500 text-base md:text-lg font-medium tracking-wide"
+          className="mt-5 text-blue-500 text-base md:text-lg font-medium tracking-wide"
         >
           The Legal Intelligence Platform
         </motion.p>

@@ -40,6 +40,11 @@ export default function SummaryDisplay({
         clauses: [],
         dates: [],
         parties: [],
+        proceduralPosture: [],
+        courtAndJudges: [],
+        conflicts: [],
+        implications: [],
+        citationsAndPrecedents: [],
       };
     }
 
@@ -65,7 +70,7 @@ export default function SummaryDisplay({
   console.log("Rendering SummaryDisplay with data:", summary);
 
   return (
-    <div className="space-y-6 h-full flex flex-col">
+    <div className="h-full flex flex-col">
       <SummaryContent summary={summary} paragraphs={paragraphs} />
       <OntologyDisplay ontology={mergedOntology} />
       <DownloadSummaryModal

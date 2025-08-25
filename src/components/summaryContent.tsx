@@ -39,8 +39,8 @@ export default function SummaryContent({
 
   return (
     <>
-      <Card className="bg-white border-none shadow-none flex-1 min-h-0 overflow-auto">
-        <CardContent className="max-w-3xl">
+      <Card className="bg-white max-w-4xl justify-start border-none shadow-none flex-1 min-h-0 overflow-auto">
+        <CardContent className="">
           <div className="prose max-w-none">
             <div>
               {summary.summary.map((part, partIndex) => {
@@ -51,7 +51,7 @@ export default function SummaryContent({
 
                 return (
                   <React.Fragment key={partIndex}>
-                    <span className="inline">
+                    <span className="inline whitespace-pre-wrap">
                       {part.text}
                       {/* Citations inline */}
                       {[...uniqueSources].map((id) => {

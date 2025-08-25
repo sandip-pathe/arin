@@ -60,13 +60,13 @@ export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
   if (orderedOntology.length === 0) return null;
 
   return (
-    <div className="w-full pt-6 max-w-4xl mx-auto space-y-1">
+    <div className="pt-6 max-w-3xl justify-start space-y-1">
       {orderedOntology.map(({ key, values, title }) => (
         <Collapsible
           key={key}
           open={openSections[key]}
           onOpenChange={() => toggleSection(key)}
-          className="border-b bg-white/60 backdrop-blur-sm hover:shadow-md transition-shadow"
+          className="border-b bg-white/60 backdrop-blur-sm hover:shadow-md rounded-xl transition-shadow"
         >
           <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-4">
             <div className="flex items-center gap-3">
@@ -87,11 +87,11 @@ export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
             )}
           </CollapsibleTrigger>
 
-          <CollapsibleContent className="px-6 pb-5 space-y-3">
+          <CollapsibleContent className="px-6 pb-5 space-y-2">
             {values.map((value, i) => (
               <div
                 key={i}
-                className="text-sm p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-inner"
+                className="text-sm p-2 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100"
               >
                 {typeof value === "string" ? (
                   <p className="text-gray-700 leading-relaxed">{value}</p>

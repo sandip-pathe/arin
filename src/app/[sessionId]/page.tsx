@@ -474,7 +474,6 @@ export default function SessionPage() {
 
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
-      <PerformanceMonitor />
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
         {activeSession?.title && (
@@ -506,8 +505,10 @@ export default function SessionPage() {
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
           <motion.div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
             <div className="z-10 border-b flex items-center justify-between py-2">
-              <div className="flex items-center">
-                <div className="p-2 ml-10 font-medium">Summary</div>
+              <div className="flex items-center justify-between w-full">
+                <div className="p-2 ml-10 font-medium">
+                  Briefs & Legal Key Insights
+                </div>
                 {(activeSession?.noOfAttachments ?? 0) > 0 && (
                   <motion.span
                     initial={{ opacity: 0 }}
@@ -534,7 +535,13 @@ export default function SessionPage() {
               </motion.div>
             </div>
 
-            <div className="flex-1 min-h-0 overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
+            <div
+              className="flex-1 min-h-0 overflow-auto"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#cbd5e1 transparent",
+              }}
+            >
               <div ref={summaryRef} className="p-6">
                 <AnimatePresence mode="wait">
                   {/* Initial loading state (session data) */}
@@ -564,7 +571,7 @@ export default function SessionPage() {
                     >
                       <ThinkingLoader
                         isSummarizing={isSummarizing}
-                        paragraphsCount={paragraphs.length}
+                        paragraphsCount={paragraphCount}
                       />
                     </motion.div>
                   ) : !summaries && user?.uid === activeSession?.userId ? (
@@ -737,7 +744,7 @@ export default function SessionPage() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <IoChatbox
-                    className="cursor-pointer m-2"
+                    className="cursor-pointer m-2 text-gray-600"
                     size={24}
                     onClick={toggleChat}
                   />

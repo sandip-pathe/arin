@@ -8,7 +8,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 50;
 
 /**
  * Main entrypoint
@@ -72,7 +72,7 @@ export async function summarizeParagraphs(
 async function processBatch(paragraphs: Paragraph[], settings: any) {
   const batchTimer = startTimer(`OpenAIBatch-${paragraphs[0]?.id}`);
   try {
-    logPerf("Sending to OpenAI", { paragraphCount: paragraphs.length });
+    logPerf("Batch Processing", { paragraphCount: paragraphs.length });
     const paragraphText = paragraphs
       .map((p) => `(${p.id}) ${p.text}`)
       .join("\n\n");
