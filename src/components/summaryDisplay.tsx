@@ -13,7 +13,7 @@ import SummaryContent from "./summaryContent";
 type Props = {
   paragraphs: Paragraph[];
   summary: SummaryItem | null;
-  loading?: boolean;
+  onCitationClick?: (sourceId: string) => void;
 };
 
 export type DownloadOptions = {
@@ -25,7 +25,7 @@ export type DownloadOptions = {
 export default function SummaryDisplay({
   paragraphs,
   summary,
-  loading,
+  onCitationClick,
 }: Props) {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const { generatePDF, isGeneratingPDF } = usePDFGenerator();
@@ -65,13 +65,16 @@ export default function SummaryDisplay({
     }
   };
 
-  if (loading) return <SummaryLoading />;
   if (!summary) return;
   console.log("Rendering SummaryDisplay with data:", summary);
 
   return (
-    <div className="h-full flex flex-col">
-      <SummaryContent summary={summary} paragraphs={paragraphs} />
+    <div className="h-full flex items-center flex-col">
+      <SummaryContent
+        onCitationClick={onCitationClick ?? (() => {})}
+        summary={summary}
+        paragraphs={paragraphs}
+      />
       <OntologyDisplay ontology={mergedOntology} />
       <DownloadSummaryModal
         open={isDownloadModalOpen}

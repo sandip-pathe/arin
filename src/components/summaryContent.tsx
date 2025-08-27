@@ -1,24 +1,21 @@
 // SummaryContent.tsx (inline prose with periodic paragraph breaks)
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { SummaryItem, Paragraph } from "@/types/page";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { formatContent } from "@/lib/content-formatting";
 import { logPerf } from "@/lib/hi";
 
 type SummaryContentProps = {
   summary: SummaryItem;
   paragraphs: Paragraph[];
+  onCitationClick: (sourceId: string) => void;
 };
 
 export default function SummaryContent({
   summary,
   paragraphs,
+  onCitationClick,
 }: SummaryContentProps) {
-  const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-
-  const { refMap, paraMap } = React.useMemo(() => {
+  const { refMap } = React.useMemo(() => {
     const refMap = new Map<string, number>();
     const paraMap = new Map<string, Paragraph>();
 
@@ -30,17 +27,10 @@ export default function SummaryContent({
     return { refMap, paraMap };
   }, [paragraphs]);
 
-  const handleCitationClick = (id: string) => {
-    setCurrentSourceId(id);
-    setSheetOpen(true);
-  };
-
-  logPerf("SummaryContent rendered", summary);
-
   return (
     <>
-      <Card className="bg-white max-w-4xl justify-start border-none shadow-none flex-1 min-h-0 overflow-auto">
-        <CardContent className="">
+      <Card className="max-w-3xl w-full border-none shadow-none flex-1 min-h-0 overflow-auto">
+        <CardContent>
           <div className="prose max-w-none">
             <div>
               {summary.summary.map((part, partIndex) => {
@@ -62,7 +52,7 @@ export default function SummaryContent({
                           <span
                             key={id}
                             className="w-5 h-5 justify-center rounded-full text-xs font-semibold cursor-pointer hover:scale-150 ml-1 inline-flex items-center bg-blue-200 p-0"
-                            onClick={() => handleCitationClick(id)}
+                            onClick={() => onCitationClick(id)}
                           >
                             {refNum}
                           </span>
@@ -79,7 +69,7 @@ export default function SummaryContent({
         </CardContent>
       </Card>
 
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+      {/* <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetTitle className="sr-only">Source Reference</SheetTitle>
         <SheetContent side="right" className="overflow-y-auto p-6 sm:max-w-xl">
           <div className="prose">
@@ -123,7 +113,7 @@ export default function SummaryContent({
             ))}
           </div>
         </SheetContent>
-      </Sheet>
+      </Sheet> */}
     </>
   );
 }

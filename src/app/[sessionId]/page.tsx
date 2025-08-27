@@ -40,7 +40,6 @@ import SummaryDisplay from "@/components/summaryDisplay";
 import { useAuthStore } from "@/store/auth-store";
 import { summarizeParagraphs } from "@/lib/summary+api";
 import { endTimer, logPerf, startTimer } from "@/lib/hi";
-import { PerformanceMonitor } from "@/components/monitor";
 import { ThinkingLoader } from "@/components/ProgressStepper";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonBox } from "@/components/Skeleton";
@@ -55,6 +54,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import CitationView from "@/components/source-viewer";
 
 export default function SessionPage() {
   const params = useParams();
@@ -68,6 +68,10 @@ export default function SessionPage() {
   const [initialized, setInitialized] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [paragraphCount, setParagraphCount] = useState(0);
+  const [activeRightPanel, setActiveRightPanel] = useState<
+    "chat" | "citation" | "closed"
+  >("closed");
+  const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
 
   // Zustand store hooks
   const {
@@ -94,8 +98,6 @@ export default function SessionPage() {
     setChatMessages,
     setIsChatCollapsed,
     isSidebarOpen,
-    isChatOpen,
-    toggleChat,
     showChatSettingsModal,
     setShowChatSettingsModal,
     showSummarySettingsModal,
@@ -111,18 +113,12 @@ export default function SessionPage() {
   const nextDocumentIndex = useRef(1);
   const sessionInitialized = useRef(false);
 
-  // Derived state for shared session
-  const isSharedWithUser = useMemo(() => {
-    if (!activeSession || !user) return false;
-    return (
-      activeSession.owner !== user?.email &&
-      activeSession.sharedWith?.includes(user?.email ?? "")
-    );
-  }, [activeSession, user]);
+  const isNew = searchParams.get("new") === "true";
 
   useEffect(() => {
     const initTimer = startTimer("SessionInitialization");
-    if (user === null) {
+
+    if (!user) {
       logPerf("User not authenticated - redirecting to login");
       router.push("/login");
       return;
@@ -134,14 +130,12 @@ export default function SessionPage() {
     }
     setInitialized(true);
 
-    const isNew = searchParams.get("new") === "true";
-    logPerf(`Session initialization params`, { sessionId, isNew });
-
     if (!sessionId) {
-      logPerf("Generating new session ID");
-      const newId = v7();
-      router.replace(`/${newId}?new=true`);
-    } else if (isNew) {
+      logPerf("No SessionId");
+      return;
+    }
+
+    if (isNew) {
       logPerf("Creating new session");
       createNewSession(sessionId);
       setShowWelcomeModal(true);
@@ -149,29 +143,37 @@ export default function SessionPage() {
       logPerf("Loading existing session");
       loadSessionData(sessionId);
     }
+
     endTimer(initTimer);
-  }, [user, sessionId, searchParams]);
+  }, [user, sessionId, isNew]);
 
   const createNewSession = useCallback(
     async (id: string) => {
-      sessionIdRef.current = id;
-
-      const newSession: Session = {
-        id,
-        userId: user!.uid,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        createdBy: user!.email ?? "Unknown",
-        owner: user!.email ?? "Unknown",
-        sharedWith: [],
-        folder: "private",
-        isStarred: false,
-        noOfAttachments: 0,
-        title: "New Session",
-      };
-
       try {
-        await setDoc(doc(db, "sessions", id), newSession);
+        const sessionRef = doc(db, "sessions", id);
+        const existing = await getDoc(sessionRef);
+        if (existing.exists()) {
+          console.log("Session already exists, skipping creation:", id);
+          setActiveSession(existing.data() as Session);
+          router.replace(`/${id}`);
+          return;
+        }
+
+        const newSession: Session = {
+          id,
+          userId: user!.uid,
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+          createdBy: user!.email ?? "Unknown",
+          owner: user!.email ?? "Unknown",
+          sharedWith: [],
+          folder: "private",
+          isStarred: false,
+          noOfAttachments: 0,
+          title: "New Session",
+        };
+
+        await setDoc(sessionRef, newSession);
         setActiveSession(newSession);
         console.log("New session created:", newSession.id);
         router.replace(`/${id}`);
@@ -244,19 +246,10 @@ export default function SessionPage() {
         router.replace(`/${id}`);
 
         if (sessionData.summaries) {
-          console.log("Summaries found:", sessionData.summaries);
-
-          // Handle both array and single object formats
-          let summaryData;
-          if (Array.isArray(sessionData.summaries)) {
-            // For backward compatibility with old array format
-            summaryData = sessionData.summaries[0];
-          } else {
-            // For new single object format
-            summaryData = sessionData.summaries;
-          }
-
-          setSummaries(summaryData);
+          const summaryData = Array.isArray(sessionData.summaries)
+            ? sessionData.summaries[0]
+            : sessionData.summaries;
+          setSummaries(summaryData ?? null);
         }
 
         if (sessionData.userInput) setUserInput(sessionData.userInput);
@@ -283,6 +276,15 @@ export default function SessionPage() {
     },
     [user, setActiveSession, setSummaries, setUserInput, toast, router]
   );
+
+  // Derived state for shared session
+  const isSharedWithUser = useMemo(() => {
+    if (!activeSession || !user) return false;
+    return (
+      activeSession.owner !== user?.email &&
+      activeSession.sharedWith?.includes(user?.email ?? "")
+    );
+  }, [activeSession, user]);
 
   const handleSend = useCallback(async () => {
     const sendTimer = startTimer("HandleSend");
@@ -368,7 +370,7 @@ export default function SessionPage() {
         });
 
         await updateDoc(sessionRef, {
-          summaries: [result], // Wrap in array for backward compatibility if needed
+          summaries: result,
           updatedAt: serverTimestamp(),
           noOfAttachments: attachments.length,
           title: result.title || "not found",
@@ -472,20 +474,32 @@ export default function SessionPage() {
     }
   };
 
+  const handleCitationClick = (id: string) => {
+    setCurrentSourceId(id);
+    setActiveRightPanel("citation");
+  };
+
+  const toggleChat = () => {
+    if (activeRightPanel === "chat") {
+      setActiveRightPanel("closed");
+    } else {
+      setActiveRightPanel("chat");
+    }
+  };
+
+  const closeRightPanel = () => {
+    setActiveRightPanel("closed");
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
       <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
         <TopNavbar isSidebarOpen={isSidebarOpen} />
-        {activeSession?.title && (
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="m-1.5 ml-8 font-semibold text-xl text-gray-700"
-          >
-            {activeSession?.title}
-          </motion.h2>
-        )}
+        <motion.h2>
+          {typeof activeSession?.title === "string"
+            ? activeSession.title
+            : "Untitled"}
+        </motion.h2>
         {isSharedWithUser && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -606,7 +620,7 @@ export default function SessionPage() {
                       <SummaryDisplay
                         paragraphs={paragraphs}
                         summary={summaries}
-                        loading={isSummarizing}
+                        onCitationClick={handleCitationClick}
                       />
                     </motion.div>
                   ) : user?.uid !== activeSession?.userId ? (
@@ -628,113 +642,124 @@ export default function SessionPage() {
         </main>
 
         <AnimatePresence mode="wait">
-          {isChatOpen ? (
+          {activeRightPanel !== "closed" ? (
             <motion.aside
-              key="chat-open"
+              key="right-panel-open"
               transition={{ duration: 0.2 }}
-              className="w-1/4 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
+              className={`border-none bg-white rounded-lg mx-4 mb-4 flex flex-col ${
+                activeRightPanel === "chat" ? "w-1/4" : "w-1/3"
+              }`}
             >
-              <div className="z-10 border-b flex items-center justify-between">
-                <div className="flex items-center justify-start gap-2">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <BsLayoutSidebarInsetReverse
-                      className="cursor-pointer m-2 text-gray-600"
-                      size={24}
-                      onClick={toggleChat}
-                    />
-                  </motion.div>
-                  <div className="p-4 font-medium">Chat</div>
-                </div>
-                <div className="flex items-center justify-start">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <AlertDialog
-                      open={deleteDialogOpen}
-                      onOpenChange={setDeleteDialogOpen}
-                    >
-                      <AlertDialogTrigger asChild>
-                        <FaTrash
-                          size={18}
-                          className="text-gray-600 hover:text-red-600 m-2"
+              {activeRightPanel === "chat" ? (
+                // Chat Window
+                <>
+                  <div className="z-10 border-b flex items-center justify-between">
+                    <div className="flex items-center justify-start gap-2">
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <BsLayoutSidebarInsetReverse
+                          className="cursor-pointer m-2 text-gray-600"
+                          size={24}
+                          onClick={closeRightPanel}
                         />
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Chats</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete your conversation?
-                            This action cannot be undone.{" "}
-                            <span className="hover:underline cursor-pointer text-blue-600">
-                              Read our data policy
-                            </span>
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            className="bg-red-600 text-white hover:bg-red-700"
-                            onClick={handleDeleteChats}
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <FiSliders
-                      size={18}
-                      className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                      onClick={() => setShowChatSettingsModal(true)}
-                    />
-                  </motion.div>
-                </div>
-              </div>
-              <div className="flex-1 min-h-0 overflow-auto">
-                {loadingStates.session ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="p-4 space-y-3"
-                  >
-                    <SkeletonBox className="h-4 w-3/4" />
-                    <SkeletonBox className="h-4 w-1/2" />
-                    <SkeletonBox className="h-32 w-full mt-4" />
-                    <SkeletonBox className="h-8 w-full mt-4" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    className="p-4 flex flex-col h-full"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    <ChatWindow
-                      chatMessages={chatMessages}
-                      setChatMessages={setChatMessages}
-                      setIsChatCollapsed={setIsChatCollapsed}
-                      key={sessionId}
-                      sessionId={sessionId!}
-                      summary={summaries}
-                    />
-                  </motion.div>
-                )}
-              </div>
+                      </motion.div>
+                      <div className="p-4 font-medium">Chat</div>
+                    </div>
+                    <div className="flex items-center justify-start">
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <AlertDialog
+                          open={deleteDialogOpen}
+                          onOpenChange={setDeleteDialogOpen}
+                        >
+                          <AlertDialogTrigger asChild>
+                            <FaTrash
+                              size={18}
+                              className="text-gray-600 hover:text-red-600 m-2"
+                            />
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Chats</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete your
+                                conversation? This action cannot be undone.{" "}
+                                <span className="hover:underline cursor-pointer text-blue-600">
+                                  Read our data policy
+                                </span>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-red-600 text-white hover:bg-red-700"
+                                onClick={handleDeleteChats}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <FiSliders
+                          size={18}
+                          className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                          onClick={() => setShowChatSettingsModal(true)}
+                        />
+                      </motion.div>
+                    </div>
+                  </div>
+                  <div className="flex-1 min-h-0 overflow-auto">
+                    {loadingStates.session ? (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="p-4 space-y-3"
+                      >
+                        <SkeletonBox className="h-4 w-3/4" />
+                        <SkeletonBox className="h-4 w-1/2" />
+                        <SkeletonBox className="h-32 w-full mt-4" />
+                        <SkeletonBox className="h-8 w-full mt-4" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        className="p-4 flex flex-col h-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <ChatWindow
+                          chatMessages={chatMessages}
+                          setChatMessages={setChatMessages}
+                          setIsChatCollapsed={setIsChatCollapsed}
+                          key={sessionId}
+                          sessionId={sessionId!}
+                          summary={summaries}
+                        />
+                      </motion.div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <CitationView
+                  sourceId={currentSourceId}
+                  paragraphs={paragraphs}
+                  onClose={closeRightPanel}
+                  title={summaries?.title || "Sources"}
+                />
+              )}
             </motion.aside>
           ) : (
             <motion.aside
-              key="chat-closed"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              key="right-panel-closed"
               transition={{ duration: 0.2 }}
               className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
             >

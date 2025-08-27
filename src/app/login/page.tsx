@@ -1,28 +1,36 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import Logo from '@/components/logo';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import Logo from "@/components/logo";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/');
+      router.push("/");
     } catch (error: any) {
       toast({
         title: "Error signing in",
@@ -36,11 +44,15 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-background">
       <Card className="w-full max-w-md mx-4">
         <CardHeader className="text-center">
-            <div className='flex justify-center mb-4'>
-                <Logo />
-            </div>
-          <CardTitle className='font-headline text-2xl lg:text-3xl'>Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <div className="flex justify-center mb-4">
+            <Logo />
+          </div>
+          <CardTitle className="font-headline text-2xl lg:text-3xl">
+            Welcome Back
+          </CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -65,12 +77,37 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-4 w-4 text-white"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  Logging in...
+                </span>
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link href="/signup" className="underline">
               Sign up
             </Link>

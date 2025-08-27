@@ -273,3 +273,11 @@ textarea::-webkit-scrollbar-track {
   .anaya-gradient { animation: none !important; }
   .anaya-underline { animation: none !important; }
 }
+
+.bg-highlight {
+  background: linear-gradient(120deg, #bfdbfe 0%, #bfdbfe 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: 0 50%;
+  transition: background-size 0.5s ease;
+}

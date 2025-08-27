@@ -7,9 +7,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   X,
-  Paperclip,
-  Link,
-  Camera,
   ArrowUp,
   Loader2,
   FileText,
@@ -17,7 +14,6 @@ import {
   File,
   FileSpreadsheet,
   Check,
-  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef, useState, useEffect, useMemo } from "react";
@@ -74,78 +70,40 @@ export function WelcomeModal({
 }: WelcomeModalProps) {
   const { settings, updateSettings } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [jurisdiction, setJurisdiction] = useState("indian-law");
-  const [response, setResponse] = useState("auto");
+  const [jurisdiction, setJurisdiction] = useState(
+    settings.summary.jurisdiction
+  );
+  const [response, setResponse] = useState(settings.summary.response);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [cameraPermission, setCameraPermission] =
-    useState<PermissionState | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
+  // Update local state when settings change from external sources
   useEffect(() => {
     setJurisdiction(settings.summary.jurisdiction);
     setResponse(settings.summary.response);
-  }, [settings]);
+  }, [settings.summary.jurisdiction, settings.summary.response]);
 
-  // Check camera permissions
-  useEffect(() => {
-    const checkCameraPermission = async () => {
-      try {
-        if (navigator.permissions && navigator.permissions.query) {
-          const permissionStatus = await navigator.permissions.query({
-            name: "camera" as PermissionName,
-          });
-          setCameraPermission(permissionStatus.state);
-
-          permissionStatus.onchange = () => {
-            setCameraPermission(permissionStatus.state);
-          };
-        } else {
-          // Fallback for browsers that don't support Permissions API
-          setCameraPermission("prompt");
-        }
-      } catch (error) {
-        console.error("Error checking camera permission:", error);
-        setCameraPermission("prompt");
-      }
-    };
-
-    checkCameraPermission();
-  }, []);
-
-  const hasChanges = useMemo(() => {
-    return (
-      jurisdiction !== settings.summary.jurisdiction ||
-      response !== settings.summary.response
-    );
-  }, [jurisdiction, response, settings]);
-
-  const handleSave = () => {
-    if (!hasChanges) return;
+  // Handle saving settings only when user explicitly changes them
+  const handleJurisdictionChange = (value: string) => {
+    setJurisdiction(value);
     updateSettings({
       summary: {
-        jurisdiction: jurisdiction,
-        response: response,
+        ...settings.summary,
+        jurisdiction: value,
       },
     });
   };
 
-  useEffect(() => {
-    if (hasChanges) {
-      handleSave();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jurisdiction, response]);
+  const handleResponseChange = (value: string) => {
+    setResponse(value);
+    updateSettings({
+      summary: {
+        ...settings.summary,
+        response: value,
+      },
+    });
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -171,49 +129,6 @@ export function WelcomeModal({
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
-    }
-  };
-
-  const handleCameraCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    Array.from(files).forEach((file) => onFileAdded(file));
-
-    if (cameraInputRef.current) {
-      cameraInputRef.current.value = "";
-    }
-  };
-
-  const requestCameraAccess = async () => {
-    try {
-      // For mobile devices, we'll rely on the native camera app
-      if (isMobile) {
-        cameraInputRef.current?.click();
-        return;
-      }
-
-      // For desktop, we need to request camera permission
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      // Close the stream immediately since we just needed to request permission
-      stream.getTracks().forEach((track) => track.stop());
-
-      // Update permission status
-      if (navigator.permissions) {
-        const permissionStatus = await navigator.permissions.query({
-          name: "camera" as PermissionName,
-        });
-        setCameraPermission(permissionStatus.state);
-      }
-
-      // Trigger camera input click if permission is granted
-      cameraInputRef.current?.click();
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      setCameraPermission("denied");
-      alert(
-        "Camera access is required to capture images. Please enable camera permissions in your browser settings."
-      );
     }
   };
 
@@ -289,16 +204,6 @@ export function WelcomeModal({
                       accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.png,.jpg,.jpeg"
                       multiple
                       {...(isMobile ? {} : {})}
-                    />
-
-                    {/* Camera-specific input for mobile devices */}
-                    <input
-                      type="file"
-                      ref={cameraInputRef}
-                      onChange={handleCameraCapture}
-                      className="hidden"
-                      accept="image/*"
-                      capture="environment"
                     />
 
                     {/* Text input area */}
@@ -496,7 +401,7 @@ export function WelcomeModal({
                           ? "bg-blue-600 text-white"
                           : "bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
                       )}
-                      onClick={() => setJurisdiction(option.value)}
+                      onClick={() => handleJurisdictionChange(option.value)}
                     >
                       {option.label}
                     </Button>
@@ -515,7 +420,7 @@ export function WelcomeModal({
                           ? "bg-blue-600 text-white"
                           : "bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
                       )}
-                      onClick={() => setResponse(option.value)}
+                      onClick={() => handleResponseChange(option.value)}
                     >
                       {option.label}
                     </Button>

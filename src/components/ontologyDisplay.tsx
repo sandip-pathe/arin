@@ -60,7 +60,7 @@ export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
   if (orderedOntology.length === 0) return null;
 
   return (
-    <div className="pt-6 max-w-3xl justify-start space-y-1">
+    <div className="p-6 max-w-3xl w-full justify-start space-y-1">
       {orderedOntology.map(({ key, values, title }) => (
         <Collapsible
           key={key}
@@ -89,15 +89,14 @@ export default function OntologyDisplay({ ontology }: OntologyDisplayProps) {
 
           <CollapsibleContent className="px-6 pb-5 space-y-2">
             {values.map((value, i) => (
-              <div
-                key={i}
-                className="text-sm p-2 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100"
-              >
-                {typeof value === "string" ? (
-                  <p className="text-gray-700 leading-relaxed">{value}</p>
+              <div key={i} className="text-sm p-2 rounded-xl ...">
+                {typeof value === "string" || typeof value === "number" ? (
+                  <p className="text-gray-700 leading-relaxed">
+                    {String(value)}
+                  </p>
                 ) : (
                   <div className="space-y-1">
-                    {Object.entries(value).map(([k, v]) => (
+                    {Object.entries(value ?? {}).map(([k, v]) => (
                       <p key={k}>
                         <span className="font-medium capitalize text-gray-800">
                           {k}:

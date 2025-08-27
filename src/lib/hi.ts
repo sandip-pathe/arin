@@ -1,38 +1,44 @@
 export const DEBUG_PERF = process.env.NEXT_PUBLIC_DEBUG_PERF === "true";
-const activeTimers = new Map<string, number>();
 
-export function logPerf(message: string, metadata?: any) {
-  if (DEBUG_PERF) {
-    console.log(`[PERF] ${new Date().toISOString()} - ${message}`, metadata);
+let timers: Record<string, number> = {};
+
+const isProd = process.env.NEXT_PUBLIC_DEBUG_PERF === "true";
+
+/**
+ * Logs only in development unless you override
+ */
+export function logPerf(message: string, data?: unknown, force = false) {
+  if (isProd && !force) return;
+
+  const time = new Date().toISOString();
+  if (data) {
+    console.log(`[PERF] ${time} - ${message}`, data);
+  } else {
+    console.log(`[PERF] ${time} - ${message}`);
   }
 }
 
-export function startTimer(label: string): string {
-  if (!DEBUG_PERF) return label;
-
-  const uniqueLabel = `${label}_${Date.now()}_${Math.random()
-    .toString(36)
-    .substr(2, 9)}`;
-  activeTimers.set(uniqueLabel, performance.now());
-
-  if (DEBUG_PERF) {
-    console.log(`[PERF] ${new Date().toISOString()} - Starting: ${label}`);
-  }
-
-  return uniqueLabel;
+/**
+ * Start a timer with a label
+ */
+export function startTimer(label: string) {
+  if (isProd) return label; // noop in prod
+  timers[label] = performance.now();
+  logPerf(`Starting: ${label}`);
+  return label;
 }
 
+/**
+ * End a timer and log the duration
+ */
 export function endTimer(label: string) {
-  if (!DEBUG_PERF) return;
-
-  const startTime = activeTimers.get(label);
-  if (startTime) {
-    const duration = performance.now() - startTime;
-    console.log(
-      `[PERF] ${new Date().toISOString()} - Completed: ${
-        label.split("_")[0]
-      } in ${duration.toFixed(2)}ms`
-    );
-    activeTimers.delete(label);
+  if (isProd) return;
+  const start = timers[label];
+  if (start) {
+    const duration = performance.now() - start;
+    logPerf(`Completed: ${label} in ${duration.toFixed(2)}ms`);
+    delete timers[label];
+  } else {
+    logPerf(`No start time for ${label}`);
   }
 }
