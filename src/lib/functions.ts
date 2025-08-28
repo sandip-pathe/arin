@@ -1,20 +1,12 @@
-import {
-  ChatMessages,
-  DocumentChunk,
-  MinimalSession,
-  Paragraph,
-} from "@/types/page";
+import { ChatMessages, Paragraph } from "@/types/page";
 import {
   addDoc,
   collection,
   doc,
-  getDoc,
   getDocs,
-  limit,
   orderBy,
   query,
   serverTimestamp,
-  where,
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";

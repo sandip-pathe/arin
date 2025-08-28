@@ -4,14 +4,13 @@
 import React, { useMemo, useState } from "react";
 import { Paragraph, SummaryItem } from "@/types/page";
 import PDFGenerationLoader from "./pdf-loader";
-import SummaryLoading from "./summaryLoading";
 import OntologyDisplay from "./ontologyDisplay";
 import DownloadSummaryModal from "./downloadSummaryModal";
 import { usePDFGenerator } from "../hooks/use-pdf-generate";
 import SummaryContent from "./summaryContent";
 
 type Props = {
-  paragraphs: Paragraph[];
+  paragraphs?: Paragraph[];
   summary: SummaryItem | null;
   onCitationClick?: (sourceId: string) => void;
 };
@@ -51,19 +50,19 @@ export default function SummaryDisplay({
     return summary.legalOntology;
   }, [summary]);
 
-  const handleDownload = async (options: DownloadOptions) => {
-    setIsDownloadModalOpen(false);
-    try {
-      await generatePDF({
-        summary,
-        paragraphs,
-        ontology: mergedOntology,
-        options,
-      });
-    } catch (error) {
-      console.error("Failed to generate PDF:", error);
-    }
-  };
+  // const handleDownload = async (options: DownloadOptions) => {
+  //   setIsDownloadModalOpen(false);
+  //   try {
+  //     await generatePDF({
+  //       summary,
+  //       paragraphs,
+  //       ontology: mergedOntology,
+  //       options,
+  //     });
+  //   } catch (error) {
+  //     console.error("Failed to generate PDF:", error);
+  //   }
+  // };
 
   if (!summary) return;
   console.log("Rendering SummaryDisplay with data:", summary);
@@ -79,7 +78,9 @@ export default function SummaryDisplay({
       <DownloadSummaryModal
         open={isDownloadModalOpen}
         onOpenChange={setIsDownloadModalOpen}
-        onDownload={handleDownload}
+        onDownload={() => {
+          console.log("Download initiated");
+        }}
       />
       <PDFGenerationLoader isGeneratingPDF={isGeneratingPDF} />
     </div>

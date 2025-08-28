@@ -23,9 +23,9 @@ export function ChatWelcome() {
       if (i === fullText.length) {
         clearInterval(interval);
         setDone(true);
-        setTimeout(() => setShine(true), 200);
+        setTimeout(() => setShine(true), 100);
       }
-    }, 60);
+    }, 30);
 
     return () => clearInterval(interval);
   }, [fullText]);

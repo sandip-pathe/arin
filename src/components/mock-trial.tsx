@@ -144,7 +144,7 @@ export const MockTrialChat = ({
   }, [chatMessages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

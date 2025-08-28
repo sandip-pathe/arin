@@ -23,7 +23,7 @@ const CitationView: React.FC<CitationViewProps> = ({
   useEffect(() => {
     if (sourceId && highlightedRef.current) {
       highlightedRef.current.scrollIntoView({
-        behavior: "smooth",
+        behavior: "instant",
         block: "center",
       });
     }

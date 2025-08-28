@@ -10,6 +10,7 @@ import {
   useAuthStore,
 } from "@/store/auth-store";
 import type { User as FirebaseUser } from "firebase/auth";
+import { usePathname, useRouter } from "next/navigation";
 
 // Utility: creates a default user object for Firestore
 const createDefaultUser = (firebaseUser: FirebaseUser) => ({
@@ -29,17 +30,24 @@ const createDefaultUser = (firebaseUser: FirebaseUser) => ({
   },
 });
 
-export const useInitUserData = () => {
+export const useInitUserData = (requireAuth: boolean = false) => {
   const [firebaseUser, loading, error] = useAuthState(auth);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { setUser, setDbUser, updateSettings, updateMembership, resetAuth } =
     useAuthStore();
 
   useEffect(() => {
-    if (loading) return; // wait until auth state is resolved
+    if (loading) return;
 
     if (!firebaseUser) {
       resetAuth();
+
+      // 🔑 Redirect only if this page requires auth
+      if (requireAuth && pathname !== "/login") {
+        router.replace("/login");
+      }
       return;
     }
 
@@ -77,7 +85,7 @@ export const useInitUserData = () => {
     return () => {
       cancelled = true;
     };
-  }, [firebaseUser, loading]);
+  }, [firebaseUser, loading, pathname, requireAuth]);
 
   if (error) {
     console.warn("Firebase Auth error:", error);
