@@ -129,7 +129,7 @@ export const ChatWindow = ({
       {chatMessages?.length === 0 && (
         <div className="flex items-center justify-center h-full text-gray-400">
           <p className="text-lg select-none text-center">
-            Ask questions about your documents!
+            Start the conversation by asking a question!
           </p>
         </div>
       )}

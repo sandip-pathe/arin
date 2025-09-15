@@ -35,7 +35,7 @@ const CitationView: React.FC<CitationViewProps> = ({
         <div className="flex items-center justify-start gap-2">
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
             <TbArrowsDiagonalMinimize
-              className="cursor-pointer p-1 text-gray-600"
+              className="cursor-pointer ml-2 text-gray-600"
               size={24}
               onClick={onClose}
             />
@@ -52,7 +52,7 @@ const CitationView: React.FC<CitationViewProps> = ({
               ref={para.id === sourceId ? highlightedRef : undefined}
               className={`rounded-none p-4 mb-2 ${
                 para.id === sourceId
-                  ? "bg-blue-100 border-l-4 border-blue-500"
+                  ? "bg-gray-200 border-l-4 border-gray-400"
                   : "bg-white"
               }`}
             >

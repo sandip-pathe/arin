@@ -197,8 +197,10 @@ export const SummarySettingsModal = ({
       <DialogTitle className="text-lg font-semibold sr-only">
         Summary Settings
       </DialogTitle>
-      <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
-        <SummarySettings onClose={() => onOpenChange(false)} />
+      <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
+        <div className="relative bg-white md:rounded-3xl shadow-lg h-full p-4 md:p-8 overflow-y-auto">
+          <SummarySettings onClose={() => onOpenChange(false)} />
+        </div>
       </DialogContent>
     </Dialog>
   );

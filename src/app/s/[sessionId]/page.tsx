@@ -6,11 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { WelcomeModal } from "@/components/InputModal";
 import { ChatSettingsModal } from "@/components/settings/chatSettings";
 import { SummarySettingsModal } from "@/components/settings/summarySettings";
-import TopNavbar from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
 import { GoShieldLock } from "react-icons/go";
 import { processTextToParagraphs } from "@/lib/chunk";
-import { summarizeParagraphs } from "@/lib/summary+api";
+import { quickSkimSummary, summarizeParagraphs } from "@/lib/summary+api";
 import {
   saveParagraphsToFirestore,
   deleteChatMessages,
@@ -28,6 +27,9 @@ import { Paragraph, SummaryItem } from "@/types/page";
 import { FiSliders } from "react-icons/fi";
 import { RightPanel } from "@/components/right-panel";
 import { MainContent } from "@/components/main";
+import { documentManager, nextDocumentIndex } from "@/lib/document-refs";
+import { HiOutlineMenu } from "react-icons/hi";
+import Logo from "@/components/logo";
 
 export default function SessionPage() {
   const { sessionId, activeSession, createNewSession, loadSessionData } =
@@ -35,8 +37,9 @@ export default function SessionPage() {
   const { extractionProgress, progressMessage, handleFileAdded } =
     useFileProcessing();
   const { toast } = useToast();
-  const { user } = useAuthStore();
+  const { user, membership, updateMembership, loading } = useAuthStore();
   const searchParams = useSearchParams();
+  const DEMO_SESSION_ID = "019906c6-4987-77cd-bc27-ae252025c373";
 
   const {
     setActiveSession,
@@ -52,13 +55,15 @@ export default function SessionPage() {
     summaries,
     setSummaries,
     setChatMessages,
-    isSidebarOpen,
+    toggleSidebar,
     showChatSettingsModal,
     setShowChatSettingsModal,
     showSummarySettingsModal,
     setShowSummarySettingsModal,
     showWelcomeModal,
     setShowWelcomeModal,
+    quickSummary,
+    setQuickSummary,
   } = useSessionStore();
 
   const [isSummarizing, setIsSummarizing] = useState(false);
@@ -70,14 +75,21 @@ export default function SessionPage() {
   const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
 
   const summaryRef = useRef<HTMLDivElement>(null);
-  const documentManager = useRef<{ [id: string]: number }>({});
-  const nextDocumentIndex = useRef(1);
   const isNew = searchParams.get("new") === "true";
   const router = useRouter();
 
+  const handleUseSampleDoc = async () => {
+    setShowWelcomeModal(false);
+    setIsSummarizing(true);
+    setParagraphCount(2);
+    setTimeout(() => {
+      setIsSummarizing(false);
+      router.push(`/s/${DEMO_SESSION_ID}`);
+    }, 10000);
+  };
+
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
+    if (loading) {
       return;
     }
 
@@ -118,34 +130,67 @@ export default function SessionPage() {
         paragraphCount: inputTextParagraphs.length,
       });
 
-      const summarizeTimer = startTimer("Summarization");
-      const result = await summarizeParagraphs(inputTextParagraphs);
-      endTimer(summarizeTimer);
-      logPerf("Summarization completed", result);
-      setSummaries(result);
-      setActiveSession({
-        ...activeSession!,
-        title: result.title || "Legal Session",
-      });
+      const skimParagraphs = inputTextParagraphs.slice(0, 10);
 
-      setParagraphs(inputTextParagraphs);
-      setIsSummarizing(false);
-      const saveTimer = startTimer("FirestoreSave");
-      await saveToFirestore(inputTextParagraphs, result);
-      endTimer(saveTimer);
-      logPerf("Firestore save completed");
+      const quickSkimPromise = (async () => {
+        const quickSkimTimer = startTimer("QuickSkim");
+        try {
+          const skim = await quickSkimSummary(skimParagraphs);
+          setQuickSummary(skim);
+        } catch (err: any) {
+          logPerf("Quick skim error (non-fatal)", { error: err.message });
+        } finally {
+          endTimer(quickSkimTimer);
+        }
+      })();
+
+      const fullSummaryPromise = (async () => {
+        const summarizeTimer = startTimer("Summarization");
+        try {
+          const result = await summarizeParagraphs(inputTextParagraphs);
+          endTimer(summarizeTimer);
+          console.log(summarizeTimer, "summary completed in");
+
+          logPerf("Summarization completed", result);
+          setSummaries(result);
+          setActiveSession({
+            ...activeSession!,
+            title: result.title || "Legal Session",
+          });
+
+          setParagraphs(inputTextParagraphs);
+
+          const saveTimer = startTimer("FirestoreSave");
+          await saveToFirestore(inputTextParagraphs, result);
+          endTimer(saveTimer);
+          logPerf("Firestore save completed");
+        } catch (err: any) {
+          logPerf("Summarization error", { error: err.message });
+          handleProcessingError("Summarization failed", err);
+          toast({
+            variant: "destructive",
+            title: "Summarization Error",
+            description: `${err.message}`,
+          });
+        } finally {
+          setIsSummarizing(false);
+        }
+      })();
+
+      // --- STEP 3: Let both run independently ---
+      await Promise.allSettled([quickSkimPromise, fullSummaryPromise]);
     } catch (err: any) {
-      logPerf("Summarization error", { error: err.message });
-      handleProcessingError("Summarization failed", err);
+      logPerf("HandleSend error", { error: err.message });
+      handleProcessingError("Processing failed", err);
       toast({
         variant: "destructive",
-        title: "Summarization Error",
+        title: "Error",
         description: `${err.message}`,
       });
     } finally {
       setIsLoading(false);
-      logPerf("HandleSend completed");
       endTimer(sendTimer);
+      logPerf("HandleSend completed");
     }
   }, [
     isProcessingDocument,
@@ -183,6 +228,13 @@ export default function SessionPage() {
           updatedAt: serverTimestamp(),
           noOfAttachments: attachments.length,
           title: result.title,
+          instantSummary: quickSummary,
+        });
+
+        updateMembership?.({
+          pagesRemaining:
+            (membership.pagesRemaining ?? 0) -
+            (attachments.length + (inputText ? 1 : 0)),
         });
 
         await saveParagraphsToFirestore(sessionId, allParagraphs);
@@ -202,10 +254,6 @@ export default function SessionPage() {
     async (id: string) => {
       removeAttachment(id);
       delete documentManager.current[id];
-      const ids = Object.keys(documentManager.current).sort();
-      documentManager.current = {};
-      ids.forEach((aid, i) => (documentManager.current[aid] = i + 1));
-      nextDocumentIndex.current = ids.length + 1;
     },
     [removeAttachment]
   );
@@ -248,35 +296,52 @@ export default function SessionPage() {
 
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
-      <div className="flex items-center justify-start bg-[#edeffa] shadow-none select-none">
-        <TopNavbar isSidebarOpen={isSidebarOpen} />
-        <motion.h2>
-          {typeof activeSession?.title === "string"
-            ? activeSession.title
-            : "Untitled"}
-        </motion.h2>
-        {isSharedWithUser && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="flex items-center ml-2 px-2 py-1 rounded-lg bg-white"
-          >
-            <GoShieldLock className="font-semibold" size={18} />
-            <span className="text-sm ml-1 font-semibold">Shared with you</span>
-          </motion.div>
-        )}
+      <div className="flex flex-col items-center bg-[#edeffa] shadow-none select-none p-2 md:p-0 lg:pl-0 lg:flex-row lg:items-center lg:ml-4 lg:mb-4 lg:justify-start">
+        <button
+          onClick={toggleSidebar}
+          className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md bg-white shadow-md"
+        >
+          <HiOutlineMenu size={24} className="text-gray-600" />
+        </button>
+        <div className="lg:hidden flex flex-col items-center mt-2 mb-1">
+          <Logo />
+        </div>
+
+        {/* Session Title */}
+        <div className="lg:flex lg:items-center">
+          <div className="hidden lg:flex lg:items-center lg:mr-4">
+            <Logo />
+          </div>
+          <motion.h2 className="text-lg font-semibold text-gray-800 text-center lg:text-left line-clamp-2 lg:line-clamp-none lg:truncate max-w-[200px] md:max-w-none mx-2 lg:ml-0">
+            {typeof activeSession?.title === "string"
+              ? activeSession.title
+              : "Untitled"}
+          </motion.h2>
+          {isSharedWithUser && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center mt-1 lg:mt-0 lg:ml-2 px-2 py-1 rounded-lg bg-white shrink-0"
+            >
+              <GoShieldLock className="font-semibold" size={18} />
+              <span className="text-sm ml-1 font-semibold hidden sm:block">
+                Shared with you
+              </span>
+            </motion.div>
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-1 min-h-0 overflow-visible">
+      <div className="flex flex-1 min-h-0 overflow-visible flex-col lg:flex-row">
         <Sidebar sessionId={sessionId!} />
 
         <main className="flex-1 min-w-0 mb-4 overflow-hidden">
-          <motion.div className="flex flex-col h-full overflow-hidden border-none rounded-xl bg-white">
+          <motion.div className="flex flex-col h-full overflow-hidden border-none lg:rounded-xl bg-white">
             <div className="z-10 border-b flex items-center justify-between py-2">
               <div className="flex items-center justify-between w-full">
                 <div className="p-2 ml-10 font-medium">
-                  Briefs & Legal Key Insights
+                  Briefs and Key Information
                 </div>
                 {(activeSession?.noOfAttachments ?? 0) > 0 && (
                   <motion.span
@@ -355,6 +420,7 @@ export default function SessionPage() {
               isProcessing={isProcessingDocument}
               extractionProgress={extractionProgress}
               progressMessage={progressMessage}
+              onUseSampleDoc={handleUseSampleDoc}
             />
           </motion.div>
         )}

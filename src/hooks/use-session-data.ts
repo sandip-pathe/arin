@@ -2,13 +2,7 @@ import { useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth-store";
 import { db } from "@/lib/firebase";
-import {
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-  Timestamp,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import {
   handleProcessingError,
   loadParagraphs,
@@ -32,17 +26,19 @@ export const useSessionData = () => {
     setParagraphs,
     setChatMessages,
     setSummaries,
+    setQuickSummary,
   } = useSessionStore();
 
   const createNewSession = useCallback(
     async (id: string) => {
+      console.log(user);
       try {
         const sessionRef = doc(db, "sessions", id);
         const existing = await getDoc(sessionRef);
         if (existing.exists()) {
           console.log("Session already exists, skipping creation:", id);
           setActiveSession(existing.data() as Session);
-          router.replace(`/${id}`);
+          router.replace(`/s/${id}`);
           return;
         }
 
@@ -63,7 +59,7 @@ export const useSessionData = () => {
         await setDoc(sessionRef, newSession);
         setActiveSession(newSession);
         console.log("New session created:", newSession.id);
-        router.replace(`/${id}`);
+        router.replace(`/s/${id}`);
       } catch (error) {
         handleProcessingError("Create Session", error);
         toast({
@@ -79,6 +75,7 @@ export const useSessionData = () => {
   const loadSessionData = useCallback(
     async (id: string) => {
       setLoadingStates({ session: true });
+      console.log(user);
 
       try {
         const sessionRef = doc(db, "sessions", id);
@@ -102,6 +99,7 @@ export const useSessionData = () => {
         }
 
         setActiveSession(sessionData);
+        setQuickSummary(sessionData.quickSummary || "");
         setSummaries(sessionData.summaries || null);
         setLoadingStates({ session: false });
 
@@ -113,7 +111,7 @@ export const useSessionData = () => {
           setParagraphs(loadedParagraphs);
           setChatMessages(loadedChatMessages);
         }
-        router.replace(`/${id}`);
+        router.replace(`/s/${id}`);
       } catch (error) {
         handleProcessingError("Load Session Data", error);
         router.push("/");

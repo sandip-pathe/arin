@@ -24,7 +24,7 @@ const steps = [
 // Estimate total processing time based on performance data
 const estimateTotalTime = (paragraphsCount: number): number => {
   const batches = Math.ceil(paragraphsCount / 50);
-  const batchProcessingTime = 1000 + batches * 2000;
+  const batchProcessingTime = 10000 + batches * 2000;
   const aggregationTime = 25000 + batches * 2000;
 
   return Math.min(

@@ -74,6 +74,7 @@ export type Session = {
   chats?: ChatMessages[];
   title?: string;
   userInput?: string;
+  quickSummary?: string;
 };
 
 export type SidebarItem = {
@@ -107,4 +108,5 @@ export type MinimalSession = {
   folder: string;
   sharedWith: string[];
   owner: string;
+  summary?: SummaryItem | null;
 };

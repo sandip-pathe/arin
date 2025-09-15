@@ -23,7 +23,6 @@ export function UserProfile() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/login");
   };
 
   if (!user) {

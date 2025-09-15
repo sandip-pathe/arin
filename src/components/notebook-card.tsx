@@ -53,18 +53,21 @@ const NotebookCard: FC<Props> = ({
       <ContextMenuTrigger>
         <div
           onClick={onClick}
-          className="group cursor-pointer select-none rounded-2xl border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 p-4 flex flex-col justify-between h-40"
+          className="group cursor-pointer select-none rounded-2xl border-2 border-neutral-200 hover:border-blue-300 bg-white shadow-sm hover:shadow-md transition-all duration-200 p-4 sm:p-5 md:p-6 flex flex-col justify-between h-48 sm:h-52 md:h-56"
         >
           {/* Title */}
-          <h3 className="font-semibold text-lg text-neutral-900 line-clamp-2 flex-1 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-lg sm:text-xl md:text-2xl text-neutral-900 group-hover:text-blue-600 transition-colors">
             {title}
           </h3>
 
           {/* Footer metadata */}
-          <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+          <div className="flex items-center justify-between mt-3 text-xs sm:text-sm text-gray-500">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
-                <FiClock size={14} className="text-gray-400" />
+                <FiClock
+                  size={14}
+                  className="text-gray-400 sm:text-base md:text-lg"
+                />
                 <span>
                   {new Date(updatedAt).toLocaleDateString("en-US", {
                     month: "short",
@@ -75,36 +78,50 @@ const NotebookCard: FC<Props> = ({
 
               {sharedCount > 0 && (
                 <div className="flex items-center gap-1">
-                  <FiUsers size={14} className="text-gray-400" />
+                  <FiUsers
+                    size={14}
+                    className="text-gray-400 sm:text-base md:text-lg"
+                  />
                   <span>{sharedCount}</span>
                 </div>
               )}
             </div>
 
             {/* Quick action (share for now) */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onShare();
-              }}
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-blue-50"
-            >
-              <FiShare2 size={16} className="text-blue-600" />
-              <span
+            <div className="flex items-center gap-2">
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onToggleStar();
                 }}
-                className="ml-2 cursor-pointer"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-blue-50"
                 title={isStarred ? "Unstar" : "Star"}
               >
                 {isStarred ? (
-                  <MdOutlineStar size={16} className="text-blue-600" />
+                  <MdOutlineStar
+                    size={18}
+                    className="text-yellow-500 sm:text-xl md:text-2xl"
+                  />
                 ) : (
-                  <MdOutlineStarBorder size={16} className="text-blue-600" />
+                  <MdOutlineStarBorder
+                    size={18}
+                    className="text-gray-400 sm:text-xl md:text-2xl"
+                  />
                 )}
-              </span>
-            </button>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShare();
+                }}
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-blue-50"
+              >
+                <FiShare2
+                  size={16}
+                  className="text-blue-600 sm:text-lg md:text-xl"
+                />
+              </button>
+            </div>
           </div>
         </div>
       </ContextMenuTrigger>

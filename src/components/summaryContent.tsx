@@ -26,7 +26,7 @@ export default function SummaryContent({
   }, [paragraphs]);
 
   return (
-    <Card className="max-w-3xl w-full border-none shadow-none flex-1 min-h-0 overflow-auto">
+    <Card className="max-w-4xl w-full border-none shadow-none flex-1 min-h-0 overflow-auto">
       <CardContent>
         <div className="prose max-w-none">
           <div>
@@ -38,7 +38,7 @@ export default function SummaryContent({
 
               return (
                 <React.Fragment key={partIndex}>
-                  <span className="inline whitespace-pre-wrap">
+                  <span className="inline text-lg whitespace-pre-wrap">
                     {part.text}
                     {/* Citations appear only if refMap exists */}
                     {refMap &&
@@ -49,7 +49,7 @@ export default function SummaryContent({
                         return (
                           <span
                             key={id}
-                            className="w-5 h-5 justify-center rounded-full text-xs font-semibold cursor-pointer hover:scale-150 ml-1 inline-flex items-center bg-blue-200 p-0"
+                            className="opacity-75 justify-center border-gray-400 border text-xs font-semibold cursor-pointer hover:scale-110 rounded-sm ml-1 inline-flex items-center bg-gray-200 p-0 h-5 min-w-5"
                             onClick={() => onCitationClick(id)}
                           >
                             {refNum}

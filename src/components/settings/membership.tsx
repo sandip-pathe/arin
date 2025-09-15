@@ -1,242 +1,82 @@
-// MembershipSettings.tsx
-"use client";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Gift, CreditCard, HelpCircle, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { FiCheck, FiStar } from "react-icons/fi";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Timestamp } from "firebase/firestore";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { firmPlans, soloPlans } from "@/lib/data";
-import { useAuthStore } from "@/store/auth-store";
-
-export type MembershipType = "basic" | "pro" | "enterprise";
-
-export const Membership = ({
-  isOpen,
-  onOpenChange,
-}: {
+interface CreditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-}) => {
-  const { membership, updateMembership } = useAuthStore();
-  const [isUpgrading, setIsUpgrading] = useState<string | null>(null); // plan id upgrading
+}
 
-  const handleUpgrade = async (targetPlan: MembershipType) => {
-    setIsUpgrading(targetPlan);
-    try {
-      await updateMembership({
-        status: "active",
-        startDate: Timestamp.now(),
-        endDate: Timestamp.fromDate(
-          new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-        ),
-        sessionsRemaining:
-          targetPlan === "enterprise"
-            ? Infinity
-            : targetPlan === "pro"
-            ? 100
-            : 50,
-      });
-    } catch (error) {
-      console.error("Upgrade failed:", error);
-    } finally {
-      setIsUpgrading(null);
-    }
-  };
+export function CreditModal({ isOpen, onOpenChange }: CreditModalProps) {
+  const router = useRouter();
+
+  const options = [
+    {
+      label: "Unlimited Credits (Plans)",
+      icon: CreditCard,
+      action: () => router.push("/pricing"),
+    },
+    {
+      label: "Referrals (+5 each share)",
+      icon: Gift,
+      action: () => router.push("/referral"),
+    },
+    {
+      label: "Evangelists (Free Pro, 20 seats)",
+      icon: Users,
+      action: () => router.push("/evangelist"),
+    },
+    {
+      label: "Answer & Win (+7 credits)",
+      icon: HelpCircle,
+      action: () => router.push("/answer-win"),
+    },
+  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTitle className="sr-only">Membership & Plans</DialogTitle>
-      <DialogContent className="max-w-6xl p-0 h-[90dvh] bg-gray-50 rounded-3xl overflow-hidden">
-        <div className="w-full p-8 space-y-6 overflow-y-auto">
-          <div className="text-center mb-4">
-            <h2 className="text-3xl font-extrabold">
-              Upgrade your Legal Second Brain
-            </h2>
-            <p className="text-gray-600 mt-2">
-              Built for lawyers: case summarization, mock trials, follow-up
-              chats, and knowledge management.
-            </p>
-          </div>
+      <DialogTitle className="sr-only">Out of Credits</DialogTitle>
+      <DialogContent
+        className="
+          w-full h-full max-w-none max-h-none rounded-none 
+          md:max-w-md md:h-auto md:rounded-2xl 
+          md:mx-auto md:my-4 md:p-0
+          p-0 bg-transparent shadow-none border-none overflow-hidden
+        "
+      >
+        <div
+          className="
+            relative bg-white h-full md:h-full 
+            md:rounded-2xl shadow-lg 
+            p-4 md:p-6 text-left space-y-6 overflow-y-auto
+          "
+        >
+          <h2 className="text-xl font-semibold text-gray-900">
+            You’re out of credits
+          </h2>
+          <p className="text-gray-600 text-sm">
+            Pick one of the options below to keep using the app.
+          </p>
 
-          <div className="flex justify-center">
-            <Tabs defaultValue="solo">
-              <TabsList className="mx-auto flex w-full">
-                <TabsTrigger value="solo">Solo Practitioner</TabsTrigger>
-                <TabsTrigger value="firm">Firm / Team</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="solo">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {soloPlans.map((plan) => {
-                    const isCurrent = membership.type === plan.id;
-                    return (
-                      <Card
-                        key={plan.id}
-                        className={`flex flex-col justify-between min-h-[520px] p-6 shadow-lg border ${
-                          plan.recommended
-                            ? "ring-2 ring-emerald-500 bg-white"
-                            : "bg-white"
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h3 className="text-xl font-bold">
-                                {plan.title}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                {plan.subtitle}
-                              </p>
-                            </div>
-                            {plan.recommended && (
-                              <div className="flex items-center gap-1 bg-emerald-600 text-white text-xs px-3 py-1 rounded-full">
-                                <FiStar /> Recommended
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="mt-4">
-                            <p className="text-3xl font-semibold">
-                              {plan.price}
-                            </p>
-                            <p className="text-sm text-gray-700 mt-1">
-                              {plan.description}
-                            </p>
-                          </div>
-
-                          <div className="mt-6">
-                            {isCurrent ? (
-                              <Button
-                                variant="outline"
-                                disabled
-                                className="w-full"
-                              >
-                                {plan.cta}
-                              </Button>
-                            ) : (
-                              <Button
-                                className="w-full"
-                                onClick={() => handleUpgrade(plan.id)}
-                                disabled={!!isUpgrading}
-                              >
-                                {isUpgrading === plan.id
-                                  ? "Upgrading..."
-                                  : plan.cta}
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="mt-6">
-                            <ul className="space-y-2 text-sm">
-                              {plan.features.map((feature, idx) => (
-                                <li
-                                  key={idx}
-                                  className="flex items-start gap-2"
-                                >
-                                  <FiCheck className="mt-1 text-green-500" />
-                                  <span>{feature}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="firm">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {firmPlans.map((plan) => {
-                    const isCurrent = membership.type === plan.id;
-                    return (
-                      <Card
-                        key={plan.id}
-                        className={`flex flex-col justify-between min-h-[520px] p-6 shadow-lg border ${
-                          plan.recommended
-                            ? "ring-2 ring-emerald-500 bg-white"
-                            : "bg-white"
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h3 className="text-xl font-bold">
-                                {plan.title}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                {plan.subtitle}
-                              </p>
-                            </div>
-                            {plan.recommended && (
-                              <div className="flex items-center gap-1 bg-emerald-600 text-white text-xs px-3 py-1 rounded-full">
-                                <FiStar /> Recommended
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="mt-4">
-                            <p className="text-3xl font-semibold">
-                              {plan.price}
-                            </p>
-                            <p className="text-sm text-gray-700 mt-1">
-                              {plan.description}
-                            </p>
-                          </div>
-
-                          <div className="mt-6 flex flex-col gap-2">
-                            {isCurrent ? (
-                              <Button
-                                variant="outline"
-                                disabled
-                                className="w-full"
-                              >
-                                {plan.cta}
-                              </Button>
-                            ) : plan.id === "enterprise" ? (
-                              <Button className="w-full" onClick={() => {}}>
-                                {plan.cta}
-                              </Button>
-                            ) : (
-                              <Button
-                                className="w-full"
-                                onClick={() => handleUpgrade(plan.id)}
-                                disabled={!!isUpgrading}
-                              >
-                                {isUpgrading === plan.id
-                                  ? "Upgrading..."
-                                  : plan.cta}
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="mt-6">
-                            <ul className="space-y-2 text-sm">
-                              {plan.features.map((feature, idx) => (
-                                <li
-                                  key={idx}
-                                  className="flex items-start gap-2"
-                                >
-                                  <FiCheck className="mt-1 text-green-500" />
-                                  <span>{feature}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </TabsContent>
-            </Tabs>
+          {/* Options as menu list */}
+          <div className="divide-y divide-gray-100 border border-gray-200 rounded-lg">
+            {options.map(({ label, icon: Icon, action }) => (
+              <button
+                key={label}
+                onClick={action}
+                className="
+                  w-full flex items-center gap-3 px-4 py-3 
+                  text-sm text-gray-700 hover:bg-gray-50 
+                  transition-colors text-left
+                "
+              >
+                <Icon className="w-4 h-4 text-gray-500" />
+                <span>{label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
-};
+}

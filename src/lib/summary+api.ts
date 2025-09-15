@@ -10,12 +10,6 @@ const openai = new OpenAI({
 
 const BATCH_SIZE = 50;
 
-/**
- * Main entrypoint
- * - Processes paragraphs in batches
- * - Consolidates into one final result
- */
-
 export async function summarizeParagraphs(
   paragraphs: Paragraph[],
   progressCallback?: (percent: number) => void
@@ -407,4 +401,42 @@ function parseSummaryItem(content: string): SummaryItem {
       citationsAndPrecedents: [],
     },
   };
+}
+
+export async function quickSkimSummary(text: Paragraph[]): Promise<string> {
+  const timer = startTimer("QuickSkim");
+  const inputText = text.map((p) => p.text).join("\n\n");
+  logPerf("Starting quick skim", { inputLength: text.length });
+
+  const QUICK_SKIM_SYSTEM_PROMPT = `
+      You are a legal AI assistant. 
+      Read the text carefully and produce a concise **plain paragraph** summary.
+      - Output should be a single paragraph.
+      - No citations, no extractions, no schema.
+      - Capture the **main points** and **key context**.
+      - Style: easy to read, informative, like a quick briefing note.
+      - Max length: ~10 sentences.
+      `;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: QUICK_SKIM_SYSTEM_PROMPT },
+        { role: "user", content: `\n\n${inputText}` },
+      ],
+      temperature: 0.2,
+      max_tokens: 500,
+      stream: false,
+    });
+
+    const summary = response.choices[0]?.message?.content?.trim() || "";
+    logPerf("Quick skim completed", { summaryLength: summary.length });
+    return summary;
+  } catch (err: any) {
+    logPerf("Quick skim error", { error: err.message });
+    throw err;
+  } finally {
+    endTimer(timer);
+  }
 }

@@ -10,7 +10,6 @@ import {
   useAuthStore,
 } from "@/store/auth-store";
 import type { User as FirebaseUser } from "firebase/auth";
-import { usePathname, useRouter } from "next/navigation";
 
 // Utility: creates a default user object for Firestore
 const createDefaultUser = (firebaseUser: FirebaseUser) => ({
@@ -30,24 +29,23 @@ const createDefaultUser = (firebaseUser: FirebaseUser) => ({
   },
 });
 
-export const useInitUserData = (requireAuth: boolean = false) => {
+export const useInitUserData = () => {
   const [firebaseUser, loading, error] = useAuthState(auth);
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const { setUser, setDbUser, updateSettings, updateMembership, resetAuth } =
-    useAuthStore();
+  const {
+    setUser,
+    setDbUser,
+    updateSettings,
+    updateMembership,
+    resetAuth,
+    setLoading,
+  } = useAuthStore();
 
   useEffect(() => {
     if (loading) return;
 
     if (!firebaseUser) {
       resetAuth();
-
-      // 🔑 Redirect only if this page requires auth
-      if (requireAuth && pathname !== "/login") {
-        router.replace("/login");
-      }
+      setLoading(false);
       return;
     }
 
@@ -77,6 +75,8 @@ export const useInitUserData = (requireAuth: boolean = false) => {
         }
       } catch (err) {
         console.error("❌ Failed to initialize user data:", err);
+      } finally {
+        setLoading(false); // ✅ always clear loader
       }
     };
 
@@ -85,7 +85,7 @@ export const useInitUserData = (requireAuth: boolean = false) => {
     return () => {
       cancelled = true;
     };
-  }, [firebaseUser, loading, pathname, requireAuth]);
+  }, [firebaseUser, loading]);
 
   if (error) {
     console.warn("Firebase Auth error:", error);

@@ -17,8 +17,8 @@ export const UnifiedSettingsModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={isOpenChange}>
       <DialogTitle className="sr-only">All Settings</DialogTitle>
-      <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none border-none overflow-hidden">
-        <div className="relative bg-white rounded-3xl shadow-xl h-full p-4 flex flex-col">
+      <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
+        <div className="relative bg-white md:rounded-3xl shadow-xl h-full p-4 md:p-8 flex flex-col overflow-y-auto">
           <Tabs defaultValue="summary" className="w-full flex-1 flex flex-col">
             {/* Tab Bar */}
             <TabsList className="mb-4 flex justify-center items-center gap-2 w-full overflow-x-auto">

@@ -1,4 +1,3 @@
-// components/welcome-modal.tsx
 import {
   Dialog,
   DialogContent,
@@ -14,9 +13,11 @@ import {
   File,
   FileSpreadsheet,
   Check,
+  Camera,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Attachment } from "@/types/page";
 import {
@@ -40,6 +41,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/auth-store";
 import { FaPaperclip } from "react-icons/fa6";
+import OnboardingSamplePdf from "./onboarding/samplePDF";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -53,6 +55,7 @@ interface WelcomeModalProps {
   isProcessing: boolean;
   extractionProgress?: number;
   progressMessage?: string;
+  onUseSampleDoc?: () => void;
 }
 
 export function WelcomeModal({
@@ -67,9 +70,11 @@ export function WelcomeModal({
   isProcessing,
   extractionProgress,
   progressMessage,
+  onUseSampleDoc,
 }: WelcomeModalProps) {
-  const { settings, updateSettings } = useAuthStore();
+  const { settings, updateSettings, membership } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [jurisdiction, setJurisdiction] = useState(
     settings.summary.jurisdiction
@@ -77,6 +82,34 @@ export function WelcomeModal({
   const [response, setResponse] = useState(settings.summary.response);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (membership?.pagesRemaining === 10) {
+      const dismissed = localStorage.getItem("onboardingDismissed");
+      if (!dismissed) setShowOnboarding(true);
+    }
+  }, [membership?.pagesRemaining]);
+
+  // Check if device is mobile/tablet
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(userAgent);
+      const isAndroid = /android/.test(userAgent);
+      setIsMobile(isIOS || isAndroid || window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const handleDismissOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem("onboardingDismissed", "true");
+  };
 
   // Update local state when settings change from external sources
   useEffect(() => {
@@ -130,6 +163,16 @@ export function WelcomeModal({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = "";
+    }
+  };
+
+  const handleCameraClick = () => {
+    if (cameraInputRef.current) {
+      cameraInputRef.current.click();
+    }
   };
 
   const getFileIcon = (type: string) => {
@@ -161,6 +204,41 @@ export function WelcomeModal({
     }
   };
 
+  // Drag and drop handlers
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files) {
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        Array.from(e.dataTransfer.files).forEach((file) => onFileAdded(file));
+        e.dataTransfer.clearData();
+      }
+    },
+    [onFileAdded]
+  );
+
   const jurisdictionOptions = [
     { value: "indian-law", label: "Indian Law" },
     { value: "us-law", label: "US Law" },
@@ -183,8 +261,8 @@ export function WelcomeModal({
         This is your personal legal assistant powered by AI. You can ask
         questions, upload documents, and get summaries of legal texts.
       </DialogDescription>
-      <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
-        <div className="relative bg-white rounded-3xl shadow-lg h-full p-8">
+      <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
+        <div className="relative bg-white md:rounded-3xl shadow-lg h-full p-4 md:p-8 overflow-y-auto">
           <Logo />
           <div className="pt-4">
             <motion.div
@@ -192,19 +270,39 @@ export function WelcomeModal({
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <Card className="bg-white rounded-xl shadow-none border-dashed border-2 border-gray-200 overflow-hidden">
+              <Card
+                className={cn(
+                  "bg-white rounded-xl shadow-none border-dashed border-2 overflow-hidden transition-colors",
+                  isDragging ? "border-blue-500 bg-blue-50" : "border-gray-200"
+                )}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
                 <CardContent className="md:p-6 border-none">
                   <div className="flex flex-col border-none">
-                    {/* Regular file input for non-mobile or when user wants to select from files */}
+                    {/* Regular file input for all devices */}
                     <input
                       type="file"
                       ref={fileInputRef}
                       onChange={handleFileChange}
                       className="hidden"
-                      accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.png,.jpg,.jpeg"
+                      accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.xls,.ppt,.pptx,.png,.jpg,.jpeg,.webp"
                       multiple
-                      {...(isMobile ? {} : {})}
                     />
+
+                    {/* Camera input for mobile devices */}
+                    {isMobile && (
+                      <input
+                        type="file"
+                        ref={cameraInputRef}
+                        onChange={handleFileChange}
+                        className="hidden"
+                        accept="image/*"
+                        capture="environment"
+                      />
+                    )}
 
                     {/* Text input area */}
                     <div className="relative mb-3">
@@ -303,22 +401,50 @@ export function WelcomeModal({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <TooltipProvider>
+                          {/* Upload button - larger on mobile */}
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
                                 variant="ghost"
-                                size="icon"
-                                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full h-10 w-10"
+                                size={isMobile ? "default" : "icon"}
+                                className={cn(
+                                  "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                                  isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
+                                )}
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={isProcessing}
                               >
-                                <FaPaperclip size={30} className="h-10 w-10" />
+                                {isMobile ? (
+                                  <Upload className="h-6 w-6" />
+                                ) : (
+                                  <FaPaperclip className="h-5 w-5" />
+                                )}
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Upload File</p>
                             </TooltipContent>
                           </Tooltip>
+
+                          {/* Camera button for mobile */}
+                          {isMobile && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="default"
+                                  className="h-12 w-12 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full px-0"
+                                  onClick={handleCameraClick}
+                                  disabled={isProcessing}
+                                >
+                                  <Camera className="h-6 w-6" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Take Photo</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
 
                           <Sheet
                             open={isSettingsOpen}
@@ -327,11 +453,16 @@ export function WelcomeModal({
                             <SheetTrigger asChild>
                               <Button
                                 variant="ghost"
-                                size="icon"
-                                className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full h-10 w-10"
+                                size={isMobile ? "default" : "icon"}
+                                className={cn(
+                                  "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                                  isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
+                                )}
                                 disabled={isProcessing}
                               >
-                                <FiSettings className="h-5 w-5" />
+                                <FiSettings
+                                  className={isMobile ? "h-6 w-6" : "h-5 w-5"}
+                                />
                               </Button>
                             </SheetTrigger>
 
@@ -347,6 +478,11 @@ export function WelcomeModal({
                               <SummarySettings />
                             </SheetContent>
                           </Sheet>
+
+                          <OnboardingSamplePdf
+                            onUseSampleDoc={onUseSampleDoc}
+                            onDismiss={handleDismissOnboarding}
+                          />
                         </TooltipProvider>
                       </div>
 
@@ -380,6 +516,13 @@ export function WelcomeModal({
                         )}
                       </Button>
                     </div>
+
+                    {/* Drag and drop hint */}
+                    {!isMobile && (
+                      <div className="text-center mt-4 text-sm text-gray-500">
+                        Or drag and drop files here
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

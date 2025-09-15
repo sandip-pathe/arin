@@ -6,12 +6,8 @@ const nlp = winkNLP(model);
 const its = nlp.its;
 
 /**
- * Processes raw text into structured Paragraph objects.
- * Splits into sentence-based chunks, capped at ~200 words max.
- *
- * @param text - The raw text to process.
- * @param documentIndex - The index of the document for ID generation.
- * @returns An array of Paragraph objects.
+ * Converts raw text into structured Paragraph objects.
+ * Each paragraph ≈200 words max, tagged with IDs + optional section title.
  */
 export function processTextToParagraphs(
   text: string,
@@ -21,7 +17,7 @@ export function processTextToParagraphs(
   let globalParagraphIndex = 1;
   const sectionTitle = getSectionTitle(text);
 
-  // Use NLP to get all sentences (since raw text has no \n\n cues)
+  // Break into sentences
   const doc = nlp.readDoc(text);
   const sentences = doc.sentences().out(its.value);
 
@@ -32,7 +28,7 @@ export function processTextToParagraphs(
     const sentence = sentences[i];
     const sentenceWordCount = sentence.split(/\s+/).length;
 
-    // If adding this sentence would push us >200 words, flush buffer first
+    // If buffer would exceed ~200 words, flush as a paragraph
     if (wordCount + sentenceWordCount > 200 && buffer.length > 0) {
       paragraphs.push({
         id: `d${documentIndex}.p${globalParagraphIndex++}`,
@@ -47,7 +43,7 @@ export function processTextToParagraphs(
     wordCount += sentenceWordCount;
   }
 
-  // Push any remaining sentences in buffer
+  // Push last paragraph
   if (buffer.length > 0) {
     paragraphs.push({
       id: `d${documentIndex}.p${globalParagraphIndex++}`,
@@ -59,6 +55,46 @@ export function processTextToParagraphs(
   return paragraphs;
 }
 
+/**
+ * Groups Paragraphs into adaptive batches based on token budget.
+ * (Uses rough heuristic: 1 token ≈ 4 chars).
+ *
+ * @param paragraphs - Array of Paragraphs
+ * @param maxTokens - Max tokens per batch (default ~3000)
+ * @returns Array of batches, each batch is an array of Paragraphs
+ */
+export function makeAdaptiveBatches(
+  paragraphs: Paragraph[],
+  maxTokens = 3000
+): Paragraph[][] {
+  const batches: Paragraph[][] = [];
+  let current: Paragraph[] = [];
+  let tokenCount = 0;
+
+  for (const p of paragraphs) {
+    const estTokens = Math.ceil(p.text.length / 4);
+
+    if (tokenCount + estTokens > maxTokens && current.length > 0) {
+      // flush current batch
+      batches.push(current);
+      current = [];
+      tokenCount = 0;
+    }
+
+    current.push(p);
+    tokenCount += estTokens;
+  }
+
+  if (current.length > 0) {
+    batches.push(current);
+  }
+
+  return batches;
+}
+
+/**
+ * Detects a section title at the start of text (if any).
+ */
 function getSectionTitle(text: string): string | undefined {
   const match = text
     .substring(0, 200)

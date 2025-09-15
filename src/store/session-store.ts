@@ -29,6 +29,7 @@ interface SessionState {
   paragraphs: Paragraph[];
   chunks: DocumentChunk[];
   summaries: SummaryItem | null;
+  quickSummary: string | null;
   isInputCollapsed: boolean;
   isChatCollapsed: boolean;
   showWelcomeModal: boolean;
@@ -62,6 +63,7 @@ interface SessionState {
   setParagraphs: (paragraphs: Paragraph[]) => void;
   setChunks: (chunks: DocumentChunk[]) => void;
   setSummaries: (summary: SummaryItem | null) => void;
+  setQuickSummary: (skim: string | null) => void;
   setIsInputCollapsed: (collapsed: boolean) => void;
   setIsChatCollapsed: (collapsed: boolean) => void;
   setShowWelcomeModal: (show: boolean) => void;
@@ -101,6 +103,7 @@ const useSessionStore = create<SessionState>((set) => ({
   paragraphs: [],
   chunks: [],
   summaries: null,
+  quickSummary: null,
   isInputCollapsed: false,
   isChatCollapsed: false,
   showWelcomeModal: false,
@@ -135,6 +138,7 @@ const useSessionStore = create<SessionState>((set) => ({
   setParagraphs: (paragraphs) => set({ paragraphs }),
   setChunks: (chunks) => set({ chunks }),
   setSummaries: (summaries) => set({ summaries }),
+  setQuickSummary: (quickSummary) => set({ quickSummary }),
   setIsInputCollapsed: (isInputCollapsed) => set({ isInputCollapsed }),
   setIsChatCollapsed: (isChatCollapsed) => set({ isChatCollapsed }),
   setShowWelcomeModal: (showWelcomeModal) => set({ showWelcomeModal }),
@@ -173,6 +177,8 @@ const useSessionStore = create<SessionState>((set) => ({
       attachments: [],
       paragraphs: [],
       summaries: null,
+      quickSummary: null,
+      context: "",
       inputText: "",
       isInputCollapsed: false,
       chatMessages: [],

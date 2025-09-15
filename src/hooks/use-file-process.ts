@@ -4,6 +4,7 @@ import { extractText } from "@/lib/extraction";
 import { startTimer, endTimer, logPerf } from "@/lib/hi";
 import { Attachment } from "@/types/page";
 import useSessionStore from "@/store/session-store";
+import { documentManager, nextDocumentIndex } from "@/lib/document-refs";
 
 export const useFileProcessing = () => {
   const [extractionProgress, setExtractionProgress] = useState(0);
@@ -24,6 +25,12 @@ export const useFileProcessing = () => {
       setProgressMessage(`Processing ${file.name}...`);
 
       const id = v7();
+
+      // ✅ assign index once per new file
+      if (!documentManager.current[id]) {
+        documentManager.current[id] = nextDocumentIndex.current++;
+      }
+
       const newAttachment: Attachment = {
         id,
         file,
@@ -37,26 +44,18 @@ export const useFileProcessing = () => {
       try {
         const extractTimer = startTimer(`TextExtraction-${file.name}`);
         const text = await extractText(file, (progress, message) => {
-          logPerf("Extraction progress", {
-            file: file.name,
-            progress,
-            message,
-          });
           setExtractionProgress(progress);
           setProgressMessage(message || `Processing ${file.name}...`);
         });
         endTimer(extractTimer);
-        logPerf("Text extraction completed", { length: text.length });
 
         updateAttachment(id, { status: "extracted", text });
         return text;
       } catch (error: any) {
-        logPerf("File processing error", { file: file.name, error });
         updateAttachment(id, { status: "error", error: error.message });
         throw error;
       } finally {
         setIsProcessingDocument(false);
-        logPerf("File processing completed", { name: file.name });
         endTimer(fileTimer);
       }
     },

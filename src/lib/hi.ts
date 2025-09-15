@@ -8,8 +8,6 @@ const isProd = process.env.NEXT_PUBLIC_DEBUG_PERF === "true";
  * Logs only in development unless you override
  */
 export function logPerf(message: string, data?: unknown, force = false) {
-  if (isProd && !force) return;
-
   const time = new Date().toISOString();
   if (data) {
     console.log(`[PERF] ${time} - ${message}`, data);

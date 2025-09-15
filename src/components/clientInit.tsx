@@ -1,16 +1,34 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useAuthModalStore } from "@/store/auth-modal-store";
 import { useInitUserData } from "@/hooks/use-init-user-data";
 
-export default function ClientInit() {
+export const ClientInit = () => {
+  const { firebaseUser, loading } = useInitUserData();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const open = useAuthModalStore((s) => s.open);
 
-  // ✅ Public routes (no auth required)
-  const publicRoutes = ["/login", "/signup"];
+  useEffect(() => {
+    console.log("firebase user", firebaseUser);
+    if (loading) return;
+    console.log("pathname", loading);
 
-  const requireAuth = !publicRoutes.includes(pathname);
+    const referredBy = searchParams.get("referredBy");
 
-  useInitUserData(requireAuth);
+    // If no user and came with referral → open signup
+    if (!firebaseUser && referredBy) {
+      console.log("firebase user", firebaseUser);
+      open("signup");
+      localStorage.setItem("referrer", referredBy);
+      return;
+    }
+
+    if (!firebaseUser) {
+      open("login");
+    }
+  }, [firebaseUser, loading, pathname, searchParams, open]);
 
   return null;
-}
+};

@@ -79,7 +79,6 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
     try {
       await signOut(auth);
       onClose?.();
-      router.push("/login");
     } catch (err) {
       console.error("Logout failed", err);
     }
@@ -97,7 +96,6 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
 
       await signOut(auth);
       onClose?.();
-      router.push("/login");
     } catch (error) {
       console.error("Error deleting account:", error);
     }
@@ -155,13 +153,37 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
           </div>
 
           <div className="w-full space-x-2 space-y-2">
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="rounded-full px-4 py-2 transition-colors bg-white text-gray-700 hover:bg-blue-600 hover:text-white text-lg"
+            <AlertDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
             >
-              Logout
-            </Button>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="rounded-full px-4 py-2 transition-colors bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
+                >
+                  Log Out
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Log Out</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to log out? You can log back in at any
+                    time.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-gray-600 text-white hover:bg-gray-700"
+                    onClick={handleLogout}
+                  >
+                    Log Out
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <AlertDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}
@@ -224,8 +246,8 @@ export const AccountSettingsModal = ({
       <DialogTitle className="sr-only">
         Account settings & membership
       </DialogTitle>
-      <DialogContent className="max-w-4xl p-0 h-[90dvh] bg-transparent shadow-none rounded-3xl border-none overflow-hidden">
-        <div className="relative bg-white rounded-3xl shadow-lg h-full p-8 flex flex-col overflow-auto">
+      <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
+        <div className="relative bg-white md:rounded-3xl shadow-lg h-full p-4 md:p-8 flex flex-col overflow-auto">
           <AccountSettings onClose={() => isOpenChange(false)} />
         </div>
       </DialogContent>

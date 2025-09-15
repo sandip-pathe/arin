@@ -17,7 +17,7 @@ export interface MembershipDetails {
     code: string;
     amount: number;
   };
-  sessionsRemaining?: number;
+  pagesRemaining?: number;
 }
 
 export const defaultSettings = {
@@ -41,7 +41,7 @@ export const defaultMembership: MembershipDetails = {
   status: "pending",
   startDate: null,
   endDate: null,
-  sessionsRemaining: 3,
+  pagesRemaining: 0,
 };
 
 interface AuthState {
@@ -123,7 +123,7 @@ export const useAuthStore = create<AuthState>()(
                 endDate: Timestamp.fromDate(
                   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
                 ),
-                sessionsRemaining: 3,
+                pagesRemaining: 3,
               };
 
               const newUser = {

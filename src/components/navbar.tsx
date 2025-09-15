@@ -6,7 +6,7 @@ export default function TopNavbar({
   isSidebarOpen: boolean;
 }) {
   return (
-    <header className="h-12 my-auto px-4 flex items-center bg-[#edeffa] justify-between shadow-none select-none">
+    <header className="h-12 my-auto px-4 hidden lg:block items-center bg-[#edeffa] justify-between shadow-none select-none">
       <div className="flex items-center gap-2">
         <Logo />
         <span

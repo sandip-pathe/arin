@@ -1,5 +1,5 @@
 // components/session/RightPanel.tsx
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaTrash } from "react-icons/fa6";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
 import { FiSliders } from "react-icons/fi";
@@ -53,7 +53,7 @@ export const RightPanel = ({
       <motion.aside
         key="right-panel-open"
         transition={{ duration: 0.2 }}
-        className={`border-none bg-white rounded-lg mx-4 mb-4 flex flex-col w-1/3`}
+        className="fixed inset-0 z-50 lg:relative lg:z-auto lg:w-1/3 border-none bg-white rounded-none lg:rounded-lg mx-0 lg:mx-4 mb-0 lg:mb-4 flex flex-col"
       >
         {activeRightPanel === "chat" ? (
           <>
@@ -69,7 +69,9 @@ export const RightPanel = ({
                     onClick={onClose}
                   />
                 </motion.div>
-                <div className="p-4 font-medium">Chat</div>
+                <div className="p-4 font-medium text-sm md:text-base">
+                  Discussion Mode
+                </div>
               </div>
               <div className="flex items-center justify-start">
                 <motion.div
@@ -83,7 +85,7 @@ export const RightPanel = ({
                         className="text-gray-600 hover:text-red-600 m-2"
                       />
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="max-w-[95vw] md:max-w-md">
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Chats</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -165,9 +167,9 @@ export const RightPanel = ({
     <motion.aside
       key="right-panel-closed"
       transition={{ duration: 0.2 }}
-      className="w-14 border-none bg-white rounded-lg mx-4 mb-4 flex flex-col"
+      className="fixed top-4 right-4 w-11 h-11 lg:rounded-lg lg:shadow-none lg:relative lg:inset-auto lg:mx-4 lg:mb-4 lg:w-14 lg:h-auto flex items-center justify-center lg:flex-col bg-white z-30 rounded-md shadow-md"
     >
-      <div className="z-10 border-b flex items-center py-2 justify-center">
+      <div className="z-10 border-b flex items-center py-2 justify-center lg:py-2">
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
           <IoChatbox
             className="cursor-pointer m-2 text-gray-600"
@@ -176,7 +178,7 @@ export const RightPanel = ({
           />
         </motion.div>
       </div>
-      <div className="flex-1 overflow-auto p-4"> </div>
+      <div className="flex-1 overflow-auto p-4 hidden lg:block"> </div>
     </motion.aside>
   );
 };

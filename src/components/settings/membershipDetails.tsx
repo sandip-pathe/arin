@@ -4,12 +4,11 @@ import useSessionStore from "@/store/session-store";
 import { format } from "date-fns";
 import { differenceInDays } from "date-fns";
 import React from "react";
-import { Membership } from "./membership";
 
 export const MembershipSettings: React.FC = () => {
   const membership = useAuthStore((s) => s.membership);
 
-  const { type, status, startDate, endDate, sessionsRemaining, lastDiscount } =
+  const { type, status, startDate, endDate, pagesRemaining, lastDiscount } =
     membership;
 
   const { showMembershipModal, setShowMembershipModal } = useSessionStore();
@@ -63,9 +62,9 @@ export const MembershipSettings: React.FC = () => {
             {daysRemaining > 0 ? `${daysRemaining} days` : "Expired"}
           </div>
         )}
-        {sessionsRemaining !== undefined && (
+        {pagesRemaining !== undefined && (
           <div>
-            <strong>Sessions Remaining:</strong> {sessionsRemaining}
+            <strong>Sessions Remaining:</strong> {pagesRemaining}
           </div>
         )}
         {lastDiscount && (
@@ -98,10 +97,6 @@ export const MembershipSettings: React.FC = () => {
           </button>
         </div>
       )}
-      <Membership
-        isOpen={showMembershipModal}
-        onOpenChange={setShowMembershipModal}
-      />
     </div>
   );
 };

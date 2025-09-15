@@ -31,10 +31,10 @@ export function ChatWelcome() {
   }, [fullText]);
 
   return (
-    <div className="select-none">
-      <div className="text-left flex flex-row items-baseline gap-2 relative overflow-hidden">
+    <div className="select-none w-full">
+      <div className="text-left flex flex-col sm:flex-row items-baseline gap-1 sm:gap-2 relative overflow-hidden">
         {/* Streaming Heading */}
-        <h1 className="relative font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl inline-block">
+        <h1 className="relative font-headline text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground inline-block">
           <span className="bg-blue-900 bg-clip-text text-transparent">
             {shownText}
           </span>
@@ -54,12 +54,12 @@ export function ChatWelcome() {
         {/* Tagline */}
         {done && (
           <motion.span
-            className="text-xl ml-2 font-medium font-logo text-primary mt-4"
+            className="text-lg sm:text-xl md:text-2xl ml-0 sm:ml-2 font-medium font-logo text-primary mt-1 sm:mt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
           >
-            Let’s dig in.
+            Let's dig in.
           </motion.span>
         )}
       </div>
