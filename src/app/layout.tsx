@@ -33,7 +33,7 @@ export default function RootLayout({
         />
 
         {/* Google Analytics */}
-        {/* <Script
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-1VS2GPDGY1"
           strategy="afterInteractive"
         />
@@ -46,7 +46,7 @@ export default function RootLayout({
               page_path: window.location.pathname,
             });
           `}
-        </Script> */}
+        </Script>
       </head>
       <body className="font-[Source Sans 3] antialiased h-full bg-background">
         <Suspense fallback={null}>
