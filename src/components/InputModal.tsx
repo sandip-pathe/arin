@@ -350,7 +350,7 @@ export function WelcomeModal({
                         <div className="flex flex-col items-center justify-center min-h-32">
                           <button
                             className={cn(
-                              "text-gray-500 flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                              "text-gray-400 flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 rounded-full",
                               isMobile ? "h-20 w-20" : "h-16 w-16"
                             )}
                             onClick={() => fileInputRef.current?.click()}
@@ -431,53 +431,57 @@ export function WelcomeModal({
                       <div className="flex items-center gap-1">
                         <TooltipProvider>
                           {/* Upload button - larger on mobile */}
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size={isMobile ? "default" : "icon"}
-                                className={cn(
-                                  "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
-                                  isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
-                                )}
-                                onClick={() => fileInputRef.current?.click()}
-                                disabled={isProcessing}
-                              >
-                                {isMobile ? (
-                                  <Upload className="h-6 w-6" />
-                                ) : (
-                                  <FaPaperclip className="h-5 w-5" />
-                                )}
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Upload File</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          {showTextarea && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size={isMobile ? "default" : "icon"}
+                                  className={cn(
+                                    "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                                    isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
+                                  )}
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isProcessing}
+                                >
+                                  {isMobile ? (
+                                    <Upload className="h-6 w-6" />
+                                  ) : (
+                                    <FaPaperclip className="h-5 w-5" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Upload File</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
 
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size={isMobile ? "default" : "icon"}
-                                className={cn(
-                                  "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
-                                  isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
-                                )}
-                                onClick={() => setShowTextarea(true)}
-                                disabled={isProcessing}
-                              >
-                                {isMobile ? (
-                                  <IoTextSharp className="h-6 w-6" />
-                                ) : (
-                                  <IoTextSharp className="h-5 w-5" />
-                                )}
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Add Text</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          {!showTextarea && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size={isMobile ? "default" : "icon"}
+                                  className={cn(
+                                    "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                                    isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
+                                  )}
+                                  onClick={() => setShowTextarea(true)}
+                                  disabled={isProcessing}
+                                >
+                                  {isMobile ? (
+                                    <IoTextSharp className="h-6 w-6" />
+                                  ) : (
+                                    <IoTextSharp className="h-5 w-5" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Add Text</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
 
                           {/* Camera button for mobile */}
                           {isMobile && (
@@ -534,11 +538,11 @@ export function WelcomeModal({
                         </TooltipProvider>
 
                         <Select>
-                          <SelectTrigger className="w-[120px] mx-2 h-6">
-                            <SelectValue placeholder="Best" />
+                          <SelectTrigger className="w-[120px] mx-2 h-8 bg-white text-gray-700 hover:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <SelectValue placeholder="Best Model" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="best">Best</SelectItem>
+                            <SelectItem value="best">Best Model</SelectItem>
                             <SelectItem value="chatgpt">Chatgpt 5</SelectItem>
                             <SelectItem value="gemini">Gemini 2.5</SelectItem>
                             <SelectItem value="deepseek">
