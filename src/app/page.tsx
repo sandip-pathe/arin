@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Logo from "@/components/logo";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ShareModal } from "@/components/settings/sharing";
 import { AccountSettingsModal } from "@/components/settings/accountSettings";
@@ -420,9 +420,9 @@ export default function HomePage() {
       <header className="sticky top-0 z-30 bg-white/95 px-4 sm:px-6 md:px-8 py-2 flex items-center justify-between border-b border-neutral-100">
         <div className="flex items-center">
           <Logo />
-          <span className="ml-2 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full hidden sm:block">
+          {/* <span className="ml-2 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full hidden sm:block">
             {membership.type}
-          </span>
+          </span> */}
         </div>
 
         {/* Desktop navigation */}
@@ -439,7 +439,8 @@ export default function HomePage() {
           >
             <Avatar className="h-8 w-8 md:h-10 md:w-10 border-blue-500 border-2 shadow-sm">
               <AvatarFallback className="font-medium bg-blue-50 text-blue-700 text-sm md:text-base">
-                {user?.displayName?.charAt(0)}
+                {user?.displayName?.charAt(0) ||
+                  user?.email?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </button>
@@ -469,9 +470,9 @@ export default function HomePage() {
           </div>
 
           {/* Create new session */}
-          <div className="mt-6 items-end">
+          {/* <div className="mt-6 items-end">
             <CreditReminder variant="header" className="md:hidden max-w-64" />
-          </div>
+          </div> */}
           <div className="w-full mx-auto my-6 sm:my-8 md:my-10 relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl md:rounded-2xl opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
             <button

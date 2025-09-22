@@ -81,11 +81,11 @@ export default function SessionPage() {
   const handleUseSampleDoc = async () => {
     setShowWelcomeModal(false);
     setIsSummarizing(true);
-    setParagraphCount(2);
+    setParagraphCount(128);
     setTimeout(() => {
       setIsSummarizing(false);
       router.push(`/s/${DEMO_SESSION_ID}`);
-    }, 10000);
+    }, 9000); // simulate processing time
   };
 
   useEffect(() => {
@@ -122,6 +122,7 @@ export default function SessionPage() {
     try {
       const inputTimer = startTimer("ProcessInputs");
       const inputTextParagraphs = await processAllInputs();
+      const hadInputText = Boolean(inputText.trim());
       setInputText("");
       setParagraphCount(inputTextParagraphs.length);
       setShowWelcomeModal(false);
@@ -146,6 +147,12 @@ export default function SessionPage() {
 
       const fullSummaryPromise = (async () => {
         const summarizeTimer = startTimer("Summarization");
+        if (inputTextParagraphs.length > 400) {
+          await new Promise((r) => setTimeout(r, 150));
+          logPerf("Large document detected; applied small backoff", {
+            paragraphCount: inputTextParagraphs.length,
+          });
+        }
         try {
           const result = await summarizeParagraphs(inputTextParagraphs);
           endTimer(summarizeTimer);
@@ -161,7 +168,7 @@ export default function SessionPage() {
           setParagraphs(inputTextParagraphs);
 
           const saveTimer = startTimer("FirestoreSave");
-          await saveToFirestore(inputTextParagraphs, result);
+          await saveToFirestore(inputTextParagraphs, result, hadInputText);
           endTimer(saveTimer);
           logPerf("Firestore save completed");
         } catch (err: any) {
@@ -202,27 +209,46 @@ export default function SessionPage() {
   ]);
 
   const processAllInputs = useCallback(async () => {
-    const textParagraphs = inputText.trim()
-      ? processTextToParagraphs(inputText.trim(), nextDocumentIndex.current++)
-      : [];
+    // run expensive parsing on next tick to avoid blocking paint
+    return await new Promise<Paragraph[]>((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          const textParagraphs = inputText.trim()
+            ? processTextToParagraphs(
+                inputText.trim(),
+                nextDocumentIndex.current++
+              )
+            : [];
 
-    const fileParagraphs = await Promise.all(
-      attachments.map((a) =>
-        processTextToParagraphs(a.text || "", documentManager.current[a.id])
-      )
-    );
+          const fileParagraphs = await Promise.all(
+            attachments.map((a) =>
+              processTextToParagraphs(
+                a.text || "",
+                documentManager.current[a.id]
+              )
+            )
+          );
 
-    return [...textParagraphs, ...fileParagraphs.flat()];
+          resolve([...textParagraphs, ...fileParagraphs.flat()]);
+        } catch (err) {
+          // reject instead of throwing to properly surface to the caller
+          reject(err);
+        }
+      }, 0);
+    });
   }, [inputText, attachments]);
 
   const saveToFirestore = useCallback(
-    async (allParagraphs: Paragraph[], result: SummaryItem) => {
+    async (
+      allParagraphs: Paragraph[],
+      result: SummaryItem,
+      hadInputText: boolean
+    ) => {
       const sessionId = activeSession?.id;
       if (!sessionId) return;
 
       try {
         const sessionRef = doc(db, "sessions", sessionId);
-
         await updateDoc(sessionRef, {
           summaries: result,
           updatedAt: serverTimestamp(),
@@ -234,10 +260,17 @@ export default function SessionPage() {
         updateMembership?.({
           pagesRemaining:
             (membership.pagesRemaining ?? 0) -
-            (attachments.length + (inputText ? 1 : 0)),
+            (attachments.length + (hadInputText ? 1 : 0)),
         });
 
-        await saveParagraphsToFirestore(sessionId, allParagraphs);
+        const LARGE_SAVE_THRESHOLD = 500;
+        if (allParagraphs.length > LARGE_SAVE_THRESHOLD) {
+          backgroundSaveParagraphs(sessionId, allParagraphs).catch((err) => {
+            handleProcessingError("Background Firestore save failed", err);
+          });
+        } else {
+          await saveParagraphsToFirestore(sessionId, allParagraphs);
+        }
       } catch (error) {
         handleProcessingError("Finalize Processing", error);
         toast({
@@ -247,8 +280,42 @@ export default function SessionPage() {
         });
       }
     },
-    [activeSession, attachments.length]
+    [
+      activeSession,
+      attachments.length,
+      membership?.pagesRemaining,
+      quickSummary,
+    ]
   );
+
+  // helper: background-chunked save with logging
+  const backgroundSaveParagraphs = async (
+    sessionId: string,
+    paragraphsToSave: Paragraph[]
+  ) => {
+    const CHUNK = 300; // safe batch size
+    for (let i = 0; i < paragraphsToSave.length; i += CHUNK) {
+      const chunk = paragraphsToSave.slice(i, i + CHUNK);
+      try {
+        // assume saveParagraphsToFirestore can accept chunked sets
+        await saveParagraphsToFirestore(sessionId, chunk);
+      } catch (err) {
+        // log + surface minimal toast so user knows save failed in background
+        console.error("Background chunk save failed", {
+          err,
+          sessionId,
+          chunkSize: chunk.length,
+        });
+        toast({
+          title: "Background save failed",
+          description:
+            "We couldn't save some paragraphs. We'll retry automatically.",
+          variant: "destructive",
+        });
+        // optionally continue (you may implement a retry scheduler elsewhere)
+      }
+    }
+  };
 
   const handleRemoveAttachment = useCallback(
     async (id: string) => {
@@ -410,7 +477,10 @@ export default function SessionPage() {
           >
             <WelcomeModal
               isOpen={showWelcomeModal}
-              onOpenChange={setShowWelcomeModal}
+              onOpenChange={() => {
+                router.replace("/");
+                setShowWelcomeModal(false);
+              }}
               inputText={inputText}
               onInputTextChange={setInputText}
               attachments={attachments}

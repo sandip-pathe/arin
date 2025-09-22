@@ -5,6 +5,7 @@ import { ClientInit } from "@/components/clientInit";
 import AuthModal from "@/components/auth/auth-modal";
 import Script from "next/script";
 import AnalyticsWrapper from "@/components/lean/analytics-wrapper";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Anaya",
@@ -48,11 +49,15 @@ export default function RootLayout({
         </Script> */}
       </head>
       <body className="font-[Source Sans 3] antialiased h-full bg-background">
-        <ClientInit />
+        <Suspense fallback={null}>
+          <ClientInit />
+        </Suspense>
         <AuthModal />
         {children}
         <Toaster />
-        <AnalyticsWrapper />
+        <Suspense fallback={null}>
+          <AnalyticsWrapper />
+        </Suspense>
       </body>
     </html>
   );

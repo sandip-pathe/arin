@@ -41,6 +41,8 @@ interface SessionState {
   showAccountModal: boolean;
   showMembershipModal: boolean;
   showShareModal: boolean;
+  isDemoSession: boolean;
+  setIsDemoSession: (val: boolean) => void;
 
   // Actions
   setChatMessages: (
@@ -115,6 +117,8 @@ const useSessionStore = create<SessionState>((set) => ({
   showAccountModal: false,
   showMembershipModal: false,
   showShareModal: false,
+  isDemoSession: false,
+  setIsDemoSession: (val) => set({ isDemoSession: val }),
   // Actions
 
   // Setters

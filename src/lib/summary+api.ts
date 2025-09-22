@@ -2,13 +2,16 @@ import { OpenAI } from "openai";
 import { Paragraph, SummaryItem } from "@/types/page";
 import { useAuthStore } from "@/store/auth-store";
 import { endTimer, logPerf, startTimer } from "./hi";
+import pLimit from "p-limit";
+import { makeAdaptiveBatches } from "./chunk";
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
-const BATCH_SIZE = 50;
+const CONCURRENCY = 4;
+const limit = pLimit(CONCURRENCY);
 
 export async function summarizeParagraphs(
   paragraphs: Paragraph[],
@@ -23,31 +26,23 @@ export async function summarizeParagraphs(
   const settings = useAuthStore.getState().settings.summary;
 
   try {
-    const batchResult: any[] = [];
+    const batches = makeAdaptiveBatches(paragraphs, 10000);
 
-    for (let i = 0; i < paragraphs.length; i += BATCH_SIZE) {
-      const batchTimer = startTimer(`BatchProcessing-${i}-${i + BATCH_SIZE}`);
-      const batch = paragraphs.slice(i, i + BATCH_SIZE);
+    const batchResult = await Promise.all(
+      batches.map((batch, idx) =>
+        limit(async () => {
+          const result = await processBatch(batch, settings);
 
-      logPerf("Processing batch", {
-        batchIndex: i,
-        batchSize: batch.length,
-        batchCharacterCount: batch.reduce((sum, p) => sum + p.text.length, 0),
-      });
+          if (progressCallback) {
+            progressCallback(
+              Math.min(100, Math.round(((idx + 1) / batches.length) * 100))
+            );
+          }
 
-      const result = await processBatch(batch, settings);
-      batchResult.push(result);
-      endTimer(batchTimer);
-
-      if (progressCallback) {
-        progressCallback(
-          Math.min(
-            100,
-            Math.round(((i + batch.length) / paragraphs.length) * 100)
-          )
-        );
-      }
-    }
+          return result;
+        })
+      )
+    );
 
     logPerf("All batches completed Results", batchResult);
     return await aggregateResults(batchResult, settings);
@@ -67,6 +62,7 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
   const batchTimer = startTimer(`OpenAIBatch-${paragraphs[0]?.id}`);
   try {
     logPerf("Batch Processing", { paragraphCount: paragraphs.length });
+
     const paragraphText = paragraphs
       .map((p) => `(${p.id}) ${p.text}`)
       .join("\n\n");
@@ -193,7 +189,7 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
       ],
       temperature: 0.1,
       response_format: { type: "json_object" },
-      max_tokens: 4000,
+      max_tokens: 8000,
     });
     endTimer(apiTimer);
 
@@ -348,7 +344,7 @@ async function aggregateResults(
       ],
       temperature: 0.1,
       response_format: { type: "json_object" },
-      max_tokens: 4000,
+      max_tokens: 8000,
     });
     endTimer(AggApiTimer);
 

@@ -42,6 +42,14 @@ import {
 import { useAuthStore } from "@/store/auth-store";
 import { FaPaperclip } from "react-icons/fa6";
 import OnboardingSamplePdf from "./onboarding/samplePDF";
+import { IoTextSharp } from "react-icons/io5";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -84,6 +92,7 @@ export function WelcomeModal({
   const [isMobile, setIsMobile] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+  const [showTextarea, setShowTextarea] = useState(false);
 
   useEffect(() => {
     if (membership?.pagesRemaining === 10) {
@@ -306,33 +315,53 @@ export function WelcomeModal({
 
                     {/* Text input area */}
                     <div className="relative mb-3">
-                      <Textarea
-                        ref={textareaRef}
-                        autoFocus
-                        placeholder="Paste the text here. . ."
-                        className={`
-                          w-full bg-white border-none focus:ring-0 focus:outline-0 
+                      {showTextarea ? (
+                        <>
+                          <Textarea
+                            ref={textareaRef}
+                            autoFocus
+                            placeholder="Paste the text here. . ."
+                            className={`
+                          w-full bg-white min-h-32 border-none focus:ring-0 focus:outline-0 
                           placeholder:text-gray-300 placeholder:text-2xl resize-none p-4 rounded-lg transition-all duration-200
                          focus-visible:ring-transparent focus-visible:ring-offset-0
                         `}
-                        value={inputText}
-                        onChange={(e) => onInputTextChange(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            onSend();
-                          }
-                        }}
-                        style={{
-                          minHeight: "120px",
-                          lineHeight: "1.5",
-                          overflowY: "auto",
-                          outline: "none",
-                        }}
-                      />
-                      {inputText.length > 0 && (
-                        <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-gray-100 px-2 rounded">
-                          {inputText.length}
+                            value={inputText}
+                            onChange={(e) => onInputTextChange(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                onSend();
+                              }
+                            }}
+                            style={{
+                              lineHeight: "1.5",
+                              overflowY: "auto",
+                              outline: "none",
+                            }}
+                          />
+                          {inputText.length > 0 && (
+                            <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-gray-100 px-2 rounded">
+                              {inputText.length}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center min-h-32">
+                          <button
+                            className={cn(
+                              "text-gray-500 flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                              isMobile ? "h-20 w-20" : "h-16 w-16"
+                            )}
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isProcessing}
+                          >
+                            {isMobile ? (
+                              <Upload className="h-20 w-20" />
+                            ) : (
+                              <Upload className="h-12 w-12" />
+                            )}
+                          </button>
                         </div>
                       )}
                     </div>
@@ -426,6 +455,30 @@ export function WelcomeModal({
                             </TooltipContent>
                           </Tooltip>
 
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size={isMobile ? "default" : "icon"}
+                                className={cn(
+                                  "text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full",
+                                  isMobile ? "h-12 w-12 px-0" : "h-10 w-10"
+                                )}
+                                onClick={() => setShowTextarea(true)}
+                                disabled={isProcessing}
+                              >
+                                {isMobile ? (
+                                  <IoTextSharp className="h-6 w-6" />
+                                ) : (
+                                  <IoTextSharp className="h-5 w-5" />
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Add Text</p>
+                            </TooltipContent>
+                          </Tooltip>
+
                           {/* Camera button for mobile */}
                           {isMobile && (
                             <Tooltip>
@@ -478,12 +531,25 @@ export function WelcomeModal({
                               <SummarySettings />
                             </SheetContent>
                           </Sheet>
-
-                          <OnboardingSamplePdf
-                            onUseSampleDoc={onUseSampleDoc}
-                            onDismiss={handleDismissOnboarding}
-                          />
                         </TooltipProvider>
+
+                        <Select>
+                          <SelectTrigger className="w-[120px] mx-2 h-6">
+                            <SelectValue placeholder="Best" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="best">Best</SelectItem>
+                            <SelectItem value="chatgpt">Chatgpt 5</SelectItem>
+                            <SelectItem value="gemini">Gemini 2.5</SelectItem>
+                            <SelectItem value="deepseek">
+                              Deepseek R1
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <OnboardingSamplePdf
+                          onUseSampleDoc={onUseSampleDoc}
+                          onDismiss={handleDismissOnboarding}
+                        />
                       </div>
 
                       <Button
@@ -516,13 +582,6 @@ export function WelcomeModal({
                         )}
                       </Button>
                     </div>
-
-                    {/* Drag and drop hint */}
-                    {!isMobile && (
-                      <div className="text-center mt-4 text-sm text-gray-500">
-                        Or drag and drop files here
-                      </div>
-                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -12,6 +12,11 @@ export function mergeOntology(summaries: SummaryItem[]): Ontology {
       clauses: [],
       dates: [],
       parties: [],
+      proceduralPosture: [],
+      courtAndJudges: [],
+      conflicts: [],
+      implications: [],
+      citationsAndPrecedents: [],
     };
   }
 
@@ -37,6 +42,11 @@ export function mergeOntology(summaries: SummaryItem[]): Ontology {
       clauses: [],
       dates: [],
       parties: [],
+      proceduralPosture: [],
+      courtAndJudges: [],
+      conflicts: [],
+      implications: [],
+      citationsAndPrecedents: [],
     } as Ontology
   );
 }

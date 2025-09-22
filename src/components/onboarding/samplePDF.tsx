@@ -1,6 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { FileText, X } from "lucide-react";
+import { FileText } from "lucide-react";
+import useSessionStore from "@/store/session-store";
 
 interface OnboardingSamplePdfProps {
   onUseSampleDoc?: () => void;
@@ -11,11 +10,13 @@ export default function OnboardingSamplePdf({
   onUseSampleDoc,
   onDismiss,
 }: OnboardingSamplePdfProps) {
+  const { setIsDemoSession } = useSessionStore();
   return (
     <>
       <button
         className="flex items-center text-gray-500 justify-center rounded-xl border-none hover:bg-gray-100"
         onClick={() => {
+          setIsDemoSession(true);
           onUseSampleDoc?.();
           onDismiss?.();
         }}

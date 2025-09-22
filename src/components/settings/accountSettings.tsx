@@ -18,7 +18,12 @@ import { motion } from "framer-motion";
 import { auth } from "@/lib/firebase";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { updateProfile, signOut } from "firebase/auth";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAuthStore } from "@/store/auth-store";
 import {
   AlertDialog,
@@ -37,6 +42,8 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
   const [name, setName] = useState<string>(dbUser?.displayName || "");
   const [contact, setContact] = useState<string>(dbUser?.phoneNumber || "");
   const [saving, setSaving] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -83,8 +90,6 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
       console.error("Logout failed", err);
     }
   };
-
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDeleteAccount = async () => {
     if (!dbUser?.uid) return;
@@ -154,8 +159,8 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
 
           <div className="w-full space-x-2 space-y-2">
             <AlertDialog
-              open={deleteDialogOpen}
-              onOpenChange={setDeleteDialogOpen}
+              open={logoutDialogOpen}
+              onOpenChange={setLogoutDialogOpen}
             >
               <AlertDialogTrigger asChild>
                 <Button
@@ -246,6 +251,9 @@ export const AccountSettingsModal = ({
       <DialogTitle className="sr-only">
         Account settings & membership
       </DialogTitle>
+      <DialogDescription className="sr-only">
+        Update your account settings and membership details.
+      </DialogDescription>
       <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
         <div className="relative bg-white md:rounded-3xl shadow-lg h-full p-4 md:p-8 flex flex-col overflow-auto">
           <AccountSettings onClose={() => isOpenChange(false)} />

@@ -3,9 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonBox } from "@/components/Skeleton";
 import { ThinkingLoader } from "@/components/ProgressStepper";
 import SummaryDisplay from "@/components/summaryDisplay";
-import { useAuthStore } from "@/store/auth-store";
-import useSessionStore from "@/store/session-store";
 import InstantSkimDisplay from "./instant-skim";
+import useSessionStore from "@/store/session-store";
 
 interface MainContentProps {
   isSummarizing: boolean;
@@ -26,11 +25,17 @@ export const MainContent = ({
     paragraphs,
     quickSummary,
     setShowWelcomeModal,
+    isDemoSession,
   } = useSessionStore();
-  const { user } = useAuthStore();
+
+  const canShowEmptyState =
+    !summaries &&
+    !isSummarizing &&
+    !isDemoSession &&
+    activeSession?.noOfAttachments === 0;
 
   // --- Skeleton while session metadata is loading ---
-  if (loadingStates.session) {
+  if (loadingStates.session || !activeSession) {
     return (
       <motion.div
         key="session-loading"
@@ -54,7 +59,7 @@ export const MainContent = ({
       key="main-content"
       className="flex flex-col space-y-6 p-4 sm:p-6 max-w-3xl mx-auto"
     >
-      {/* --- Instant Skim (always shown if exists) --- */}
+      {/* --- Instant Skim (always show if exists) --- */}
       <AnimatePresence>
         {quickSummary && (
           <motion.div
@@ -70,45 +75,49 @@ export const MainContent = ({
       </AnimatePresence>
 
       {/* --- Loader for full summary --- */}
-      {isSummarizing && (
-        <motion.div
-          key="summarizing"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <ThinkingLoader
-            isSummarizing={isSummarizing}
-            paragraphsCount={paragraphCount}
-          />
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isSummarizing && (
+          <motion.div
+            key="summarizing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ThinkingLoader
+              isSummarizing={isSummarizing}
+              paragraphsCount={paragraphCount}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* --- Final Summary --- */}
-      {summaries && (
-        <motion.div
-          key="summary-content"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <SummaryDisplay
-            paragraphs={paragraphs}
-            summary={summaries}
-            onCitationClick={onCitationClick}
-          />
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {summaries && !isSummarizing && (
+          <motion.div
+            key="summary-content"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <SummaryDisplay
+              paragraphs={paragraphs}
+              summary={summaries}
+              onCitationClick={onCitationClick}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* --- Empty State (only if owner & no docs) --- */}
-      {!summaries &&
-        !isSummarizing &&
-        user?.uid === activeSession?.userId &&
-        activeSession?.noOfAttachments === 0 && (
+      {/* --- Empty State (after delay) --- */}
+      <AnimatePresence>
+        {canShowEmptyState && (
           <motion.div
             key="no-summary-owner"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
             className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8"
           >
             <div className="text-gray-500 mb-4 text-sm sm:text-base">
@@ -124,6 +133,7 @@ export const MainContent = ({
             </motion.button>
           </motion.div>
         )}
+      </AnimatePresence>
     </motion.div>
   );
 };

@@ -156,9 +156,7 @@ export function ThinkingLoader({
         <div>
           <h2 className="text-lg font-semibold text-gray-800 inline">
             {remainingSeconds > 0 ? (
-              <span>
-                Processing {paragraphsCount} paragraphs in {remainingSeconds}s
-              </span>
+              <span>{remainingSeconds}s remaining...</span>
             ) : (
               <motion.div
                 animate={{ rotate: 360 }}

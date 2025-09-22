@@ -4,6 +4,7 @@ import model from "wink-eng-lite-web-model";
 
 const nlp = winkNLP(model);
 const its = nlp.its;
+const MAX_TOKENS_PER_BATCH = 10000;
 
 /**
  * Converts raw text into structured Paragraph objects.
@@ -63,19 +64,19 @@ export function processTextToParagraphs(
  * @param maxTokens - Max tokens per batch (default ~3000)
  * @returns Array of batches, each batch is an array of Paragraphs
  */
+
 export function makeAdaptiveBatches(
   paragraphs: Paragraph[],
-  maxTokens = 3000
+  maxTokens = MAX_TOKENS_PER_BATCH
 ): Paragraph[][] {
   const batches: Paragraph[][] = [];
   let current: Paragraph[] = [];
   let tokenCount = 0;
 
   for (const p of paragraphs) {
-    const estTokens = Math.ceil(p.text.length / 4);
+    const estTokens = Math.ceil(p.text.length / 4); // rough token estimate
 
     if (tokenCount + estTokens > maxTokens && current.length > 0) {
-      // flush current batch
       batches.push(current);
       current = [];
       tokenCount = 0;
@@ -85,13 +86,10 @@ export function makeAdaptiveBatches(
     tokenCount += estTokens;
   }
 
-  if (current.length > 0) {
-    batches.push(current);
-  }
+  if (current.length > 0) batches.push(current);
 
   return batches;
 }
-
 /**
  * Detects a section title at the start of text (if any).
  */

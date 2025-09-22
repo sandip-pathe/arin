@@ -89,21 +89,12 @@ export const useSessionData = () => {
 
         const sessionData = sessionDoc.data() as Session;
 
-        if (
-          sessionData.userId !== user?.uid &&
-          !sessionData.sharedWith?.includes(user?.email ?? "")
-        ) {
-          toast({ title: "Access Denied", variant: "destructive" });
-          router.push("/");
-          return;
-        }
-
         setActiveSession(sessionData);
         setQuickSummary(sessionData.quickSummary || "");
         setSummaries(sessionData.summaries || null);
         setLoadingStates({ session: false });
 
-        if (sessionData.userId === user?.uid) {
+        if (user?.uid) {
           const [loadedParagraphs, loadedChatMessages] = await Promise.all([
             loadParagraphs(id),
             loadChatMessages(id),

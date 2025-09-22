@@ -1,4 +1,4 @@
-import { MembershipType } from "@/components/settings/membership";
+import { MembershipType } from "@/store/auth-store";
 
 // lib/data.ts
 export const ONTOLOGY_COLORS = {

@@ -20,14 +20,14 @@ const InstantSkimDisplay = ({ skimText }: InstantSkimDisplayProps) => {
         key={"instant-skim-collapsible"}
         open={isOpen}
         onOpenChange={() => setIsOpen(!isOpen)}
-        className="border-b bg-white/60 backdrop-blur-sm hover:shadow-md rounded-xl transition-shadow"
+        className="border-none bg-white/60 backdrop-blur-sm hover:shadow-md rounded-xl transition-shadow"
       >
         <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-4">
-          <div className="flex items-center select-none gap-3">
+          <div className="flex items-center select-none gap-1">
             <span className="font-logo text-xl font-bold tracking-tighter text-primary">
               Anaya
             </span>
-            <h3 className="text-lg font-semibold tracking-tight text-gray-900">
+            <h3 className="font-logo text-xl font-bold tracking-tighter text-gray-500">
               Instant Skim
             </h3>
           </div>
@@ -47,7 +47,7 @@ const InstantSkimDisplay = ({ skimText }: InstantSkimDisplayProps) => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="py-3 text-gray-700 text-base sm:text-lg leading-relaxed"
+                className="py-3 text-gray-500 text-xs sm:text-sm leading-relaxed"
               >
                 {skimText}
               </motion.div>
