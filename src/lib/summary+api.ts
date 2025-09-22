@@ -228,107 +228,55 @@ async function aggregateResults(
     const inputJson = JSON.stringify(batchResults, null, 2);
 
     const AGGREGATE_SYSTEM_PROMPT = `
-      You are a senior legal associate reviewing multiple extraction results.  
+      You are acting as a **senior legal associate** reviewing multiple extraction results from different batches.  
+
+      GOAL: Produce **one master structured summary** + **unified ontology**.
 
       RULES:
-      1. Include all extractions from all batches.  
-      2. If two extractions are identical in wording AND meaning, merge them into one and union their sourceParagraphs.  
-      3. If wording differs, keep them separate (even if similar).  
-      4. Review and deduplicate extractions and ontology.
-      5. Think like a clerk compiling case notes for a partner: accuracy > brevity.
+      1. EXTRACT + MERGE:
+        - Include all extractions from all batches.
+        - If two are identical in meaning, merge and union their "sourceParagraphs".
+        - If they differ in meaning, keep both.
 
+      2. ONTOLOGY CONSOLIDATION:
+        - Deduplicate entities (e.g. same party or clause).
+        - Keep conflicts explicitly if values differ (e.g. payment amounts).
+        - Maintain structured categories (parties, clauses, obligations, etc.).
 
-      USER SETTINGS (use them as a response guide):
-        - Length: ${settings.length} // short, medium, long
-        - Tone: ${settings.tone} // formal, professional, casual
-        - Jurisdiction: ${settings.jurisdiction} // e.g. "Indian Law"
-        - Style: ${settings.style} // detailed, concise, narrative
+      3. USER SETTINGS:
+        - Length: ${settings.length} (short / medium / long).
+        - Tone: ${settings.tone} (formal / professional / casual).
+        - Jurisdiction: ${settings.jurisdiction}.
+        - Style: ${settings.style} (detailed / concise / narrative).
+
+      4. STYLE:
+        - Professional, accurate, legally faithful.
+        - Prefer clarity over verbosity.
+        - No hallucination, no omissions.
 
       FINAL OUTPUT SCHEMA (JSON only):
       {
-        "title": "7-word unique title",
+        "title": "Unique 7-word descriptive title",
         "extractions": [
           {
-            "text": "text 1",
-            "sourceParagraphs": ["dX.pY", "dX.pY"]
-          },
-          {
-            "text": "text 2",
-            "sourceParagraphs": ["dX.pY"]
+            "text": "The Defendant failed to pay damages despite demand.",
+            "sourceParagraphs": ["d3.p5", "d3.p6"]
           }
         ],
         "legalOntology": {
-          "parties": [
-            {
-              "role": "Plaintiff",
-              "name": "ABC Ltd.",
-              "implication": "Filed a civil suit for damages"
-            }
-          ],
-          "obligations": [
-              "Defendant must pay damages"
-          ],
-          "conditions": [
-            {
-              "trigger": "Non-payment within 30 days",
-              "consequence": "Accrued interest at 6% p.a.",
-              "src":["dX.pY"]
-            }
-          ],
-          "clauses": [
-            {
-              "text": "All disputes shall be referred to arbitration in Mumbai",
-              "src": ["dX.pY"]
-            }
-          ],
-          "definitions": [
-            {
-              "term": "Effective Date",
-              "defination": "The date on which this Agreement is signed",
-              "src": ["dX.pY"]
-            }
-          ],
-          "dates": [
-            {
-              "type": "Filing Date",
-              "value": "dd/mm/yyyy"
-            }
-          ],
-          "proceduralPosture": [
-            {
-              "stage": "Appeal"
-            }
-          ],
-          "courtAndJudges": [
-            {
-              "court": "Supreme Court of India",
-              "judge": "Justice DY Chandrachud",
-              "benchSize": 3
-            }
-          ],
-          "conflicts": [
-            {
-              "issue": "Payment amount differs across extractions",
-              "versions": [
-                { "value": "₹50,00,000", "source": ["dX.pY"] },
-                { "value": "₹45,00,000", "source": ["dX.pY"] }
-              ]
-            }
-          ],
-          "implications": [
-              {
-                "text": "If Defendant fails to pay damages, Plaintiff may initiate contempt proceedings",
-                "src": ["dX.pY"]
-              }
-          ],
-          "citationsAndPrecedents": [
-            {
-              "caseName": "Avitel Post Studioz v. HSBC PI Holdings",
-              "citation": "(2020) 4 SCC 1",
-              "relevance": "Relied on for arbitration enforceability"
-            }
-          ]
-        }`;
+          "parties": [...],
+          "obligations": [...],
+          "conditions": [...],
+          "clauses": [...],
+          "definitions": [...],
+          "dates": [...],
+          "proceduralPosture": [...],
+          "courtAndJudges": [...],
+          "conflicts": [...],
+          "implications": [...],
+          "citationsAndPrecedents": [...]
+        }
+      }`;
 
     logPerf("Aggregation prompt created", { promptLength: prompt.length });
 
@@ -405,14 +353,16 @@ export async function quickSkimSummary(text: Paragraph[]): Promise<string> {
   logPerf("Starting quick skim", { inputLength: text.length });
 
   const QUICK_SKIM_SYSTEM_PROMPT = `
-      You are a legal AI assistant. 
-      Read the text carefully and produce a concise **plain paragraph** summary.
-      - Output should be a single paragraph.
-      - No citations, no extractions, no schema.
-      - Capture the **main points** and **key context**.
-      - Style: easy to read, informative, like a quick briefing note.
-      - Max length: ~10 sentences.
-      `;
+    You are a legal AI assistant. 
+    Task: produce a **concise plain-English briefing note** from the input text.
+
+    RULES:
+    - Output a single flowing paragraph (~8–10 sentences).
+    - Focus on the **core facts, issues, obligations, and outcomes**.
+    - No schema, no bullet points, no citations.
+    - Style: professional but easy to read, as if preparing a quick summary for a busy senior lawyer.
+    - Avoid over-interpretation. Stick strictly to text.
+    - Use Paul Graham's writing style.`;
 
   try {
     const response = await openai.chat.completions.create({

@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { FiUser, FiMail, FiPhone, FiSend } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +15,13 @@ import {
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { auth } from "@/lib/firebase";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp,
+  getDoc,
+} from "firebase/firestore";
 import { updateProfile, signOut } from "firebase/auth";
 import {
   Dialog,
@@ -44,70 +49,75 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
   const [saving, setSaving] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setName(dbUser?.displayName || "");
     setContact(dbUser?.phoneNumber || "");
   }, [dbUser]);
 
+  const norm = (v?: string | null) => (v ?? "").toString().trim();
+  const isUnchanged =
+    norm(name) === norm(dbUser?.displayName) &&
+    norm(contact) === norm(dbUser?.phoneNumber);
+
   const handleSave = async () => {
-    if (!dbUser?.uid || saving) return;
+    if (saving) return;
+
+    const uid = dbUser?.uid || auth.currentUser?.uid;
+    if (!uid || isUnchanged) return;
 
     setSaving(true);
     try {
       const db = getFirestore();
-      const userRef = doc(db, "users", dbUser.uid);
-      await updateDoc(userRef, {
-        displayName: name,
-        phoneNumber: contact,
-      });
+      const userRef = doc(db, "users", uid);
 
-      if (auth.currentUser) {
-        const toUpdate: Partial<{ displayName: string }> = {};
-        if (name && name !== auth.currentUser.displayName) {
-          toUpdate.displayName = name;
-        }
-        if (Object.keys(toUpdate).length > 0) {
-          await updateProfile(auth.currentUser, toUpdate);
-        }
+      await setDoc(
+        userRef,
+        {
+          displayName: name || null,
+          phoneNumber: contact || null,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      if (auth.currentUser && name && name !== auth.currentUser.displayName) {
+        await updateProfile(auth.currentUser, { displayName: name });
       }
 
-      console.log("Account info updated:", { name, contact });
-    } catch (error) {
-      console.error("Error updating account info:", error);
+      const snapshot = await getDoc(userRef);
+      if (snapshot.exists()) {
+        useAuthStore.getState().setDbUser({
+          ...snapshot.data(),
+          uid,
+        });
+      }
+      onClose?.();
     } finally {
       setSaving(false);
-      onClose?.();
     }
   };
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      onClose?.();
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
+    await signOut(auth);
+    onClose?.();
   };
 
   const handleDeleteAccount = async () => {
-    if (!dbUser?.uid) return;
+    const uid = dbUser?.uid || auth.currentUser?.uid;
+    if (!uid) return;
 
-    try {
-      const db = getFirestore();
-      const userRef = doc(db, "users", dbUser.uid);
-      await updateDoc(userRef, { deleted: true });
+    const db = getFirestore();
+    const userRef = doc(db, "users", uid);
+    await setDoc(
+      userRef,
+      { deleted: true, deletedAt: serverTimestamp() },
+      { merge: true }
+    );
 
-      await signOut(auth);
-      onClose?.();
-    } catch (error) {
-      console.error("Error deleting account:", error);
-    }
+    await signOut(auth);
+    onClose?.();
   };
-
-  const isUnchanged =
-    name === dbUser?.displayName && contact === dbUser?.phoneNumber;
 
   return (
     <motion.div
@@ -189,6 +199,7 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+
             <AlertDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}
@@ -206,9 +217,9 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
                   <AlertDialogTitle>Delete Account</AlertDialogTitle>
                   <AlertDialogDescription>
                     Are you sure you want to delete your account? This action
-                    cannot be undone. All your content will be lost and cannot
-                    be retrieved.{" "}
+                    cannot be undone.
                     <span className="hover:underline cursor-pointer text-blue-600">
+                      {" "}
                       Read our data policy
                     </span>
                   </AlertDialogDescription>
@@ -228,8 +239,11 @@ export const AccountSettings = ({ onClose }: { onClose?: () => void }) => {
         </CardContent>
 
         <CardFooter className="flex justify-between items-center">
-          <div>{/* Optional last updated / timestamp info */}</div>
-          <Button onClick={handleSave} disabled={saving || isUnchanged}>
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || isUnchanged}
+          >
             <FiSend className="mr-2" />
             {saving ? "Saving..." : "Save Changes"}
           </Button>

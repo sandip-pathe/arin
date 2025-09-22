@@ -22,8 +22,7 @@ export default function SignupForm() {
   const { toast } = useToast();
   const { open, close } = useAuthModalStore();
   const searchParams = useSearchParams();
-  const referredBy = searchParams.get("referredBy"); // 👈 read from URL
-
+  const referredBy = searchParams.get("referredBy");
   const [email, setEmail] = useState("");
   const [fname, setFname] = useState("");
   const [password, setPassword] = useState("");
@@ -34,39 +33,29 @@ export default function SignupForm() {
 
     try {
       setLoading(true);
-
-      // Create user in Firebase Auth
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-
-      // Create Firestore user doc
       await setDoc(doc(db, "users", user.uid), {
         email,
-        name: fname,
+        displayName: fname,
         referredBy: referredBy || null,
         referralCount: 0,
         createdAt: new Date(),
       });
 
-      localStorage.setItem(`isNew_${user.uid}`, true.toString());
-      // If referred, update referrer's referralCount + add referral record
+      localStorage.setItem(`greetingCount_${user.uid}`, "1");
       if (referredBy) {
         const referrerDoc = doc(db, "users", referredBy);
-
-        // increment counter
         await updateDoc(referrerDoc, { referralCount: increment(1) });
-
-        // add to subcollection
         await addDoc(collection(referrerDoc, "referrals"), {
           referredUserId: user.uid,
           email,
           createdAt: new Date(),
         });
       }
-
       close();
     } catch (err: any) {
       toast({

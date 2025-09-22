@@ -1,33 +1,42 @@
 "use client";
-
 import { useAuthStore } from "@/store/auth-store";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function ChatWelcome() {
-  const { user } = useAuthStore();
-  const displayName = user?.displayName?.split(" ")[0] || "";
+  const { dbUser, user } = useAuthStore();
+  const displayName = dbUser?.displayName?.split(" ")[0] || "";
 
   const [shownText, setShownText] = useState("");
   const [done, setDone] = useState(false);
   const [shine, setShine] = useState(false);
+  const [fullText, setFullText] = useState("");
 
-  // Determine greeting only once based on localStorage
-  const greeting = (() => {
-    if (!displayName || !user?.uid) return "";
-    const key = `isNew_${user.uid}`;
-    const isNew = localStorage.getItem(key) === "true";
-    return isNew ? `Welcome ${displayName},` : `Welcome Back ${displayName},`;
-  })();
-
+  // Decide greeting once based on localStorage
   useEffect(() => {
-    if (!greeting) return;
+    if (!displayName || !user?.uid) return;
+
+    const key = `greetingCount_${user.uid}`;
+    let count = Number(localStorage.getItem(key)) || 0;
+
+    const greeting =
+      count < 2 ? `Welcome ${displayName},` : `Welcome Back ${displayName},`;
+
+    setFullText(greeting);
+
+    // Increment count for next visit
+    localStorage.setItem(key, String(count + 1));
+  }, [displayName, user?.uid]);
+
+  // Animate the fullText
+  useEffect(() => {
+    if (!fullText) return;
 
     let i = 0;
     const interval = setInterval(() => {
-      setShownText(greeting.slice(0, i + 1));
+      setShownText(fullText.slice(0, i + 1));
       i++;
-      if (i === greeting.length) {
+      if (i === fullText.length) {
         clearInterval(interval);
         setDone(true);
         setTimeout(() => setShine(true), 100);
@@ -35,18 +44,15 @@ export function ChatWelcome() {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [greeting]);
+  }, [fullText]);
 
   return (
     <div className="select-none w-full">
       <div className="text-left flex flex-col sm:flex-row items-baseline gap-1 sm:gap-2 relative overflow-hidden">
-        {/* Streaming Heading */}
         <h1 className="relative font-headline text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground inline-block">
           <span className="bg-blue-900 bg-clip-text text-transparent">
             {shownText}
           </span>
-
-          {/* Glossy shine overlay */}
           {shine && (
             <motion.span
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
@@ -57,8 +63,6 @@ export function ChatWelcome() {
             />
           )}
         </h1>
-
-        {/* Tagline */}
         {done && (
           <motion.span
             className="text-lg sm:text-xl md:text-2xl ml-0 sm:ml-2 font-medium font-logo text-primary mt-1 sm:mt-4"

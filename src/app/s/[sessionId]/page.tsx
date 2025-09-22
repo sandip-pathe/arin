@@ -81,7 +81,7 @@ export default function SessionPage() {
   const handleUseSampleDoc = async () => {
     setShowWelcomeModal(false);
     setIsSummarizing(true);
-    setParagraphCount(128);
+    setParagraphCount(2);
     setTimeout(() => {
       setIsSummarizing(false);
       router.push(`/s/${DEMO_SESSION_ID}`);
@@ -138,8 +138,10 @@ export default function SessionPage() {
         try {
           const skim = await quickSkimSummary(skimParagraphs);
           setQuickSummary(skim);
+          return skim;
         } catch (err: any) {
           logPerf("Quick skim error (non-fatal)", { error: err.message });
+          return "";
         } finally {
           endTimer(quickSkimTimer);
         }
@@ -147,32 +149,24 @@ export default function SessionPage() {
 
       const fullSummaryPromise = (async () => {
         const summarizeTimer = startTimer("Summarization");
-        if (inputTextParagraphs.length > 400) {
-          await new Promise((r) => setTimeout(r, 150));
-          logPerf("Large document detected; applied small backoff", {
-            paragraphCount: inputTextParagraphs.length,
-          });
-        }
         try {
           const result = await summarizeParagraphs(inputTextParagraphs);
-          endTimer(summarizeTimer);
-          console.log(summarizeTimer, "summary completed in");
 
-          logPerf("Summarization completed", result);
           setSummaries(result);
           setActiveSession({
             ...activeSession!,
             title: result.title || "Legal Session",
           });
-
           setParagraphs(inputTextParagraphs);
 
-          const saveTimer = startTimer("FirestoreSave");
-          await saveToFirestore(inputTextParagraphs, result, hadInputText);
-          endTimer(saveTimer);
-          logPerf("Firestore save completed");
+          const skim = await quickSkimPromise; // ✅ wait for skim result
+          await saveToFirestore(
+            inputTextParagraphs,
+            result,
+            skim,
+            hadInputText
+          );
         } catch (err: any) {
-          logPerf("Summarization error", { error: err.message });
           handleProcessingError("Summarization failed", err);
           toast({
             variant: "destructive",
@@ -181,6 +175,7 @@ export default function SessionPage() {
           });
         } finally {
           setIsSummarizing(false);
+          endTimer(summarizeTimer);
         }
       })();
 
@@ -242,6 +237,7 @@ export default function SessionPage() {
     async (
       allParagraphs: Paragraph[],
       result: SummaryItem,
+      quickSummary: string,
       hadInputText: boolean
     ) => {
       const sessionId = activeSession?.id;
@@ -254,7 +250,7 @@ export default function SessionPage() {
           updatedAt: serverTimestamp(),
           noOfAttachments: attachments.length,
           title: result.title,
-          instantSummary: quickSummary,
+          quickSummary,
         });
 
         updateMembership?.({
@@ -263,7 +259,7 @@ export default function SessionPage() {
             (attachments.length + (hadInputText ? 1 : 0)),
         });
 
-        const LARGE_SAVE_THRESHOLD = 500;
+        const LARGE_SAVE_THRESHOLD = 5;
         if (allParagraphs.length > LARGE_SAVE_THRESHOLD) {
           backgroundSaveParagraphs(sessionId, allParagraphs).catch((err) => {
             handleProcessingError("Background Firestore save failed", err);
