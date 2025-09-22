@@ -8,19 +8,26 @@ export function ChatWelcome() {
   const { user } = useAuthStore();
   const displayName = user?.displayName?.split(" ")[0] || "";
 
-  const fullText = displayName ? `Welcome Back ${displayName},` : "";
   const [shownText, setShownText] = useState("");
   const [done, setDone] = useState(false);
   const [shine, setShine] = useState(false);
 
+  // Determine greeting only once based on localStorage
+  const greeting = (() => {
+    if (!displayName || !user?.uid) return "";
+    const key = `isNew_${user.uid}`;
+    const isNew = localStorage.getItem(key) === "true";
+    return isNew ? `Welcome ${displayName},` : `Welcome Back ${displayName},`;
+  })();
+
   useEffect(() => {
-    if (!fullText) return;
+    if (!greeting) return;
 
     let i = 0;
     const interval = setInterval(() => {
-      setShownText(fullText.slice(0, i + 1));
+      setShownText(greeting.slice(0, i + 1));
       i++;
-      if (i === fullText.length) {
+      if (i === greeting.length) {
         clearInterval(interval);
         setDone(true);
         setTimeout(() => setShine(true), 100);
@@ -28,7 +35,7 @@ export function ChatWelcome() {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [fullText]);
+  }, [greeting]);
 
   return (
     <div className="select-none w-full">

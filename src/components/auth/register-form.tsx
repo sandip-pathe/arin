@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -51,6 +51,7 @@ export default function SignupForm() {
         createdAt: new Date(),
       });
 
+      localStorage.setItem(`isNew_${user.uid}`, true.toString());
       // If referred, update referrer's referralCount + add referral record
       if (referredBy) {
         const referrerDoc = doc(db, "users", referredBy);
