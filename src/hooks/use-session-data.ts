@@ -42,13 +42,20 @@ export const useSessionData = () => {
           return;
         }
 
+        // Get anonymous user ID or use authenticated user ID
+        const { getAnonymousUserId, addAnonymousSessionId } = await import(
+          "@/lib/session-migration"
+        );
+        const effectiveUserId = user?.uid || getAnonymousUserId();
+        const effectiveEmail = user?.email || "Guest";
+
         const newSession: Session = {
           id,
-          userId: user!.uid,
+          userId: effectiveUserId,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
-          createdBy: user!.email ?? "Unknown",
-          owner: user!.email ?? "Unknown",
+          createdBy: effectiveEmail,
+          owner: effectiveEmail,
           sharedWith: [],
           folder: "private",
           isStarred: false,
@@ -56,9 +63,21 @@ export const useSessionData = () => {
           title: "New Session",
         };
 
+        // ALWAYS save to Firestore (even for anonymous users)
         await setDoc(sessionRef, newSession);
+
+        // Track anonymous session in localStorage
+        if (!user) {
+          addAnonymousSessionId(id);
+        }
+
         setActiveSession(newSession);
-        console.log("New session created:", newSession.id);
+        console.log(
+          "New session created:",
+          newSession.id,
+          "User:",
+          effectiveUserId
+        );
         router.replace(`/s/${id}`);
       } catch (error) {
         handleProcessingError("Create Session", error);

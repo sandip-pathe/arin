@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function MasterLoader() {
   return (
@@ -10,21 +11,20 @@ export default function MasterLoader() {
         transition={{ duration: 0.45, ease: "easeOut" }}
         className="flex flex-col items-center select-none"
       >
-        {/* Wordmark */}
-        <h1
-          className="
-            font-logo text-5xl md:text-6xl font-black tracking-tight
-            anaya-gradient
-          "
-          style={{
-            animation: "anaya-shimmer 2.8s ease-in-out infinite",
-            // keep layout stable during animation
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-          }}
-        >
-          Anaya
-        </h1>
+        {/* Logo */}
+        <div className="relative">
+          <Image
+            src="/logo.png"
+            alt="Anaya Logo"
+            width={200}
+            height={60}
+            priority
+            className="object-contain"
+            style={{
+              animation: "anaya-shimmer 2.8s ease-in-out infinite",
+            }}
+          />
+        </div>
 
         {/* Underline (center-out grow) */}
         <span
@@ -42,8 +42,29 @@ export default function MasterLoader() {
           transition={{ delay: 0.25, duration: 0.45 }}
           className="mt-5 text-blue-500 text-base md:text-lg font-medium tracking-wide"
         >
-          The Legal Intelligence Platform
+          Privacy-First Legal Intelligence
         </motion.p>
+
+        {/* Privacy indicators */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.45 }}
+          className="mt-4 flex items-center gap-4 text-xs text-gray-600"
+        >
+          <div className="flex items-center gap-1">
+            <span className="text-green-600">🔒</span>
+            <span>Local Processing</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-green-600">🛡️</span>
+            <span>Zero Storage</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-green-600">✓</span>
+            <span>Encrypted</span>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );

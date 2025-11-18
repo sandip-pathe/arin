@@ -26,15 +26,7 @@ export function UserProfile() {
   };
 
   if (!user) {
-    return (
-      <div className="flex items-center gap-3 w-full p-2">
-        <Skeleton className="h-9 w-9 rounded-full" />
-        <div className="grid gap-1.5">
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-3 w-32" />
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const getInitials = (name: string | null | undefined) => {

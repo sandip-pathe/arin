@@ -15,7 +15,7 @@ const limit = pLimit(CONCURRENCY);
 
 export async function summarizeParagraphs(
   paragraphs: Paragraph[],
-  progressCallback?: (percent: number) => void
+  progressCallback?: (percent: number, phase?: string, partial?: any) => void
 ): Promise<SummaryItem> {
   const summarizeTimer = startTimer("OpenAISummarization");
   logPerf("Starting summarization", {
@@ -27,25 +27,73 @@ export async function summarizeParagraphs(
 
   try {
     const batches = makeAdaptiveBatches(paragraphs, 10000);
+    logPerf("Batches created", { batchCount: batches.length });
 
-    const batchResult = await Promise.all(
-      batches.map((batch, idx) =>
-        limit(async () => {
-          const result = await processBatch(batch, settings);
+    let completedBatches = 0;
+    const batchResults: any[] = [];
 
-          if (progressCallback) {
+    // Process batches with streaming and progress updates
+    const batchPromises = batches.map((batch, idx) =>
+      limit(async () => {
+        const result = await processBatch(batch, settings, (streamContent) => {
+          // Send partial batch results as they stream in
+          if (progressCallback && streamContent) {
+            const batchProgress = Math.round(
+              ((completedBatches + 0.5) / batches.length) * 70
+            );
             progressCallback(
-              Math.min(100, Math.round(((idx + 1) / batches.length) * 100))
+              batchProgress,
+              `Processing batch ${idx + 1}/${batches.length}...`,
+              { batchIndex: idx, partial: streamContent }
             );
           }
+        });
 
-          return result;
-        })
-      )
+        completedBatches++;
+        batchResults.push(result);
+
+        // Update progress after batch completion
+        if (progressCallback) {
+          const batchProgress = Math.round(
+            (completedBatches / batches.length) * 70
+          );
+          progressCallback(
+            batchProgress,
+            `Completed batch ${completedBatches}/${batches.length}`
+          );
+        }
+
+        return result;
+      })
     );
 
-    logPerf("All batches completed Results", batchResult);
-    return await aggregateResults(batchResult, settings);
+    await Promise.all(batchPromises);
+
+    logPerf("All batches completed", { batchCount: batchResults.length });
+
+    // Aggregation phase (30% of total time)
+    if (progressCallback) {
+      progressCallback(75, "Merging and consolidating results...");
+    }
+
+    const finalResult = await aggregateResults(
+      batchResults,
+      settings,
+      (aggProgress) => {
+        if (progressCallback) {
+          progressCallback(
+            75 + Math.round(aggProgress * 0.25),
+            "Finalizing summary..."
+          );
+        }
+      }
+    );
+
+    if (progressCallback) {
+      progressCallback(100, "Complete");
+    }
+
+    return finalResult;
   } catch (error: any) {
     logPerf("Summarization failed", { error: error.message });
     throw error;
@@ -58,7 +106,11 @@ export async function summarizeParagraphs(
  * Step 1: Chunk summaries
  * Each batch produces a partial summary and ontology candidates
  */
-async function processBatch(paragraphs: Paragraph[], settings: any) {
+async function processBatch(
+  paragraphs: Paragraph[],
+  settings: any,
+  streamCallback?: (partial: string) => void
+) {
   const batchTimer = startTimer(`OpenAIBatch-${paragraphs[0]?.id}`);
   try {
     logPerf("Batch Processing", { paragraphCount: paragraphs.length });
@@ -178,7 +230,7 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
 
     const apiTimer = startTimer("OpenAIAPIRequest");
 
-    const response = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: PROCESS_BATCH_SYSTEM_PROMPT },
@@ -190,16 +242,28 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
       temperature: 0.1,
       response_format: { type: "json_object" },
       max_tokens: 8000,
+      stream: true,
     });
+
+    let fullContent = "";
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || "";
+      fullContent += content;
+
+      // Send partial updates for user feedback
+      if (streamCallback && content) {
+        streamCallback(fullContent);
+      }
+    }
+
     endTimer(apiTimer);
 
     logPerf("OpenAI response received Batch Process", {
-      usage: response.usage,
-      responseLength: response.choices[0]?.message?.content?.length || 0,
+      responseLength: fullContent.length,
       model: "gpt-4o-mini",
     });
 
-    return safeJSON(response.choices[0]?.message?.content || "");
+    return safeJSON(fullContent);
   } catch (error: any) {
     logPerf("OpenAI request failed", { error: error.message });
     throw error;
@@ -215,7 +279,8 @@ async function processBatch(paragraphs: Paragraph[], settings: any) {
  */
 async function aggregateResults(
   batchResults: any[],
-  settings: any
+  settings: any,
+  progressCallback?: (percent: number) => void
 ): Promise<SummaryItem> {
   const aggregateTime = startTimer("Aggregation");
 
@@ -224,6 +289,8 @@ async function aggregateResults(
       batchCount: batchResults.length,
       totalCharacters: JSON.stringify(batchResults).length,
     });
+
+    progressCallback?.(10);
 
     const inputJson = JSON.stringify(batchResults, null, 2);
 
@@ -280,8 +347,10 @@ async function aggregateResults(
 
     logPerf("Aggregation prompt created", { promptLength: prompt.length });
 
+    progressCallback?.(20);
+
     const AggApiTimer = startTimer("OpenAIAggregationAPIRequest");
-    const response = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: AGGREGATE_SYSTEM_PROMPT },
@@ -293,16 +362,35 @@ async function aggregateResults(
       temperature: 0.1,
       response_format: { type: "json_object" },
       max_tokens: 8000,
+      stream: true,
     });
+
+    let fullContent = "";
+    let lastProgress = 20;
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || "";
+      fullContent += content;
+
+      // Update progress during streaming (20% to 90%)
+      const newProgress = Math.min(
+        90,
+        20 + Math.floor(fullContent.length / 100)
+      );
+      if (newProgress > lastProgress) {
+        progressCallback?.(newProgress);
+        lastProgress = newProgress;
+      }
+    }
+
     endTimer(AggApiTimer);
 
     logPerf("OpenAI aggregation response received", {
-      usage: response.usage,
-      responseLength: response.choices[0]?.message?.content?.length || 0,
+      responseLength: fullContent.length,
       model: "gpt-4o-mini",
     });
 
-    return parseSummaryItem(response.choices[0]?.message?.content || "");
+    progressCallback?.(100);
+    return parseSummaryItem(fullContent);
   } catch (error: any) {
     logPerf("Aggregation failed", { error: error.message });
     throw error;

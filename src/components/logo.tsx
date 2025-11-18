@@ -1,15 +1,22 @@
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Logo() {
   const router = useRouter();
   return (
-    <div className="flex items-center select-none">
-      <span
-        onClick={() => router.push("/")}
-        className="font-logo text-4xl font-bold tracking-tighter text-primary"
-      >
-        Anaya
-      </span>
+    <div
+      className="flex items-center select-none cursor-pointer"
+      onClick={() => router.push("/")}
+    >
+      <Image
+        src="/logo.png"
+        alt="Anaya Logo"
+        width={120}
+        height={30}
+        priority
+        className="object-contain"
+        style={{ height: "auto" }}
+      />
     </div>
   );
 }

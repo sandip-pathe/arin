@@ -8,27 +8,39 @@ export const ClientInit = () => {
   const { firebaseUser, loading } = useInitUserData();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const open = useAuthModalStore((s) => s.open);
+  const { open, resetAnonymousCount } = useAuthModalStore();
 
   useEffect(() => {
-    console.log("firebase user", firebaseUser);
     if (loading) return;
-    console.log("pathname", loading);
 
     const referredBy = searchParams.get("referredBy");
 
-    // If no user and came with referral → open signup
-    if (!firebaseUser && referredBy) {
-      console.log("firebase user", firebaseUser);
-      open("signup");
-      localStorage.setItem("referrer", referredBy);
+    // If user logs in, reset anonymous session count
+    if (firebaseUser) {
+      resetAnonymousCount();
       return;
     }
 
-    if (!firebaseUser) {
-      open("login");
+    // If no user and came with referral → open signup (optional)
+    if (!firebaseUser && referredBy) {
+      localStorage.setItem("referrer", referredBy);
+      // Don't force login, just store referral
     }
-  }, [firebaseUser, loading, pathname, searchParams, open]);
+
+    // Allow anonymous browsing - no forced login!
+    // User can explore the app and will be prompted when they try to:
+    // - Download results
+    // - Save summaries
+    // - Share with others
+    // - After processing 3 documents
+  }, [
+    firebaseUser,
+    loading,
+    pathname,
+    searchParams,
+    open,
+    resetAnonymousCount,
+  ]);
 
   return null;
 };

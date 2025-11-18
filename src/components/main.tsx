@@ -9,6 +9,7 @@ import useSessionStore from "@/store/session-store";
 interface MainContentProps {
   isSummarizing: boolean;
   paragraphCount: number;
+  summaryProgress?: number;
   onCitationClick: (id: string) => void;
   isSharedWithUser: boolean;
 }
@@ -16,6 +17,7 @@ interface MainContentProps {
 export const MainContent = ({
   isSummarizing,
   paragraphCount,
+  summaryProgress = 0,
   onCitationClick,
 }: MainContentProps) => {
   const {
@@ -86,6 +88,7 @@ export const MainContent = ({
             <ThinkingLoader
               isSummarizing={isSummarizing}
               paragraphsCount={paragraphCount}
+              actualProgress={summaryProgress}
             />
           </motion.div>
         )}

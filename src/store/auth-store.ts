@@ -84,6 +84,35 @@ export const useAuthStore = create<AuthState>()(
           set({ loading: true });
 
           try {
+            // Migrate anonymous sessions to authenticated user
+            const { migrateAnonymousSessions } = await import(
+              "@/lib/session-migration"
+            );
+            const migratedCount = await migrateAnonymousSessions(
+              user.uid,
+              user.email || "user@example.com"
+            );
+            if (migratedCount > 0) {
+              logPerf("Anonymous sessions migrated", { count: migratedCount });
+
+              // Show success toast
+              if (typeof window !== "undefined") {
+                setTimeout(() => {
+                  const toastEvent = new CustomEvent("show-toast", {
+                    detail: {
+                      title: "Sessions Restored",
+                      description: `${migratedCount} session${
+                        migratedCount > 1 ? "s" : ""
+                      } from your previous work ${
+                        migratedCount > 1 ? "have" : "has"
+                      } been restored.`,
+                    },
+                  });
+                  window.dispatchEvent(toastEvent);
+                }, 1000);
+              }
+            }
+
             const userRef = doc(db, `users/${user.uid}`);
             const dbTimer = startTimer("FirestoreUserFetch");
             const snapshot = await getDoc(userRef);
@@ -123,7 +152,7 @@ export const useAuthStore = create<AuthState>()(
                 endDate: Timestamp.fromDate(
                   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
                 ),
-                pagesRemaining: 3,
+                pagesRemaining: 10, // Start with 10 free pages on signup
               };
 
               const newUser = {

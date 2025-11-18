@@ -8,8 +8,9 @@ import AnalyticsWrapper from "@/components/lean/analytics-wrapper";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Anaya",
-  description: "Legal Doc Summarizer",
+  title: "Anaya - Privacy-First Legal AI",
+  description:
+    "Process legal documents privately with AI. Your files stay on your device. Zero data retention.",
 };
 
 export default function RootLayout({

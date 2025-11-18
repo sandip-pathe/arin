@@ -10,6 +10,7 @@ import { endTimer, logPerf, startTimer } from "@/lib/hi";
 interface ThinkingLoaderProps {
   isSummarizing: boolean;
   paragraphsCount: number;
+  actualProgress?: number; // 0-100 from API
 }
 
 // Steps
@@ -21,32 +22,45 @@ const steps = [
   "Preparing your case overview",
 ];
 
-// Estimate total processing time based on performance data
+// Estimate total processing time based on actual batch processing
 const estimateTotalTime = (paragraphsCount: number): number => {
-  const batches = Math.ceil(paragraphsCount / 50);
-  const batchProcessingTime = 10000 + batches * 2000;
-  const aggregationTime = 25000 + batches * 2000;
+  // Each batch processes ~10,000 chars, ~200 paragraphs per batch
+  const batches = Math.ceil(paragraphsCount / 200);
 
-  return Math.min(
-    Math.max(batchProcessingTime + aggregationTime, 15000),
-    120000
-  );
+  // Batch processing: ~8-12 seconds per batch with streaming
+  const batchProcessingTime = batches * 10000;
+
+  // Aggregation: ~15-25 seconds depending on batch count
+  const aggregationTime = 15000 + batches * 2000;
+
+  // Total time with 10% buffer
+  const totalTime = (batchProcessingTime + aggregationTime) * 1.1;
+
+  // Minimum 15s, maximum 180s (3 minutes)
+  return Math.min(Math.max(totalTime, 15000), 180000);
 };
 
 // Calculate step weights based on actual processing phases
 const getStepWeights = (paragraphsCount: number) => {
+  const batches = Math.ceil(paragraphsCount / 200);
+  const batchTime = batches * 10000;
+  const aggTime = 15000 + batches * 2000;
+  const totalTime = (batchTime + aggTime) * 1.1;
+
+  // Distribute time across steps
   return [
-    0.1,
-    0.3, // Finding Information (batch processing heavy)
-    0.2, // Identifying Clauses
-    0.2, // Collecting Insights
-    0.2, // Compiling Final Analysis (aggregation)
+    0.05, // Reviewing document (quick)
+    0.35, // Extracting parties & entities (batch processing)
+    0.25, // Identifying clauses (batch processing)
+    0.15, // Organizing insights (batch completion)
+    0.2, // Preparing case overview (aggregation)
   ];
 };
 
 export function ThinkingLoader({
   isSummarizing,
   paragraphsCount,
+  actualProgress = 0,
 }: ThinkingLoaderProps) {
   const timerId = startTimer("ThinkingLoader");
   const [currentStep, setCurrentStep] = useState(0);
@@ -93,38 +107,52 @@ export function ThinkingLoader({
       setElapsedTime(Date.now() - startTime);
     }, 100);
 
-    // Calculate progress based on elapsed time
-    const progressInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const percentage = Math.min(100, (elapsed / estimatedTotalTime) * 100);
-      setProgress(percentage);
-    }, 200);
+    // Sync with actual API progress when available
+    if (actualProgress > 0) {
+      setProgress(actualProgress);
 
-    // Update steps based on elapsed time
-    const updateStep = () => {
-      const elapsed = Date.now() - startTime;
-      let accumulated = 0;
-      let currentStepIndex = 0;
+      // Update step based on progress
+      const stepIndex = Math.min(
+        Math.floor((actualProgress / 100) * steps.length),
+        steps.length - 1
+      );
+      setCurrentStep(stepIndex);
+    } else {
+      // Fallback to time-based estimation
+      const progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const percentage = Math.min(100, (elapsed / estimatedTotalTime) * 100);
+        setProgress(percentage);
+      }, 200);
 
-      for (let i = 0; i < stepDurations.length; i++) {
-        accumulated += stepDurations[i];
-        if (elapsed < accumulated) {
-          break;
+      // Update steps based on elapsed time
+      const updateStep = () => {
+        const elapsed = Date.now() - startTime;
+        let accumulated = 0;
+        let currentStepIndex = 0;
+
+        for (let i = 0; i < stepDurations.length; i++) {
+          accumulated += stepDurations[i];
+          if (elapsed < accumulated) {
+            break;
+          }
+          currentStepIndex = i + 1;
         }
-        currentStepIndex = i + 1;
-      }
 
-      setCurrentStep(Math.min(currentStepIndex, steps.length));
-    };
+        setCurrentStep(Math.min(currentStepIndex, steps.length));
+      };
 
-    const stepInterval = setInterval(updateStep, 500);
+      const stepInterval = setInterval(updateStep, 500);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(progressInterval);
-      clearInterval(stepInterval);
-    };
-  }, [isSummarizing, estimatedTotalTime, stepDurations]);
+      return () => {
+        clearInterval(interval);
+        clearInterval(progressInterval);
+        clearInterval(stepInterval);
+      };
+    }
+
+    return () => clearInterval(interval);
+  }, [isSummarizing, actualProgress, estimatedTotalTime, stepDurations]);
 
   // Calculate time remaining
   const remainingTime = Math.max(0, estimatedTotalTime - elapsedTime);

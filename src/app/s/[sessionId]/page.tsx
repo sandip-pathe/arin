@@ -24,8 +24,19 @@ import { useFileProcessing } from "@/hooks/use-file-process";
 import { useAuthStore } from "@/store/auth-store";
 import useSessionStore from "@/store/session-store";
 import { Paragraph, SummaryItem } from "@/types/page";
-import { FiSliders } from "react-icons/fi";
+import { FiSliders, FiDownload } from "react-icons/fi";
 import { RightPanel } from "@/components/right-panel";
+import {
+  exportToMarkdown,
+  exportToText,
+  exportToPDF,
+} from "@/lib/export-utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MainContent } from "@/components/main";
 import { documentManager, nextDocumentIndex } from "@/lib/document-refs";
 import { HiOutlineMenu } from "react-icons/hi";
@@ -67,12 +78,14 @@ export default function SessionPage() {
   } = useSessionStore();
 
   const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summaryProgress, setSummaryProgress] = useState(0);
   const [initialized, setInitialized] = useState(false);
   const [paragraphCount, setParagraphCount] = useState(0);
   const [activeRightPanel, setActiveRightPanel] = useState<
     "chat" | "citation" | "closed"
   >("closed");
   const [currentSourceId, setCurrentSourceId] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const summaryRef = useRef<HTMLDivElement>(null);
   const isNew = searchParams.get("new") === "true";
@@ -119,6 +132,7 @@ export default function SessionPage() {
     if (isProcessingDocument || isLoading) return;
     setIsLoading(true);
     setIsSummarizing(true);
+    setSummaryProgress(0);
     try {
       const inputTimer = startTimer("ProcessInputs");
       const inputTextParagraphs = await processAllInputs();
@@ -150,7 +164,16 @@ export default function SessionPage() {
       const fullSummaryPromise = (async () => {
         const summarizeTimer = startTimer("Summarization");
         try {
-          const result = await summarizeParagraphs(inputTextParagraphs);
+          const result = await summarizeParagraphs(
+            inputTextParagraphs,
+            (percent, phase, partial) => {
+              // Update progress with phase information
+              setSummaryProgress(percent);
+              if (phase) {
+                logPerf("Summary progress", { percent, phase });
+              }
+            }
+          );
 
           setSummaries(result);
           setActiveSession({
@@ -166,6 +189,16 @@ export default function SessionPage() {
             skim,
             hadInputText
           );
+
+          // Trigger login modal after 1 minute for anonymous users
+          if (!user) {
+            setTimeout(() => {
+              const { open, incrementAnonymousSession } =
+                require("@/store/auth-modal-store").useAuthModalStore.getState();
+              incrementAnonymousSession();
+              open("signup", "limit_reached");
+            }, 60000); // 60 seconds = 1 minute
+          }
         } catch (err: any) {
           handleProcessingError("Summarization failed", err);
           toast({
@@ -243,6 +276,14 @@ export default function SessionPage() {
       const sessionId = activeSession?.id;
       if (!sessionId) return;
 
+      // Track anonymous session in localStorage
+      if (!user) {
+        const { addAnonymousSessionId } = await import(
+          "@/lib/session-migration"
+        );
+        addAnonymousSessionId(sessionId);
+      }
+
       try {
         const sessionRef = doc(db, "sessions", sessionId);
         await updateDoc(sessionRef, {
@@ -253,11 +294,14 @@ export default function SessionPage() {
           quickSummary,
         });
 
-        updateMembership?.({
-          pagesRemaining:
-            (membership.pagesRemaining ?? 0) -
-            (attachments.length + (hadInputText ? 1 : 0)),
-        });
+        // Only update membership for authenticated users
+        if (user && updateMembership) {
+          updateMembership({
+            pagesRemaining:
+              (membership.pagesRemaining ?? 0) -
+              (attachments.length + (hadInputText ? 1 : 0)),
+          });
+        }
 
         const LARGE_SAVE_THRESHOLD = 5;
         if (allParagraphs.length > LARGE_SAVE_THRESHOLD) {
@@ -357,9 +401,48 @@ export default function SessionPage() {
     setActiveRightPanel("closed");
   };
 
+  const handleExport = async (format: "pdf" | "markdown" | "text") => {
+    if (!summaries || !activeSession?.title) {
+      toast({
+        title: "Nothing to export",
+        description: "Please generate a summary first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      switch (format) {
+        case "pdf":
+          await exportToPDF(summaries, activeSession.title);
+          break;
+        case "markdown":
+          exportToMarkdown(summaries, activeSession.title);
+          break;
+        case "text":
+          exportToText(summaries, activeSession.title);
+          break;
+      }
+      toast({
+        title: "Export successful",
+        description: `Downloaded as ${format.toUpperCase()}`,
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export failed",
+        description: "Failed to export document. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#edeffa] text-foreground overflow-hidden">
-      <div className="flex flex-col items-center bg-[#edeffa] shadow-none select-none p-2 md:p-0 lg:pl-0 lg:flex-row lg:items-center lg:ml-4 lg:mb-4 lg:justify-start">
+      <div className="flex flex-col items-center bg-[#edeffa] shadow-none select-none p-2 pt-4 md:p-0 md:pt-4 lg:pl-0 lg:pt-4 lg:flex-row lg:items-center lg:ml-4 lg:mb-4 lg:justify-start">
         <button
           onClick={toggleSidebar}
           className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md bg-white shadow-md"
@@ -420,16 +503,53 @@ export default function SessionPage() {
                   </motion.span>
                 )}
               </div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FiSliders
-                  size={18}
-                  className="m-2 text-gray-600 cursor-pointer hover:text-black"
-                  onClick={() => setShowSummarySettingsModal(true)}
-                />
-              </motion.div>
+              <div className="flex items-center gap-2">
+                {summaries && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        disabled={isExporting}
+                        className="flex items-center gap-1.5 px-3 py-1.5 mr-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <FiDownload size={16} />
+                        {isExporting ? "Exporting..." : "Export"}
+                      </motion.button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem
+                        onClick={() => handleExport("pdf")}
+                        className="cursor-pointer"
+                      >
+                        Export as PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleExport("markdown")}
+                        className="cursor-pointer"
+                      >
+                        Export as Markdown
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleExport("text")}
+                        className="cursor-pointer"
+                      >
+                        Export as Text
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FiSliders
+                    size={18}
+                    className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                    onClick={() => setShowSummarySettingsModal(true)}
+                  />
+                </motion.div>
+              </div>
             </div>
 
             <div
@@ -444,6 +564,7 @@ export default function SessionPage() {
                 <MainContent
                   isSummarizing={isSummarizing}
                   paragraphCount={paragraphCount}
+                  summaryProgress={summaryProgress}
                   onCitationClick={handleCitationClick}
                   isSharedWithUser={isSharedWithUser}
                 />

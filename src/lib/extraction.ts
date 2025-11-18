@@ -61,16 +61,18 @@ export async function extractText(
 
     return result;
   } catch (error: any) {
-    logPerf("Text extraction failed", {
-      fileName: file.name,
-      error: error.message,
-    });
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
-    throw new Error(
-      `Failed to extract text: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
+    try {
+      logPerf("Text extraction failed", {
+        fileName: file.name,
+        error: errorMessage,
+      });
+    } catch (logError) {
+      console.error("Logging failed:", logError);
+    }
+
+    throw new Error(`Failed to extract text: ${errorMessage}`);
   } finally {
     endTimer(extractTimer);
   }
@@ -84,18 +86,18 @@ async function extractFromPDF(
 
   try {
     // Dynamically import PDF.js
-    // @ts-expect-error
     const pdfjs = await import("pdfjs-dist/build/pdf");
-    // @ts-expect-error
-    const pdfjsWorker = await import("pdfjs-dist/build/pdf.worker.min.mjs");
 
-    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+    // Use CDN URL for worker source (module import doesn't work in browser)
+    (
+      pdfjs as any
+    ).GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`;
 
     const arrayBuffer = await file.arrayBuffer();
     const typedArray = new Uint8Array(arrayBuffer);
 
     const loadTimer = startTimer("PDFLoading");
-    const pdf = await pdfjs.getDocument({
+    const pdf = await (pdfjs as any).getDocument({
       data: typedArray,
       disableAutoFetch: true,
       disableStream: true,
@@ -106,7 +108,7 @@ async function extractFromPDF(
 
     // First try to extract as regular PDF
     try {
-      progressHandler?.(5, "Extracting text from PDF...");
+      progressHandler?.(5, "🔒 Extracting text locally from PDF...");
       const text = await extractTextFromPDF(pdf, pdfjs, progressHandler);
 
       // Check if we got meaningful text
@@ -120,7 +122,7 @@ async function extractFromPDF(
     }
 
     // If regular extraction failed or got little text, check if scanned
-    progressHandler?.(10, "Analyzing PDF content...");
+    progressHandler?.(10, "🔒 Analyzing PDF content on your device...");
     const isScanned = await isScannedPDF(pdf, pdfjs, progressHandler);
     logPerf("PDF analysis completed", { isScanned });
 
@@ -150,7 +152,7 @@ async function isScannedPDF(
     for (let i = 1; i <= pagesToCheck; i++) {
       progressHandler?.(
         10 + Math.round(20 * (i / pagesToCheck)),
-        `Checking page ${i}/${pagesToCheck}...`
+        `🔒 Checking page ${i}/${pagesToCheck} locally...`
       );
 
       const page = await pdf.getPage(i);
@@ -242,7 +244,10 @@ async function extractTextFromPDF(
 
       // Only report progress every 10% or on last page
       if (progress - lastReportedProgress >= 10 || i === numPages) {
-        progressHandler?.(progress, `Extracting page ${i}/${numPages}...`);
+        progressHandler?.(
+          progress,
+          `🔒 Processing page ${i}/${numPages} on your device...`
+        );
         lastReportedProgress = progress;
       }
 
@@ -308,7 +313,7 @@ async function extractScannedPDF(
         if (i === 1 || i % Math.ceil(numPages / 10) === 0 || i === numPages) {
           progressHandler?.(
             Math.round((i / numPages) * 10) + 10,
-            `Processing page ${i}/${numPages}...`
+            `🔒 Analyzing page ${i}/${numPages} privately...`
           );
         }
 
@@ -370,7 +375,7 @@ async function extractFromDocx(
   const docxTimer = startTimer(`ExtractFromDOCX-${file.name}`);
 
   try {
-    progressHandler?.(10, "Processing DOCX document...");
+    progressHandler?.(10, "🔒 Processing DOCX locally...");
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer });
     progressHandler?.(100);
@@ -387,24 +392,34 @@ async function extractFromXlsx(
   const xlsxTimer = startTimer(`ExtractFromXLSX-${file.name}`);
 
   try {
-    progressHandler?.(10, "Processing spreadsheet...");
+    progressHandler?.(10, "🔒 Processing spreadsheet securely...");
     const arrayBuffer = await file.arrayBuffer();
+
+    // Safety guard: limit file size to mitigate ReDoS potential
+    const maxBytes = 5 * 1024 * 1024; // 5 MB
+    if (arrayBuffer.byteLength > maxBytes) {
+      throw new Error("Spreadsheet file is too large. Maximum size is 5 MB.");
+    }
+
     const workbook = XLSX.read(arrayBuffer, {
       type: "array",
       sheetStubs: true,
     });
 
     let text = "";
-    const sheetCount = workbook.SheetNames.length;
+    // Safety guard: limit number of sheets to process
+    const maxSheets = 10;
+    const sheetNames = workbook.SheetNames.slice(0, maxSheets);
+    const sheetCount = sheetNames.length;
 
     for (let index = 0; index < sheetCount; index++) {
       const progress = Math.round(((index + 1) / sheetCount) * 100);
       progressHandler?.(
         progress,
-        `Processing sheet ${index + 1}/${sheetCount}...`
+        `🔒 Processing sheet ${index + 1}/${sheetCount} privately...`
       );
 
-      const sheetName = workbook.SheetNames[index];
+      const sheetName = sheetNames[index];
       const worksheet = workbook.Sheets[sheetName];
       text += XLSX.utils.sheet_to_csv(worksheet, { skipHidden: true }) + "\n\n";
     }
@@ -431,7 +446,10 @@ async function extractFromImage(
         const currentProgress = Math.round(progress * 100);
         if (currentProgress > lastProgress) {
           lastProgress = currentProgress;
-          progressHandler?.(currentProgress, "Processing image with OCR...");
+          progressHandler?.(
+            currentProgress,
+            "🔒 Processing image locally with OCR..."
+          );
         }
       };
 

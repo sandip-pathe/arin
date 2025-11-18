@@ -55,11 +55,13 @@ import MasterLoader from "@/components/home-loader";
 import { CreditModal } from "@/components/settings/membership";
 import { resetDocuments } from "@/lib/document-refs";
 import { CreditReminder } from "@/components/credits";
+import { useToast } from "@/hooks/use-toast";
 
 export default function HomePage() {
   const timerId = startTimer("HomePage Render");
   const { user, loading, membership } = useAuthStore();
   const router = useRouter();
+  const { toast } = useToast();
   const [sessions, setSessions] = useState<MinimalSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [active, setactive] = useState("all");
@@ -91,18 +93,32 @@ export default function HomePage() {
 
   const fetchNonarchived = async () => {
     const fetchTimer = startTimer("fetchNonarchived");
-    if (!user) return;
 
     try {
-      const userSessionsQuery = query(
-        collection(db, "sessions"),
-        where("userId", "==", user?.uid),
-        orderBy("updatedAt", "desc"),
-        limit(20)
-      );
+      let userSessionsQuery;
+
+      if (user) {
+        // Authenticated user - fetch by user ID
+        userSessionsQuery = query(
+          collection(db, "sessions"),
+          where("userId", "==", user.uid),
+          orderBy("updatedAt", "desc"),
+          limit(20)
+        );
+      } else {
+        // Anonymous user - fetch by anonymous user ID from localStorage
+        const { getAnonymousUserId } = await import("@/lib/session-migration");
+        const anonUserId = getAnonymousUserId();
+        userSessionsQuery = query(
+          collection(db, "sessions"),
+          where("userId", "==", anonUserId),
+          orderBy("updatedAt", "desc"),
+          limit(20)
+        );
+      }
 
       let sharedSessionsQuery = null;
-      if (user.email) {
+      if (user?.email) {
         sharedSessionsQuery = query(
           collection(db, "sessions"),
           where("sharedWith", "array-contains", user.email),
@@ -123,7 +139,7 @@ export default function HomePage() {
           title: data.title || "Untitled",
           updatedAt: data.updatedAt?.toMillis() || Date.now(),
           createdAt: data.createdAt?.toMillis() || Date.now(),
-          userId: data.userId || user.uid,
+          userId: data.userId || user?.uid || "anonymous",
           isStarred: data.isStarred || false,
           noOfAttachments: data.noOfAttachments || 0,
           folder: data.folder || "personal",
@@ -141,12 +157,15 @@ export default function HomePage() {
       setSessions(sessionsData);
       logPerf("Fetched non-archived sessions", { count: sessionsData.length });
 
-      // Automatically delete empty sessions after fetching
-      deleteEmptySessions(sessionsData);
+      // Automatically delete empty sessions after fetching (only for authenticated users)
+      if (user) {
+        deleteEmptySessions(sessionsData);
+      }
     } catch (error) {
       console.error("Error fetching non-archived sessions:", error);
       logPerf("Error in fetchNonarchived", { error });
     } finally {
+      setLoadingSessions(false);
       endTimer(fetchTimer);
     }
   };
@@ -242,8 +261,6 @@ export default function HomePage() {
   useEffect(() => {
     const fetchSessions = async () => {
       const timerId = startTimer("fetchSessions");
-      if (!user) return;
-
       setLoadingSessions(true);
       try {
         await Promise.all([fetchNonarchived()]);
@@ -256,7 +273,10 @@ export default function HomePage() {
       }
     };
 
-    if (user) fetchSessions();
+    // Fetch sessions for both authenticated and anonymous users
+    if (!loading) {
+      fetchSessions();
+    }
   }, [user, loading]);
 
   useEffect(() => {
@@ -264,6 +284,21 @@ export default function HomePage() {
       fetcharchived();
     }
   }, [active, archived.length]);
+
+  // Listen for toast events from auth store
+  useEffect(() => {
+    const handleToast = (event: CustomEvent) => {
+      toast({
+        title: event.detail.title,
+        description: event.detail.description,
+      });
+    };
+
+    window.addEventListener("show-toast" as any, handleToast as any);
+    return () => {
+      window.removeEventListener("show-toast" as any, handleToast as any);
+    };
+  }, [toast]);
 
   const filtered =
     active === "archived"
@@ -416,48 +451,71 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#fafafa] to-[#f1f5f9]">
-      {/* Premium Header */}
       <header className="sticky top-0 z-30 bg-white/95 px-4 sm:px-6 md:px-8 py-2 flex items-center justify-between border-b border-neutral-100">
         <div className="flex items-center">
           <Logo />
-          {/* <span className="ml-2 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full hidden sm:block">
-            {membership.type}
-          </span> */}
         </div>
-
-        {/* Desktop navigation */}
         <div className="hidden md:flex items-center gap-4">
-          <button
-            onClick={() => setShowSettingsModal(true)}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <FiSettings className="text-gray-600" size={18} />
-          </button>
-          <button
-            onClick={() => setShowAccountModal(true)}
-            className="relative group"
-          >
-            <Avatar className="h-8 w-8 md:h-10 md:w-10 border-blue-500 border-2 shadow-sm">
-              <AvatarFallback className="font-medium bg-blue-50 text-blue-700 text-sm md:text-base">
-                {user?.displayName?.charAt(0) ||
-                  user?.email?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          </button>
+          {user && (
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <FiSettings className="text-gray-600" size={18} />
+            </button>
+          )}
+          {user ? (
+            <button
+              onClick={() => setShowAccountModal(true)}
+              className="relative group"
+            >
+              <Avatar className="h-8 w-8 md:h-10 md:w-10 border-blue-500 border-2 shadow-sm">
+                <AvatarFallback className="font-medium bg-blue-50 text-blue-700 text-sm md:text-base">
+                  {user?.displayName?.charAt(0) ||
+                    user?.email?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          ) : (
+            <Button
+              onClick={() => {
+                const { open } =
+                  require("@/store/auth-modal-store").useAuthModalStore.getState();
+                open("signup", "manual");
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
+              Sign In
+            </Button>
+          )}
         </div>
 
         {/* Mobile menu button */}
         <div className="md:hidden flex items-center gap-2">
-          <button
-            onClick={() => setShowAccountModal(true)}
-            className="relative group"
-          >
-            <Avatar className="h-8 w-8 border-blue-500 border-2 shadow-sm">
-              <AvatarFallback className="font-medium bg-blue-50 text-blue-700 text-sm">
-                {user?.displayName?.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-          </button>
+          {user ? (
+            <button
+              onClick={() => setShowAccountModal(true)}
+              className="relative group"
+            >
+              <Avatar className="h-8 w-8 border-blue-500 border-2 shadow-sm">
+                <AvatarFallback className="font-medium bg-blue-50 text-blue-700 text-sm">
+                  {user?.displayName?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          ) : (
+            <Button
+              onClick={() => {
+                const { open } =
+                  require("@/store/auth-modal-store").useAuthModalStore.getState();
+                open("signup", "manual");
+              }}
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Sign In
+            </Button>
+          )}
         </div>
       </header>
 
@@ -498,121 +556,174 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Filters & Sort */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 p-4 sm:p-5 bg-white rounded-xl md:rounded-2xl border border-neutral-100 shadow-sm">
-            <div className="flex flex-wrap gap-2 w-full md:w-auto">
-              <TooltipProvider>
-                {folderOptions.map((folder) => (
-                  <Tooltip key={folder.id}>
-                    <TooltipTrigger asChild>
-                      <button
-                        className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-sm sm:text-base font-medium transition-all ${
-                          active === folder.id
-                            ? "bg-blue-600 text-white shadow-sm"
-                            : "text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
-                        }`}
-                        onClick={() => setactive(folder.id)}
-                      >
-                        <span className="sm:inline">{folder.icon}</span>
-                        <span className="text-xs hidden sm:inline sm:text-sm">
-                          {folder.label}
-                        </span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{folder.label}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </TooltipProvider>
-            </div>
+          {/* Filters & Sort - Only show for logged in users */}
+          {user && (
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 p-4 sm:p-5 bg-white rounded-xl md:rounded-2xl border border-neutral-100 shadow-sm">
+              <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                <TooltipProvider>
+                  {folderOptions.map((folder) => (
+                    <Tooltip key={folder.id}>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-sm sm:text-base font-medium transition-all ${
+                            active === folder.id
+                              ? "bg-blue-600 text-white shadow-sm"
+                              : "text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
+                          }`}
+                          onClick={() => setactive(folder.id)}
+                        >
+                          <span className="sm:inline">{folder.icon}</span>
+                          <span className="text-xs hidden sm:inline sm:text-sm">
+                            {folder.label}
+                          </span>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{folder.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </TooltipProvider>
+              </div>
 
-            <div className="flex items-center w-full md:w-auto">
-              <Select onValueChange={setSortOption} value={sortOption}>
-                <SelectTrigger className="text-sm h-10 sm:h-11 w-full md:w-48 rounded-lg sm:rounded-xl border border-neutral-300 shadow-sm focus:ring-2 focus:ring-blue-600 bg-white">
-                  <SelectValue placeholder="Sort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Most recent</SelectItem>
-                  <SelectItem value="title">Title A-Z</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center w-full md:w-auto">
+                <Select onValueChange={setSortOption} value={sortOption}>
+                  <SelectTrigger className="text-sm h-10 sm:h-11 w-full md:w-48 rounded-lg sm:rounded-xl border border-neutral-300 shadow-sm focus:ring-2 focus:ring-blue-600 bg-white">
+                    <SelectValue placeholder="Sort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Most recent</SelectItem>
+                    <SelectItem value="title">Title A-Z</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Sessions grid */}
           <div className="mb-8 sm:mb-10">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-neutral-800">
-                Recent Sessions
-              </h2>
-              <span className="text-xs sm:text-sm text-neutral-500">
-                {sortedSessions.length} sessions
-              </span>
-            </div>
-
-            {loadingSessions ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="rounded-xl sm:rounded-2xl bg-white p-4 sm:p-5 shadow-sm border border-neutral-200"
+            {sessions.length === 0 && !loadingSessions && !user ? (
+              // Anonymous user with no sessions - show login prompt
+              <div className="text-center py-16 sm:py-20 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-100">
+                <div className="bg-white w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <FiFolder className="text-blue-600 text-2xl sm:text-3xl" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-3">
+                  Sign in to View Your Sessions
+                </h3>
+                <p className="text-neutral-600 text-base sm:text-lg max-w-lg mx-auto mb-8 px-4">
+                  Create an account to save your legal document summaries,
+                  access them from any device, and collaborate with your team.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4">
+                  <Button
+                    onClick={() => {
+                      const { open } =
+                        require("@/store/auth-modal-store").useAuthModalStore.getState();
+                      open("signup", "manual");
+                    }}
+                    className="rounded-lg shadow-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-base"
                   >
-                    <div className="animate-pulse h-5 sm:h-6 bg-neutral-200 rounded w-3/4 mb-3 sm:mb-4" />
-                    <div className="animate-pulse h-3 sm:h-4 bg-neutral-200 rounded w-full mb-2" />
-                    <div className="animate-pulse h-3 sm:h-4 bg-neutral-200 rounded w-5/6" />
-                  </div>
-                ))}
-              </div>
-            ) : sortedSessions.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {sortedSessions.map((session) => {
-                  return (
-                    <NotebookCard
-                      key={session.id}
-                      id={session.id}
-                      title={session.title}
-                      updatedAt={
-                        typeof session.updatedAt === "number"
-                          ? session.updatedAt
-                          : session.updatedAt.getTime()
-                      }
-                      isStarred={session.isStarred}
-                      folder={session.folder}
-                      sharedCount={session.sharedWith?.length || 0}
-                      onClick={() => router.push(`/s/${session.id}`)}
-                      onToggleStar={() => toggleStar(session.id)}
-                      onMoveToFolder={(folder) =>
-                        moveToFolder(session.id, folder)
-                      }
-                      onArchive={() => moveToFolder(session.id, "archived")}
-                      onDelete={() => deleteSession(session.id)}
-                      onShare={() => {
-                        setShowShareModal(true);
-                        setShareSessionId(session.id);
-                      }}
-                    />
-                  );
-                })}
+                    Create Free Account
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const { open } =
+                        require("@/store/auth-modal-store").useAuthModalStore.getState();
+                      open("login", "manual");
+                    }}
+                    variant="outline"
+                    className="rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 text-base"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+                <p className="text-sm text-neutral-500 mt-6">
+                  Or try it out by{" "}
+                  <button
+                    onClick={handleCreateNewSession}
+                    className="text-blue-600 hover:text-blue-700 font-medium underline"
+                  >
+                    starting a new session
+                  </button>
+                </p>
               </div>
             ) : (
-              <div className="text-center py-10 sm:py-16 bg-white rounded-xl sm:rounded-2xl border border-dashed border-neutral-300">
-                <div className="bg-blue-50 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
-                  <FiFolder className="text-blue-500 text-lg sm:text-xl md:text-2xl" />
+              // Show sessions for both authenticated and anonymous users
+              <>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-neutral-800">
+                    Recent Sessions
+                  </h2>
+                  <span className="text-xs sm:text-sm text-neutral-500">
+                    {sortedSessions.length} sessions
+                  </span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-2">
-                  {emptyStateMessage?.title}
-                </h3>
-                <p className="text-neutral-500 text-sm sm:text-base max-w-md mx-auto mb-4 sm:mb-6">
-                  {emptyStateMessage?.description}
-                </p>
-                <Button
-                  className="rounded-lg sm:rounded-xl shadow-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base"
-                  onClick={handleCreateNewSession}
-                >
-                  Create Session
-                </Button>
-              </div>
+
+                {loadingSessions ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="rounded-xl sm:rounded-2xl bg-white p-4 sm:p-5 shadow-sm border border-neutral-200"
+                      >
+                        <div className="animate-pulse h-5 sm:h-6 bg-neutral-200 rounded w-3/4 mb-3 sm:mb-4" />
+                        <div className="animate-pulse h-3 sm:h-4 bg-neutral-200 rounded w-full mb-2" />
+                        <div className="animate-pulse h-3 sm:h-4 bg-neutral-200 rounded w-5/6" />
+                      </div>
+                    ))}
+                  </div>
+                ) : sortedSessions.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    {sortedSessions.map((session) => {
+                      return (
+                        <NotebookCard
+                          key={session.id}
+                          id={session.id}
+                          title={session.title}
+                          updatedAt={
+                            typeof session.updatedAt === "number"
+                              ? session.updatedAt
+                              : session.updatedAt.getTime()
+                          }
+                          isStarred={session.isStarred}
+                          folder={session.folder}
+                          sharedCount={session.sharedWith?.length || 0}
+                          onClick={() => router.push(`/s/${session.id}`)}
+                          onToggleStar={() => toggleStar(session.id)}
+                          onMoveToFolder={(folder) =>
+                            moveToFolder(session.id, folder)
+                          }
+                          onArchive={() => moveToFolder(session.id, "archived")}
+                          onDelete={() => deleteSession(session.id)}
+                          onShare={() => {
+                            setShowShareModal(true);
+                            setShareSessionId(session.id);
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 sm:py-16 bg-white rounded-xl sm:rounded-2xl border border-dashed border-neutral-300">
+                    <div className="bg-blue-50 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+                      <FiFolder className="text-blue-500 text-lg sm:text-xl md:text-2xl" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-2">
+                      {emptyStateMessage?.title}
+                    </h3>
+                    <p className="text-neutral-500 text-sm sm:text-base max-w-md mx-auto mb-4 sm:mb-6">
+                      {emptyStateMessage?.description}
+                    </p>
+                    <Button
+                      className="rounded-lg sm:rounded-xl shadow-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base"
+                      onClick={handleCreateNewSession}
+                    >
+                      Create Session
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
