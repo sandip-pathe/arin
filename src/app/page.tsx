@@ -23,6 +23,7 @@ import {
   FiArchive,
   FiSettings,
   FiArrowRight,
+  FiLoader,
 } from "react-icons/fi";
 import { LuFileStack } from "react-icons/lu";
 import { BsPersonRolodex } from "react-icons/bs";
@@ -68,6 +69,7 @@ export default function HomePage() {
   const [sortOption, setSortOption] = useState("recent");
   const [archived, setarchived] = useState<MinimalSession[]>([]);
   const [shareSessionId, setShareSessionId] = useState<string | null>(null);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
 
   const {
     showAccountModal,
@@ -439,10 +441,14 @@ export default function HomePage() {
   ];
 
   const handleCreateNewSession = () => {
+    if (isCreatingSession) return;
     const newId = v7();
+    setIsCreatingSession(true);
     resetSessionState();
     resetDocuments();
-    router.push(`/s/${newId}?new=true`);
+    window.requestAnimationFrame(() => {
+      router.push(`/s/${newId}?new=true`);
+    });
   };
 
   if (loading) {
@@ -535,25 +541,44 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl md:rounded-2xl opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
             <button
               onClick={handleCreateNewSession}
-              className="relative w-full flex items-center justify-between rounded-xl md:rounded-2xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 text-neutral-800 hover:border-blue-300 transition-all duration-300 py-4 px-4 sm:py-5 sm:px-6 md:px-8 font-semibold text-base sm:text-lg group"
+              disabled={isCreatingSession}
+              aria-busy={isCreatingSession}
+              className="relative w-full flex items-center justify-between rounded-xl md:rounded-2xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 text-neutral-800 hover:border-blue-300 transition-all duration-300 py-4 px-4 sm:py-5 sm:px-6 md:px-8 font-semibold text-base sm:text-lg group disabled:cursor-wait disabled:border-blue-300 disabled:from-blue-50 disabled:to-white"
             >
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="bg-blue-100 p-2 sm:p-3 rounded-lg sm:rounded-xl">
-                  <LuFileStack className="text-blue-600 text-lg sm:text-xl md:text-2xl" />
+                  {isCreatingSession ? (
+                    <FiLoader className="text-blue-600 text-lg sm:text-xl md:text-2xl animate-spin" />
+                  ) : (
+                    <LuFileStack className="text-blue-600 text-lg sm:text-xl md:text-2xl" />
+                  )}
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg sm:text-xl md:text-xl text-neutral-800">
-                    Start New Legal Session
+                    {isCreatingSession
+                      ? "Opening legal workspace"
+                      : "Start New Legal Session"}
                   </div>
                   <div className="text-xs sm:text-sm font-normal text-neutral-500 mt-1">
-                    AI-powered Summarization and Analysis
+                    {isCreatingSession
+                      ? "Preparing upload, citations, and chat"
+                      : "AI-powered Summarization and Analysis"}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <FiArrowRight className="text-blue-600 group-hover:translate-x-2 transition-transform duration-200 text-lg sm:text-xl" />
+                {isCreatingSession ? (
+                  <span className="text-sm font-medium text-blue-600">
+                    Please wait
+                  </span>
+                ) : (
+                  <FiArrowRight className="text-blue-600 group-hover:translate-x-2 transition-transform duration-200 text-lg sm:text-xl" />
+                )}
               </div>
             </button>
+            <div aria-live="polite" className="sr-only">
+              {isCreatingSession ? "Opening a new legal workspace." : ""}
+            </div>
           </div>
 
           {/* Filters & Sort - Only show for logged in users */}
@@ -642,9 +667,12 @@ export default function HomePage() {
                   Or try it out by{" "}
                   <button
                     onClick={handleCreateNewSession}
-                    className="text-blue-600 hover:text-blue-700 font-medium underline"
+                    disabled={isCreatingSession}
+                    className="text-blue-600 hover:text-blue-700 font-medium underline disabled:cursor-wait disabled:text-blue-400"
                   >
-                    starting a new session
+                    {isCreatingSession
+                      ? "opening a new session"
+                      : "starting a new session"}
                   </button>
                 </p>
               </div>
@@ -718,8 +746,9 @@ export default function HomePage() {
                     <Button
                       className="rounded-lg sm:rounded-xl shadow-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base"
                       onClick={handleCreateNewSession}
+                      disabled={isCreatingSession}
                     >
-                      Create Session
+                      {isCreatingSession ? "Opening Session..." : "Create Session"}
                     </Button>
                   </div>
                 )}
