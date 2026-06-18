@@ -11,7 +11,6 @@ interface MainContentProps {
   paragraphCount: number;
   summaryProgress?: number;
   onCitationClick: (id: string) => void;
-  isSharedWithUser: boolean;
 }
 
 export const MainContent = ({

@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { FaTrash } from "react-icons/fa6";
 import { BsLayoutSidebarInsetReverse } from "react-icons/bs";
-import { FiSliders } from "react-icons/fi";
+import { FiDownload, FiSliders } from "react-icons/fi";
 import { IoChatbox } from "react-icons/io5";
 import {
   AlertDialog,
@@ -19,6 +19,13 @@ import { ChatWindow } from "@/components/follow-up-chat";
 import { SkeletonBox } from "@/components/Skeleton";
 import CitationView from "@/components/source-viewer";
 import useSessionStore from "@/store/session-store";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { exportChatToMarkdown, exportChatToText } from "@/lib/export-utils";
 
 interface RightPanelProps {
   activeRightPanel: "chat" | "citation" | "closed";
@@ -46,7 +53,11 @@ export const RightPanel = ({
     summaries,
     paragraphs,
     setShowChatSettingsModal,
+    activeSession,
   } = useSessionStore();
+
+  const canExportChat = (chatMessages?.length ?? 0) > 0;
+  const chatExportTitle = activeSession?.title || "Anaya Session";
 
   if (activeRightPanel !== "closed") {
     return (
@@ -59,41 +70,69 @@ export const RightPanel = ({
           <>
             <div className="z-10 border-b flex items-center justify-between">
               <div className="flex items-center justify-start gap-2">
-                <motion.div
+                <motion.button
+                  aria-label="Close chat panel"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
+                  className="m-2 text-gray-600 hover:text-black"
+                  onClick={onClose}
                 >
                   <BsLayoutSidebarInsetReverse
-                    className="cursor-pointer m-2 text-gray-600"
                     size={24}
-                    onClick={onClose}
                   />
-                </motion.div>
+                </motion.button>
                 <div className="p-4 font-medium text-sm md:text-base">
                   Discussion Mode
                 </div>
               </div>
               <div className="flex items-center justify-start">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="m-2 text-gray-600 hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+                      disabled={!canExportChat}
+                      aria-label="Export chat"
+                    >
+                      <FiDownload size={18} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() =>
+                        exportChatToMarkdown(chatMessages, chatExportTitle)
+                      }
+                    >
+                      Markdown
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => exportChatToText(chatMessages, chatExportTitle)}
+                    >
+                      Text
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <FaTrash
-                        size={18}
-                        className="text-gray-600 hover:text-red-600 m-2"
-                      />
+                      <button
+                        aria-label="Delete chats"
+                        className="m-2 text-gray-600 hover:text-red-600"
+                      >
+                        <FaTrash size={18} />
+                      </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="max-w-[95vw] md:max-w-md">
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Chats</AlertDialogTitle>
                         <AlertDialogDescription>
                           Are you sure you want to delete your conversation?
-                          This action cannot be undone.{" "}
-                          <span className="hover:underline cursor-pointer text-blue-600">
-                            Read our data policy
-                          </span>
+                          This only clears the transcript stored in this
+                          browser and cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -112,11 +151,13 @@ export const RightPanel = ({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <FiSliders
-                    size={18}
-                    className="m-2 text-gray-600 cursor-pointer hover:text-black"
+                  <button
+                    aria-label="Open chat settings"
+                    className="m-2 text-gray-600 hover:text-black"
                     onClick={() => setShowChatSettingsModal(true)}
-                  />
+                  >
+                    <FiSliders size={18} />
+                  </button>
                 </motion.div>
               </div>
             </div>
@@ -170,13 +211,17 @@ export const RightPanel = ({
       className="fixed top-4 right-4 w-11 h-11 lg:rounded-lg lg:shadow-none lg:relative lg:inset-auto lg:mx-4 lg:mb-4 lg:w-14 lg:h-auto flex items-center justify-center lg:flex-col bg-white z-30 rounded-md shadow-md"
     >
       <div className="z-10 border-b flex items-center py-2 justify-center lg:py-2">
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+        <motion.button
+          aria-label="Open chat panel"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="m-2 text-gray-600 hover:text-black"
+          onClick={onToggleChat}
+        >
           <IoChatbox
-            className="cursor-pointer m-2 text-gray-600"
             size={24}
-            onClick={onToggleChat}
           />
-        </motion.div>
+        </motion.button>
       </div>
       <div className="flex-1 overflow-auto p-4 hidden lg:block"> </div>
     </motion.aside>

@@ -1,15 +1,9 @@
-import mammoth from "mammoth";
-import * as XLSX from "xlsx";
-import { createWorker, createScheduler } from "tesseract.js";
 import { endTimer, logPerf, startTimer } from "@/lib/hi"; // Adjust path as needed
 
 type ProgressHandler = (progress: number, message?: string) => void;
 
-// Global map to track progress per page
-const progressTrackers = new Map<string, (progress: number) => void>();
-
 /**
- * Extracts text from various file types including PDF, DOCX, XLSX, images, and text files.
+ * Extracts text from supported local file types including PDF, DOCX, images, and text files.
  */
 export async function extractText(
   file: File,
@@ -36,12 +30,6 @@ export async function extractText(
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       result = await extractFromDocx(file, progressHandler);
-    } else if (
-      extension === "xlsx" ||
-      mimeType ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ) {
-      result = await extractFromXlsx(file, progressHandler);
     } else if (
       ["jpg", "jpeg", "png"].includes(extension) ||
       mimeType.startsWith("image/")
@@ -86,12 +74,10 @@ async function extractFromPDF(
 
   try {
     // Dynamically import PDF.js
-    const pdfjs = await import("pdfjs-dist/build/pdf");
+    const pdfjs = await import("pdfjs-dist");
 
-    // Use CDN URL for worker source (module import doesn't work in browser)
-    (
-      pdfjs as any
-    ).GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`;
+    // Keep PDF parsing self-contained for the local-first privacy model.
+    (pdfjs as any).GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
     const arrayBuffer = await file.arrayBuffer();
     const typedArray = new Uint8Array(arrayBuffer);
@@ -275,6 +261,7 @@ async function extractScannedPDF(
 
   try {
     const numPages = pdf.numPages;
+    const { createScheduler, createWorker } = await import("tesseract.js");
     const scheduler = createScheduler();
     const worker = await createWorker("eng");
     scheduler.addWorker(worker);
@@ -303,7 +290,7 @@ async function extractScannedPDF(
     };
 
     try {
-      // @ts-ignore-next-line
+      // @ts-expect-error tesseract exposes progress callbacks at runtime.
       worker.onProgress = progressTracker;
 
       for (let i = 1; i <= numPages; i++) {
@@ -376,58 +363,13 @@ async function extractFromDocx(
 
   try {
     progressHandler?.(10, "🔒 Processing DOCX locally...");
+    const mammoth = await import("mammoth");
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer });
     progressHandler?.(100);
     return result.value;
   } finally {
     endTimer(docxTimer);
-  }
-}
-
-async function extractFromXlsx(
-  file: File,
-  progressHandler?: ProgressHandler
-): Promise<string> {
-  const xlsxTimer = startTimer(`ExtractFromXLSX-${file.name}`);
-
-  try {
-    progressHandler?.(10, "🔒 Processing spreadsheet securely...");
-    const arrayBuffer = await file.arrayBuffer();
-
-    // Safety guard: limit file size to mitigate ReDoS potential
-    const maxBytes = 5 * 1024 * 1024; // 5 MB
-    if (arrayBuffer.byteLength > maxBytes) {
-      throw new Error("Spreadsheet file is too large. Maximum size is 5 MB.");
-    }
-
-    const workbook = XLSX.read(arrayBuffer, {
-      type: "array",
-      sheetStubs: true,
-    });
-
-    let text = "";
-    // Safety guard: limit number of sheets to process
-    const maxSheets = 10;
-    const sheetNames = workbook.SheetNames.slice(0, maxSheets);
-    const sheetCount = sheetNames.length;
-
-    for (let index = 0; index < sheetCount; index++) {
-      const progress = Math.round(((index + 1) / sheetCount) * 100);
-      progressHandler?.(
-        progress,
-        `🔒 Processing sheet ${index + 1}/${sheetCount} privately...`
-      );
-
-      const sheetName = sheetNames[index];
-      const worksheet = workbook.Sheets[sheetName];
-      text += XLSX.utils.sheet_to_csv(worksheet, { skipHidden: true }) + "\n\n";
-    }
-
-    progressHandler?.(100);
-    return text;
-  } finally {
-    endTimer(xlsxTimer);
   }
 }
 
@@ -438,10 +380,11 @@ async function extractFromImage(
   const imageTimer = startTimer(`ExtractFromImage-${file.name}`);
 
   try {
+    const { createWorker } = await import("tesseract.js");
     const worker = await createWorker("eng");
     try {
       let lastProgress = 0;
-      // @ts-ignore-next-line
+      // @ts-expect-error tesseract exposes progress callbacks at runtime.
       worker.onProgress = (progress: any) => {
         const currentProgress = Math.round(progress * 100);
         if (currentProgress > lastProgress) {

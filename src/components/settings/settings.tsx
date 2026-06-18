@@ -4,8 +4,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SummarySettings } from "./summarySettings";
 import { ChatSettings } from "./chatSettings";
-import { AccountSettings } from "./accountSettings";
-import { MembershipSettings } from "./membershipDetails";
 
 export const UnifiedSettingsModal = ({
   isOpen,
@@ -24,8 +22,6 @@ export const UnifiedSettingsModal = ({
             <TabsList className="mb-4 flex justify-center items-center gap-2 w-full overflow-x-auto">
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="chat">Conversation</TabsTrigger>
-              <TabsTrigger value="account">Account</TabsTrigger>
-              {/* <TabsTrigger value="membership">Membership</TabsTrigger> */}
             </TabsList>
 
             {/* Tab Panels */}
@@ -35,12 +31,6 @@ export const UnifiedSettingsModal = ({
               </TabsContent>
               <TabsContent value="chat">
                 <ChatSettings />
-              </TabsContent>
-              <TabsContent value="account">
-                <AccountSettings />
-              </TabsContent>
-              <TabsContent value="membership">
-                <MembershipSettings />
               </TabsContent>
             </div>
           </Tabs>

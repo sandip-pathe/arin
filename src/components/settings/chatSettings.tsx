@@ -16,10 +16,10 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FiSend } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/auth-store";
+import { useSettingsStore } from "@/store/settings-store";
 
 export const ChatSettings = ({ onClose }: { onClose?: () => void }) => {
-  const { settings, updateSettings } = useAuthStore();
+  const { settings, updateSettings } = useSettingsStore();
 
   const [conversationStyle, setConversationStyle] = useState(
     settings.chat.conversationStyle

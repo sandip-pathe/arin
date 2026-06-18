@@ -1,476 +1,51 @@
-import { OpenAI } from "openai";
-import { Paragraph, SummaryItem } from "@/types/page";
-import { useAuthStore } from "@/store/auth-store";
-import { endTimer, logPerf, startTimer } from "./hi";
-import pLimit from "p-limit";
-import { makeAdaptiveBatches } from "./chunk";
+import { useSettingsStore } from "@/store/settings-store";
+import type { Paragraph, SummaryItem } from "@/types/page";
 
-const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
-
-const CONCURRENCY = 4;
-const limit = pLimit(CONCURRENCY);
+const readError = async (response: Response, fallback: string) => {
+  try {
+    const body = await response.json();
+    return body.error || fallback;
+  } catch {
+    return fallback;
+  }
+};
 
 export async function summarizeParagraphs(
   paragraphs: Paragraph[],
   progressCallback?: (percent: number, phase?: string, partial?: any) => void
 ): Promise<SummaryItem> {
-  const summarizeTimer = startTimer("OpenAISummarization");
-  logPerf("Starting summarization", {
-    paragraphCount: paragraphs.length,
-    totalCharacters: paragraphs.reduce((sum, p) => sum + p.text.length, 0),
+  progressCallback?.(5, "Preparing secure summary request...");
+
+  const settings = useSettingsStore.getState().settings.summary;
+  const response = await fetch("/api/ai/summarize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ paragraphs, settings }),
   });
 
-  const settings = useAuthStore.getState().settings.summary;
-
-  try {
-    const batches = makeAdaptiveBatches(paragraphs, 10000);
-    logPerf("Batches created", { batchCount: batches.length });
-
-    let completedBatches = 0;
-    const batchResults: any[] = [];
-
-    // Process batches with streaming and progress updates
-    const batchPromises = batches.map((batch, idx) =>
-      limit(async () => {
-        const result = await processBatch(batch, settings, (streamContent) => {
-          // Send partial batch results as they stream in
-          if (progressCallback && streamContent) {
-            const batchProgress = Math.round(
-              ((completedBatches + 0.5) / batches.length) * 70
-            );
-            progressCallback(
-              batchProgress,
-              `Processing batch ${idx + 1}/${batches.length}...`,
-              { batchIndex: idx, partial: streamContent }
-            );
-          }
-        });
-
-        completedBatches++;
-        batchResults.push(result);
-
-        // Update progress after batch completion
-        if (progressCallback) {
-          const batchProgress = Math.round(
-            (completedBatches / batches.length) * 70
-          );
-          progressCallback(
-            batchProgress,
-            `Completed batch ${completedBatches}/${batches.length}`
-          );
-        }
-
-        return result;
-      })
+  if (!response.ok) {
+    throw new Error(
+      await readError(response, "Failed to summarize the document")
     );
-
-    await Promise.all(batchPromises);
-
-    logPerf("All batches completed", { batchCount: batchResults.length });
-
-    // Aggregation phase (30% of total time)
-    if (progressCallback) {
-      progressCallback(75, "Merging and consolidating results...");
-    }
-
-    const finalResult = await aggregateResults(
-      batchResults,
-      settings,
-      (aggProgress) => {
-        if (progressCallback) {
-          progressCallback(
-            75 + Math.round(aggProgress * 0.25),
-            "Finalizing summary..."
-          );
-        }
-      }
-    );
-
-    if (progressCallback) {
-      progressCallback(100, "Complete");
-    }
-
-    return finalResult;
-  } catch (error: any) {
-    logPerf("Summarization failed", { error: error.message });
-    throw error;
-  } finally {
-    endTimer(summarizeTimer);
   }
+
+  progressCallback?.(95, "Finalizing summary...");
+  const data = (await response.json()) as { summary: SummaryItem };
+  progressCallback?.(100, "Complete");
+  return data.summary;
 }
 
-/**
- * Step 1: Chunk summaries
- * Each batch produces a partial summary and ontology candidates
- */
-async function processBatch(
-  paragraphs: Paragraph[],
-  settings: any,
-  streamCallback?: (partial: string) => void
-) {
-  const batchTimer = startTimer(`OpenAIBatch-${paragraphs[0]?.id}`);
-  try {
-    logPerf("Batch Processing", { paragraphCount: paragraphs.length });
+export async function quickSkimSummary(paragraphs: Paragraph[]): Promise<string> {
+  const response = await fetch("/api/ai/quick-skim", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ paragraphs }),
+  });
 
-    const paragraphText = paragraphs
-      .map((p) => `(${p.id}) ${p.text}`)
-      .join("\n\n");
-
-    const PROCESS_BATCH_SYSTEM_PROMPT = `
-      You are a specialized legal AI assistant. 
-      Read the input carefully and extract the legally significant points.Your job is to capture the **essence**.
-      
-      Do not hallucinate or invent. 
-      You may **lightly rephrase for clarity** (e.g. remove repetition, join fragmented sentences, simplify), but never distort meaning. 
-      Think like a junior associate briefing a senior partner: accurate, concise, legally faithful.
-
-      STRICT RULES:
-        1. EXTRACTIONS: 
-          - Output multiple entries under "extractions". 
-          - Each entry = one atomic legal point (principle, ruling, fact). 
-          - Must include "sourceParagraphs".
-          - Group related sentences into one clearer point when appropriate.
-        2. ONTOLOGY MAPPING: 
-          - Return the ontology if relevant data is identified in the input.
-        3. NO INVENTION: Only fill ontology with content present in the text.
-        4. STYLE: Use clear, professional legal writing — accurate but reader-friendly.
-
-        SCHEMA (JSON only):
-        {
-          "extractions": [
-            {
-              "text": "text 1",
-              "sourceParagraphs": ["dX.pY", "dX.pY"]
-            },
-            {
-              "text": "text 2",
-              "sourceParagraphs": ["dX.pY"]
-            }
-          ],
-          "legalOntology": {
-            "parties": [
-              {
-                "role": "Plaintiff",
-                "name": "ABC Ltd.",
-                "implication": "Filed a civil suit for damages"
-              }
-            ],
-            "obligations": [
-                "Defendant must pay damages"
-            ],
-            "conditions": [
-              {
-                "trigger": "Non-payment within 30 days",
-                "consequence": "Accrued interest at 6% p.a.",
-                "src":["dX.pY"]
-              }
-            ],
-            "clauses": [
-              {
-                "text": "All disputes shall be referred to arbitration in Mumbai",
-                "src": ["dX.pY"]
-              }
-            ],
-            "definitions": [
-              {
-                "term": "Effective Date",
-                "defination": "The date on which this Agreement is signed",
-                "src": ["dX.pY"]
-              }
-            ],
-            "dates": [
-              {
-                "type": "Filing Date",
-                "value": "dd/mm/yyyy"
-              }
-            ],
-            "proceduralPosture": [
-              {
-                "stage": "Appeal"
-              }
-            ],
-            "courtAndJudges": [
-              {
-                "court": "Supreme Court of India",
-                "judge": "Justice DY Chandrachud",
-                "benchSize": 3
-              }
-            ],
-            "conflicts": [
-              {
-                "issue": "Payment amount differs across extractions",
-                "versions": [
-                  { "value": "₹50,00,000", "source": ["dX.pY"] },
-                  { "value": "₹45,00,000", "source": ["dX.pY"] }
-                ]
-              }
-            ],
-            "implications": [
-                {
-                  "text": "If Defendant fails to pay damages, Plaintiff may initiate contempt proceedings",
-                  "src": ["dX.pY"]
-                }
-            ],
-            "citationsAndPrecedents": [
-              {
-                "caseName": "Avitel Post Studioz v. HSBC PI Holdings",
-                "citation": "(2020) 4 SCC 1",
-                "relevance": "Relied on for arbitration enforceability"
-              }
-            ]
-          }
-        }`;
-
-    logPerf("Prompt created", {
-      promptLength: PROCESS_BATCH_SYSTEM_PROMPT.length,
-    });
-
-    const apiTimer = startTimer("OpenAIAPIRequest");
-
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: PROCESS_BATCH_SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `\n\n${paragraphText}`,
-        },
-      ],
-      temperature: 0.1,
-      response_format: { type: "json_object" },
-      max_tokens: 8000,
-      stream: true,
-    });
-
-    let fullContent = "";
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || "";
-      fullContent += content;
-
-      // Send partial updates for user feedback
-      if (streamCallback && content) {
-        streamCallback(fullContent);
-      }
-    }
-
-    endTimer(apiTimer);
-
-    logPerf("OpenAI response received Batch Process", {
-      responseLength: fullContent.length,
-      model: "gpt-4o-mini",
-    });
-
-    return safeJSON(fullContent);
-  } catch (error: any) {
-    logPerf("OpenAI request failed", { error: error.message });
-    throw error;
-  } finally {
-    endTimer(batchTimer);
+  if (!response.ok) {
+    throw new Error(await readError(response, "Failed to create quick skim"));
   }
-}
 
-/**
- * Step 2: Final Aggregator
- * Takes all batch summaries + ontologyCandidates
- * Produces ONE master summary and unified ontology
- */
-async function aggregateResults(
-  batchResults: any[],
-  settings: any,
-  progressCallback?: (percent: number) => void
-): Promise<SummaryItem> {
-  const aggregateTime = startTimer("Aggregation");
-
-  try {
-    logPerf("Aggregating batch results", {
-      batchCount: batchResults.length,
-      totalCharacters: JSON.stringify(batchResults).length,
-    });
-
-    progressCallback?.(10);
-
-    const inputJson = JSON.stringify(batchResults, null, 2);
-
-    const AGGREGATE_SYSTEM_PROMPT = `
-      You are acting as a **senior legal associate** reviewing multiple extraction results from different batches.  
-
-      GOAL: Produce **one master structured summary** + **unified ontology**.
-
-      RULES:
-      1. EXTRACT + MERGE:
-        - Include all extractions from all batches.
-        - If two are identical in meaning, merge and union their "sourceParagraphs".
-        - If they differ in meaning, keep both.
-
-      2. ONTOLOGY CONSOLIDATION:
-        - Deduplicate entities (e.g. same party or clause).
-        - Keep conflicts explicitly if values differ (e.g. payment amounts).
-        - Maintain structured categories (parties, clauses, obligations, etc.).
-
-      3. USER SETTINGS:
-        - Length: ${settings.length} (short / medium / long).
-        - Tone: ${settings.tone} (formal / professional / casual).
-        - Jurisdiction: ${settings.jurisdiction}.
-        - Style: ${settings.style} (detailed / concise / narrative).
-
-      4. STYLE:
-        - Professional, accurate, legally faithful.
-        - Prefer clarity over verbosity.
-        - No hallucination, no omissions.
-
-      FINAL OUTPUT SCHEMA (JSON only):
-      {
-        "title": "Unique 7-word descriptive title",
-        "extractions": [
-          {
-            "text": "The Defendant failed to pay damages despite demand.",
-            "sourceParagraphs": ["d3.p5", "d3.p6"]
-          }
-        ],
-        "legalOntology": {
-          "parties": [...],
-          "obligations": [...],
-          "conditions": [...],
-          "clauses": [...],
-          "definitions": [...],
-          "dates": [...],
-          "proceduralPosture": [...],
-          "courtAndJudges": [...],
-          "conflicts": [...],
-          "implications": [...],
-          "citationsAndPrecedents": [...]
-        }
-      }`;
-
-    logPerf("Aggregation prompt created", { promptLength: prompt.length });
-
-    progressCallback?.(20);
-
-    const AggApiTimer = startTimer("OpenAIAggregationAPIRequest");
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: AGGREGATE_SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `\n\n${inputJson}`,
-        },
-      ],
-      temperature: 0.1,
-      response_format: { type: "json_object" },
-      max_tokens: 8000,
-      stream: true,
-    });
-
-    let fullContent = "";
-    let lastProgress = 20;
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || "";
-      fullContent += content;
-
-      // Update progress during streaming (20% to 90%)
-      const newProgress = Math.min(
-        90,
-        20 + Math.floor(fullContent.length / 100)
-      );
-      if (newProgress > lastProgress) {
-        progressCallback?.(newProgress);
-        lastProgress = newProgress;
-      }
-    }
-
-    endTimer(AggApiTimer);
-
-    logPerf("OpenAI aggregation response received", {
-      responseLength: fullContent.length,
-      model: "gpt-4o-mini",
-    });
-
-    progressCallback?.(100);
-    return parseSummaryItem(fullContent);
-  } catch (error: any) {
-    logPerf("Aggregation failed", { error: error.message });
-    throw error;
-  } finally {
-    endTimer(aggregateTime);
-  }
-}
-
-/**
- * Helpers
- */
-function safeJSON(content: string): any {
-  try {
-    return JSON.parse(content);
-  } catch {
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    throw new Error("Invalid JSON response: " + content.substring(0, 100));
-  }
-}
-
-function parseSummaryItem(content: string): SummaryItem {
-  const parsed = safeJSON(content);
-
-  return {
-    title: parsed.title || "",
-    summary: parsed.extractions || [],
-    legalOntology: parsed.legalOntology || {
-      definitions: [],
-      obligations: [],
-      rights: [],
-      conditions: [],
-      clauses: [],
-      dates: [],
-      parties: [],
-      proceduralPosture: [],
-      courtAndJudges: [],
-      conflicts: [],
-      implications: [],
-      citationsAndPrecedents: [],
-    },
-  };
-}
-
-export async function quickSkimSummary(text: Paragraph[]): Promise<string> {
-  const timer = startTimer("QuickSkim");
-  const inputText = text.map((p) => p.text).join("\n\n");
-  logPerf("Starting quick skim", { inputLength: text.length });
-
-  const QUICK_SKIM_SYSTEM_PROMPT = `
-    You are a legal AI assistant. 
-    Task: produce a **concise plain-English briefing note** from the input text.
-
-    RULES:
-    - Output a single flowing paragraph (~8–10 sentences).
-    - Focus on the **core facts, issues, obligations, and outcomes**.
-    - No schema, no bullet points, no citations.
-    - Style: professional but easy to read, as if preparing a quick summary for a busy senior lawyer.
-    - Avoid over-interpretation. Stick strictly to text.
-    - Use Paul Graham's writing style.`;
-
-  try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: QUICK_SKIM_SYSTEM_PROMPT },
-        { role: "user", content: `\n\n${inputText}` },
-      ],
-      temperature: 0.2,
-      max_tokens: 500,
-      stream: false,
-    });
-
-    const summary = response.choices[0]?.message?.content?.trim() || "";
-    logPerf("Quick skim completed", { summaryLength: summary.length });
-    return summary;
-  } catch (err: any) {
-    logPerf("Quick skim error", { error: err.message });
-    throw err;
-  } finally {
-    endTimer(timer);
-  }
+  const data = (await response.json()) as { summary: string };
+  return data.summary;
 }

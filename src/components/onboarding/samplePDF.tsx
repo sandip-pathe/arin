@@ -1,4 +1,3 @@
-import { FileText } from "lucide-react";
 import useSessionStore from "@/store/session-store";
 
 interface OnboardingSamplePdfProps {

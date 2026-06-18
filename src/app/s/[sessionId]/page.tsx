@@ -1,27 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { WelcomeModal } from "@/components/InputModal";
 import { ChatSettingsModal } from "@/components/settings/chatSettings";
 import { SummarySettingsModal } from "@/components/settings/summarySettings";
 import { Sidebar } from "@/components/sidebar";
-import { GoShieldLock } from "react-icons/go";
 import { processTextToParagraphs } from "@/lib/chunk";
 import { quickSkimSummary, summarizeParagraphs } from "@/lib/summary+api";
-import {
-  saveParagraphsToFirestore,
-  deleteChatMessages,
-  handleProcessingError,
-} from "@/lib/functions";
+import { handleProcessingError } from "@/lib/functions";
 import { startTimer, endTimer, logPerf } from "@/lib/hi";
 import { useToast } from "@/hooks/use-toast";
-import { db } from "@/lib/firebase";
-import { updateDoc, serverTimestamp, doc } from "firebase/firestore";
 import { useSessionData } from "@/hooks/use-session-data";
 import { useFileProcessing } from "@/hooks/use-file-process";
-import { useAuthStore } from "@/store/auth-store";
 import useSessionStore from "@/store/session-store";
 import { Paragraph, SummaryItem } from "@/types/page";
 import { FiSliders, FiDownload } from "react-icons/fi";
@@ -41,6 +33,21 @@ import { MainContent } from "@/components/main";
 import { documentManager, nextDocumentIndex } from "@/lib/document-refs";
 import { HiOutlineMenu } from "react-icons/hi";
 import Logo from "@/components/logo";
+import {
+  clearLocalChatMessages,
+  saveLocalSessionContent,
+  updateLocalSessionMeta,
+} from "@/lib/local-session";
+
+const SAMPLE_LEGAL_TEXT = `SERVICE AGREEMENT
+
+This Service Agreement is entered into between Alpha Advisory LLC and Riverbend Foods Pvt. Ltd. The provider will deliver compliance review services for vendor contracts during a 90 day pilot beginning July 1, 2026.
+
+Riverbend will pay USD 12,000 in three equal monthly installments. Either party may terminate for material breach if the breach is not cured within 10 business days after written notice.
+
+All confidential information exchanged under this agreement must be used only for the pilot. The provider may not disclose Riverbend data to any third party except approved subcontractors who are bound by equivalent confidentiality obligations.
+
+The agreement is governed by the laws of Singapore. Any dispute must first be escalated to senior executives for good-faith negotiation before either party commences arbitration.`;
 
 export default function SessionPage() {
   const { sessionId, activeSession, createNewSession, loadSessionData } =
@@ -48,9 +55,7 @@ export default function SessionPage() {
   const { extractionProgress, progressMessage, handleFileAdded } =
     useFileProcessing();
   const { toast } = useToast();
-  const { user, membership, updateMembership, loading } = useAuthStore();
   const searchParams = useSearchParams();
-  const DEMO_SESSION_ID = "019906c6-4987-77cd-bc27-ae252025c373";
 
   const {
     setActiveSession,
@@ -61,7 +66,6 @@ export default function SessionPage() {
     setInputText,
     attachments,
     removeAttachment,
-    paragraphs,
     setParagraphs,
     summaries,
     setSummaries,
@@ -73,7 +77,6 @@ export default function SessionPage() {
     setShowSummarySettingsModal,
     showWelcomeModal,
     setShowWelcomeModal,
-    quickSummary,
     setQuickSummary,
   } = useSessionStore();
 
@@ -91,21 +94,15 @@ export default function SessionPage() {
   const isNew = searchParams.get("new") === "true";
   const router = useRouter();
 
-  const handleUseSampleDoc = async () => {
-    setShowWelcomeModal(false);
-    setIsSummarizing(true);
-    setParagraphCount(2);
-    setTimeout(() => {
-      setIsSummarizing(false);
-      router.push(`/s/${DEMO_SESSION_ID}`);
-    }, 9000); // simulate processing time
+  const handleUseSampleDoc = () => {
+    setInputText(SAMPLE_LEGAL_TEXT);
+    toast({
+      title: "Sample loaded",
+      description: "Review the sample text, then process it when ready.",
+    });
   };
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
     if (initialized || !sessionId) {
       return;
     }
@@ -117,17 +114,16 @@ export default function SessionPage() {
     } else {
       loadSessionData(sessionId);
     }
-  }, [user, sessionId, isNew, initialized]);
+  }, [
+    createNewSession,
+    initialized,
+    isNew,
+    loadSessionData,
+    sessionId,
+    setShowWelcomeModal,
+  ]);
 
-  const isSharedWithUser = useMemo(() => {
-    if (!activeSession || !user) return false;
-    return (
-      activeSession.owner !== user?.email &&
-      activeSession.sharedWith?.includes(user?.email ?? "")
-    );
-  }, [activeSession, user]);
-
-  const handleSend = useCallback(async () => {
+  const handleSend = async () => {
     const sendTimer = startTimer("HandleSend");
     if (isProcessingDocument || isLoading) return;
     setIsLoading(true);
@@ -136,7 +132,6 @@ export default function SessionPage() {
     try {
       const inputTimer = startTimer("ProcessInputs");
       const inputTextParagraphs = await processAllInputs();
-      const hadInputText = Boolean(inputText.trim());
       setInputText("");
       setParagraphCount(inputTextParagraphs.length);
       setShowWelcomeModal(false);
@@ -166,8 +161,7 @@ export default function SessionPage() {
         try {
           const result = await summarizeParagraphs(
             inputTextParagraphs,
-            (percent, phase, partial) => {
-              // Update progress with phase information
+            (percent, phase, _partial) => {
               setSummaryProgress(percent);
               if (phase) {
                 logPerf("Summary progress", { percent, phase });
@@ -182,23 +176,8 @@ export default function SessionPage() {
           });
           setParagraphs(inputTextParagraphs);
 
-          const skim = await quickSkimPromise; // ✅ wait for skim result
-          await saveToFirestore(
-            inputTextParagraphs,
-            result,
-            skim,
-            hadInputText
-          );
-
-          // Trigger login modal after 1 minute for anonymous users
-          if (!user) {
-            setTimeout(() => {
-              const { open, incrementAnonymousSession } =
-                require("@/store/auth-modal-store").useAuthModalStore.getState();
-              incrementAnonymousSession();
-              open("signup", "limit_reached");
-            }, 60000); // 60 seconds = 1 minute
-          }
+          const skim = await quickSkimPromise;
+          await saveLocalSession(inputTextParagraphs, result, skim);
         } catch (err: any) {
           handleProcessingError("Summarization failed", err);
           toast({
@@ -227,14 +206,7 @@ export default function SessionPage() {
       endTimer(sendTimer);
       logPerf("HandleSend completed");
     }
-  }, [
-    isProcessingDocument,
-    isLoading,
-    inputText,
-    attachments,
-    paragraphs,
-    summaries,
-  ]);
+  };
 
   const processAllInputs = useCallback(async () => {
     // run expensive parsing on next tick to avoid blocking paint
@@ -242,7 +214,7 @@ export default function SessionPage() {
       setTimeout(async () => {
         try {
           const textParagraphs = inputText.trim()
-            ? processTextToParagraphs(
+            ? await processTextToParagraphs(
                 inputText.trim(),
                 nextDocumentIndex.current++
               )
@@ -266,51 +238,39 @@ export default function SessionPage() {
     });
   }, [inputText, attachments]);
 
-  const saveToFirestore = useCallback(
+  const saveLocalSession = useCallback(
     async (
       allParagraphs: Paragraph[],
       result: SummaryItem,
-      quickSummary: string,
-      hadInputText: boolean
+      quickSummary: string
     ) => {
       const sessionId = activeSession?.id;
       if (!sessionId) return;
 
-      // Track anonymous session in localStorage
-      if (!user) {
-        const { addAnonymousSessionId } = await import(
-          "@/lib/session-migration"
-        );
-        addAnonymousSessionId(sessionId);
-      }
-
       try {
-        const sessionRef = doc(db, "sessions", sessionId);
-        await updateDoc(sessionRef, {
+        const title = result.title || activeSession?.title || "Legal Session";
+        const updatedAt = Date.now();
+
+        saveLocalSessionContent(sessionId, {
+          paragraphs: allParagraphs,
           summaries: result,
-          updatedAt: serverTimestamp(),
-          noOfAttachments: attachments.length,
-          title: result.title,
           quickSummary,
+          title,
         });
-
-        // Only update membership for authenticated users
-        if (user && updateMembership) {
-          updateMembership({
-            pagesRemaining:
-              (membership.pagesRemaining ?? 0) -
-              (attachments.length + (hadInputText ? 1 : 0)),
-          });
-        }
-
-        const LARGE_SAVE_THRESHOLD = 5;
-        if (allParagraphs.length > LARGE_SAVE_THRESHOLD) {
-          backgroundSaveParagraphs(sessionId, allParagraphs).catch((err) => {
-            handleProcessingError("Background Firestore save failed", err);
-          });
-        } else {
-          await saveParagraphsToFirestore(sessionId, allParagraphs);
-        }
+        updateLocalSessionMeta(sessionId, {
+          title,
+          summary: result,
+          noOfAttachments: attachments.length,
+          updatedAt,
+        });
+        setActiveSession({
+          ...activeSession,
+          title,
+          summaries: result,
+          quickSummary,
+          noOfAttachments: attachments.length,
+          updatedAt,
+        });
       } catch (error) {
         handleProcessingError("Finalize Processing", error);
         toast({
@@ -323,39 +283,10 @@ export default function SessionPage() {
     [
       activeSession,
       attachments.length,
-      membership?.pagesRemaining,
-      quickSummary,
+      setActiveSession,
+      toast,
     ]
   );
-
-  // helper: background-chunked save with logging
-  const backgroundSaveParagraphs = async (
-    sessionId: string,
-    paragraphsToSave: Paragraph[]
-  ) => {
-    const CHUNK = 300; // safe batch size
-    for (let i = 0; i < paragraphsToSave.length; i += CHUNK) {
-      const chunk = paragraphsToSave.slice(i, i + CHUNK);
-      try {
-        // assume saveParagraphsToFirestore can accept chunked sets
-        await saveParagraphsToFirestore(sessionId, chunk);
-      } catch (err) {
-        // log + surface minimal toast so user knows save failed in background
-        console.error("Background chunk save failed", {
-          err,
-          sessionId,
-          chunkSize: chunk.length,
-        });
-        toast({
-          title: "Background save failed",
-          description:
-            "We couldn't save some paragraphs. We'll retry automatically.",
-          variant: "destructive",
-        });
-        // optionally continue (you may implement a retry scheduler elsewhere)
-      }
-    }
-  };
 
   const handleRemoveAttachment = useCallback(
     async (id: string) => {
@@ -368,7 +299,7 @@ export default function SessionPage() {
   const handleDeleteChats = async () => {
     if (!sessionId) return;
     try {
-      await deleteChatMessages(sessionId);
+      clearLocalChatMessages(sessionId);
       setChatMessages([]);
       toast({
         title: "Chats Cleared",
@@ -463,19 +394,6 @@ export default function SessionPage() {
               ? activeSession.title
               : "Untitled"}
           </motion.h2>
-          {isSharedWithUser && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex items-center justify-center mt-1 lg:mt-0 lg:ml-2 px-2 py-1 rounded-lg bg-white shrink-0"
-            >
-              <GoShieldLock className="font-semibold" size={18} />
-              <span className="text-sm ml-1 font-semibold hidden sm:block">
-                Shared with you
-              </span>
-            </motion.div>
-          )}
         </div>
       </div>
 
@@ -566,7 +484,6 @@ export default function SessionPage() {
                   paragraphCount={paragraphCount}
                   summaryProgress={summaryProgress}
                   onCitationClick={handleCitationClick}
-                  isSharedWithUser={isSharedWithUser}
                 />
               </AnimatePresence>
             </div>

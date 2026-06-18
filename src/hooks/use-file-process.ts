@@ -26,7 +26,6 @@ export const useFileProcessing = () => {
 
       const id = v7();
 
-      // ✅ assign index once per new file
       if (!documentManager.current[id]) {
         documentManager.current[id] = nextDocumentIndex.current++;
       }

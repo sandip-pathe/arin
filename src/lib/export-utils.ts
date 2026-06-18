@@ -1,4 +1,4 @@
-import { SummaryItem } from "@/types/page";
+import type { ChatMessages, SummaryItem } from "@/types/page";
 import { saveAs } from "file-saver";
 import React from "react";
 
@@ -16,6 +16,8 @@ export const exportToMarkdown = (summary: SummaryItem, title: string) => {
       }
     });
   }
+
+  markdown += formatOntologyMarkdown(summary);
 
   const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
   const filename = `${sanitizeFilename(title)}.md`;
@@ -38,6 +40,8 @@ export const exportToText = (summary: SummaryItem, title: string) => {
       }
     });
   }
+
+  text += formatOntologyText(summary);
 
   const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const filename = `${sanitizeFilename(title)}.txt`;
@@ -120,6 +124,108 @@ export const exportToPDF = async (
   const blob = await pdf(React.createElement(PDFDocument)).toBlob();
   const filename = `${sanitizeFilename(sessionTitle)}.pdf`;
   saveAs(blob, filename);
+};
+
+export const exportChatToMarkdown = (
+  messages: ChatMessages[],
+  title: string
+) => {
+  const transcript = buildChatTranscript(messages, title, "markdown");
+  const blob = new Blob([transcript], { type: "text/markdown;charset=utf-8" });
+  saveAs(blob, `${sanitizeFilename(`${title}_chat`)}.md`);
+};
+
+export const exportChatToText = (messages: ChatMessages[], title: string) => {
+  const transcript = buildChatTranscript(messages, title, "text");
+  const blob = new Blob([transcript], { type: "text/plain;charset=utf-8" });
+  saveAs(blob, `${sanitizeFilename(`${title}_chat`)}.txt`);
+};
+
+const formatOntologyMarkdown = (summary: SummaryItem) => {
+  if (!summary.legalOntology) return "";
+
+  const sections = Object.entries(summary.legalOntology).filter(([, value]) =>
+    Array.isArray(value) ? value.length > 0 : Boolean(value)
+  );
+
+  if (sections.length === 0) return "";
+
+  let markdown = "\n## Key Data\n\n";
+  sections.forEach(([key, value]) => {
+    markdown += `### ${toTitle(key)}\n\n`;
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        markdown += `- ${formatValue(item)}\n`;
+      });
+    } else {
+      markdown += `${formatValue(value)}\n`;
+    }
+    markdown += "\n";
+  });
+  return markdown;
+};
+
+const formatOntologyText = (summary: SummaryItem) => {
+  if (!summary.legalOntology) return "";
+
+  const sections = Object.entries(summary.legalOntology).filter(([, value]) =>
+    Array.isArray(value) ? value.length > 0 : Boolean(value)
+  );
+
+  if (sections.length === 0) return "";
+
+  let text = "\nKEY DATA\n";
+  text += "-".repeat(50) + "\n\n";
+  sections.forEach(([key, value]) => {
+    text += `${toTitle(key)}\n`;
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        text += `- ${formatValue(item)}\n`;
+      });
+    } else {
+      text += `${formatValue(value)}\n`;
+    }
+    text += "\n";
+  });
+  return text;
+};
+
+const buildChatTranscript = (
+  messages: ChatMessages[],
+  title: string,
+  format: "markdown" | "text"
+) => {
+  const heading = format === "markdown" ? `# ${title} Chat\n\n` : `${title} Chat\n`;
+  const underline = format === "markdown" ? "" : `${"=".repeat(title.length + 5)}\n\n`;
+  const generated = `Generated on ${new Date().toLocaleDateString()}\n\n`;
+
+  const body = messages
+    .map((message) => {
+      const role = message.role === "assistant" ? "ANAYA" : "User";
+      const timestamp = message.timestamp
+        ? new Date(message.timestamp).toLocaleString()
+        : "";
+      if (format === "markdown") {
+        return `## ${role}${timestamp ? ` (${timestamp})` : ""}\n\n${message.content}`;
+      }
+      return `${role}${timestamp ? ` (${timestamp})` : ""}\n${"-".repeat(
+        role.length + timestamp.length + 3
+      )}\n${message.content}`;
+    })
+    .join("\n\n");
+
+  return `${heading}${underline}${generated}${body}\n`;
+};
+
+const toTitle = (key: string) => {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (char) => char.toUpperCase());
+};
+
+const formatValue = (value: unknown) => {
+  if (typeof value === "string") return value;
+  return JSON.stringify(value);
 };
 
 /**

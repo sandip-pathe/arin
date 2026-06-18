@@ -1,12 +1,11 @@
 // components/notebook-card.tsx
 import { FC } from "react";
 import {
-  FiUsers,
   FiFolder,
   FiArchive,
   FiTrash2,
   FiMove,
-  FiShare2,
+  FiDownload,
   FiClock,
 } from "react-icons/fi";
 import {
@@ -22,29 +21,26 @@ import {
 import { MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 
 interface Props {
-  id: string;
   title: string;
   updatedAt: number;
   isStarred: boolean;
   folder: string;
-  sharedCount: number;
   onClick: () => void;
   onMoveToFolder: (folder: string) => void;
   onDelete: () => void;
   onArchive: () => void;
-  onShare: () => void;
+  onExport: () => void;
   onToggleStar: () => void;
 }
 
 const NotebookCard: FC<Props> = ({
   title,
   updatedAt,
-  sharedCount,
   onClick,
   onArchive,
   onMoveToFolder,
   onDelete,
-  onShare,
+  onExport,
   isStarred,
   onToggleStar,
 }) => {
@@ -75,19 +71,8 @@ const NotebookCard: FC<Props> = ({
                   })}
                 </span>
               </div>
-
-              {sharedCount > 0 && (
-                <div className="flex items-center gap-1">
-                  <FiUsers
-                    size={14}
-                    className="text-gray-400 sm:text-base md:text-lg"
-                  />
-                  <span>{sharedCount}</span>
-                </div>
-              )}
             </div>
 
-            {/* Quick action (share for now) */}
             <div className="flex items-center gap-2">
               <button
                 onClick={(e) => {
@@ -112,11 +97,12 @@ const NotebookCard: FC<Props> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onShare();
+                  onExport();
                 }}
                 className="opacity-70 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-blue-50"
+                aria-label="Open export options"
               >
-                <FiShare2
+                <FiDownload
                   size={16}
                   className="text-blue-600 sm:text-lg md:text-xl"
                 />
@@ -131,11 +117,11 @@ const NotebookCard: FC<Props> = ({
         <ContextMenuItem
           onClick={(e) => {
             e.stopPropagation();
-            onShare();
+            onExport();
           }}
         >
-          <FiShare2 className="mr-2" size={16} />
-          Share
+          <FiDownload className="mr-2" size={16} />
+          Export
         </ContextMenuItem>
 
         <ContextMenuItem

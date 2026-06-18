@@ -5,9 +5,9 @@ import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatMessages, SummaryItem } from "@/types/page";
 import { v7 } from "uuid";
-import { saveChatMessage } from "@/lib/functions";
 import { useToast } from "@/hooks/use-toast";
 import { ChatWithOpenAI } from "@/lib/chat+api";
+import { appendLocalChatMessage } from "@/lib/local-session";
 
 interface ChatWindowProps {
   chatMessages?: ChatMessages[];
@@ -48,7 +48,7 @@ export const ChatWindow = ({
   const handleChatSubmit = async () => {
     if (
       sessionId === null ||
-      summary === null || // ✅ guard
+      summary === null ||
       inputMessageText.trim() === "" ||
       isProcessingChat
     ) {
@@ -65,10 +65,14 @@ export const ChatWindow = ({
     setChatMessages((prev) => [...(prev ?? []), userMessage]);
     setInputMessageText("");
     setIsProcessingChat(true);
-    saveChatMessage(userMessage, sessionId);
+    appendLocalChatMessage(sessionId, userMessage);
 
     try {
-      const data = await ChatWithOpenAI(summary, inputMessageText);
+      const data = await ChatWithOpenAI(
+        summary,
+        inputMessageText,
+        chatMessages ?? []
+      );
 
       const aiMessage: ChatMessages = {
         id: v7(),
@@ -78,11 +82,11 @@ export const ChatWindow = ({
       };
 
       setChatMessages((prev) => [...(prev ?? []), aiMessage]);
-      saveChatMessage(aiMessage, sessionId);
+      appendLocalChatMessage(sessionId, aiMessage);
     } catch (error) {
-      console.error(`[${summary}]`, error);
+      console.error("Chat request failed", error);
       toast({
-        title: `${summary} Failed`,
+        title: "Chat failed",
         description:
           error instanceof Error ? error.message : "Unexpected error occurred",
         variant: "destructive",

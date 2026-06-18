@@ -1,32 +1,19 @@
 "use client";
-import { useAuthStore } from "@/store/auth-store";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function ChatWelcome() {
-  const { dbUser, user } = useAuthStore();
-  const displayName = dbUser?.displayName?.split(" ")[0] || "";
-
   const [shownText, setShownText] = useState("");
   const [done, setDone] = useState(false);
   const [shine, setShine] = useState(false);
   const [fullText, setFullText] = useState("");
 
-  // Decide greeting once based on localStorage
   useEffect(() => {
-    if (!displayName || !user?.uid) return;
-
-    const key = `greetingCount_${user.uid}`;
-    let count = Number(localStorage.getItem(key)) || 0;
-
-    const greeting =
-      count < 2 ? `Welcome ${displayName},` : `Welcome Back ${displayName},`;
-
-    setFullText(greeting);
-
-    // Increment count for next visit
+    const key = "localGreetingCount";
+    const count = Number(localStorage.getItem(key)) || 0;
+    setFullText(count < 2 ? "Welcome," : "Welcome back,");
     localStorage.setItem(key, String(count + 1));
-  }, [displayName, user?.uid]);
+  }, []);
 
   // Animate the fullText
   useEffect(() => {

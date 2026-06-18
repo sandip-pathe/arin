@@ -13,10 +13,10 @@ import {
 import { FiSend } from "react-icons/fi";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/auth-store";
+import { useSettingsStore } from "@/store/settings-store";
 
 export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
-  const { settings, updateSettings } = useAuthStore();
+  const { settings, updateSettings } = useSettingsStore();
   const [summaryLength, setSummaryLength] = useState(settings.summary.length);
   const [complexity, setComplexity] = useState(settings.summary.complexity);
   const [tone, setTone] = useState(settings.summary.tone);

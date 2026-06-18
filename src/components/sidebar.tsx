@@ -1,14 +1,11 @@
 "use client";
 
-import { FiShare2, FiSettings, FiHome, FiX } from "react-icons/fi";
+import { FiDownload, FiSettings, FiHome, FiX, FiLock } from "react-icons/fi";
 import { BsLayoutSidebarInset } from "react-icons/bs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import useSessionStore from "@/store/session-store";
-import { AccountSettingsModal } from "./settings/accountSettings";
-import { ShareModal } from "./settings/sharing";
+import { LocalExportModal } from "./settings/local-export";
 import { UnifiedSettingsModal } from "./settings/settings";
-import { useAuthStore } from "@/store/auth-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SidebarButtonProps {
@@ -21,12 +18,9 @@ interface SidebarButtonProps {
 export const Sidebar = ({ sessionId }: { sessionId: string }) => {
   const router = useRouter();
   const { isSidebarOpen, toggleSidebar } = useSessionStore();
-  const { user, membership } = useAuthStore();
   const {
-    showAccountModal,
-    setShowAccountModal,
-    showShareModal,
-    setShowShareModal,
+    showExportModal,
+    setShowExportModal,
     showSettingsModal,
     setShowSettingsModal,
   } = useSessionStore();
@@ -94,9 +88,9 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
                 isCollapsed={!isSidebarOpen}
               />
               <SidebarButton
-                icon={<FiShare2 size={18} />}
-                label="Share"
-                onClick={() => setShowShareModal(true)}
+                icon={<FiDownload size={18} />}
+                label="Export"
+                onClick={() => setShowExportModal(true)}
                 isCollapsed={!isSidebarOpen}
               />
               <SidebarButton
@@ -107,29 +101,22 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
               />
             </div>
 
-            {/* User Section */}
+            {/* Local status */}
             <div
               className={`border-t mt-2 sm:mt-4 pt-2 sm:pt-3 ${
                 isSidebarOpen
                   ? "px-1 sm:px-2 flex items-center gap-1 sm:gap-2"
                   : "flex justify-center"
-              } cursor-pointer hover:bg-gray-100 rounded-lg p-1 sm:p-2`}
-              onClick={() => setShowAccountModal(true)}
+              } rounded-lg p-1 sm:p-2`}
             >
-              <Avatar className="h-7 w-7 sm:h-8 sm:w-8 border-blue-600 border-2 shadow-sm">
-                <AvatarFallback>
-                  {user?.displayName?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border-2 border-emerald-600 bg-emerald-50 text-emerald-700 shadow-sm">
+                <FiLock size={14} />
+              </div>
               {isSidebarOpen && (
                 <div className="text-xs">
-                  <div className="font-semibold">{user?.displayName}</div>
-                  <div className="text-[10px] sm:text-[11px] text-blue-500">
-                    {membership.type === "trial"
-                      ? `Free (${membership.endDate})`
-                      : membership.type === "pro"
-                      ? `Pro (ends ${membership.endDate})`
-                      : "Pro Member"}
+                  <div className="font-semibold">Local Workspace</div>
+                  <div className="text-[10px] sm:text-[11px] text-emerald-600">
+                    Stored in this browser
                   </div>
                 </div>
               )}
@@ -180,10 +167,10 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
                 isCollapsed={false}
               />
               <SidebarButton
-                icon={<FiShare2 size={20} />}
-                label="Share"
+                icon={<FiDownload size={20} />}
+                label="Export"
                 onClick={() => {
-                  setShowShareModal(true);
+                  setShowExportModal(true);
                   toggleSidebar();
                 }}
                 isCollapsed={false}
@@ -199,27 +186,17 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
               />
             </div>
 
-            {/* User Section */}
+            {/* Local status */}
             <div
-              className="border-t mt-4 pt-4 px-4 flex items-center gap-3 cursor-pointer hover:bg-gray-100 rounded-lg p-3"
-              onClick={() => {
-                setShowAccountModal(true);
-                toggleSidebar();
-              }}
+              className="border-t mt-4 pt-4 px-4 flex items-center gap-3 rounded-lg p-3"
             >
-              <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-blue-600 border-2 shadow-sm">
-                <AvatarFallback>
-                  {user?.displayName?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-emerald-600 bg-emerald-50 text-emerald-700 shadow-sm">
+                <FiLock size={16} />
+              </div>
               <div className="text-sm">
-                <div className="font-semibold">{user?.displayName}</div>
-                <div className="text-xs text-blue-500">
-                  {membership.type === "trial"
-                    ? `Free (${membership.endDate})`
-                    : membership.type === "pro"
-                    ? `Pro (ends ${membership.endDate})`
-                    : "Pro Member"}
+                <div className="font-semibold">Local Workspace</div>
+                <div className="text-xs text-emerald-600">
+                  Stored in this browser
                 </div>
               </div>
             </div>
@@ -227,13 +204,9 @@ export const Sidebar = ({ sessionId }: { sessionId: string }) => {
         </div>
       </motion.aside>
 
-      <AccountSettingsModal
-        isOpen={showAccountModal}
-        isOpenChange={setShowAccountModal}
-      />
-      <ShareModal
-        isOpen={showShareModal}
-        onOpenChange={setShowShareModal}
+      <LocalExportModal
+        isOpen={showExportModal}
+        onOpenChange={setShowExportModal}
         sessionId={sessionId}
       />
       <UnifiedSettingsModal

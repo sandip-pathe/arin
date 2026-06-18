@@ -1,22 +1,37 @@
-import { Paragraph } from "@/types/page";
-import winkNLP from "wink-nlp";
-import model from "wink-eng-lite-web-model";
+import type { Paragraph } from "@/types/page";
 
-const nlp = winkNLP(model);
-const its = nlp.its;
 const MAX_TOKENS_PER_BATCH = 10000;
+
+let sentenceToolsPromise: Promise<{ nlp: any; its: any }> | null = null;
+
+const getSentenceTools = () => {
+  if (!sentenceToolsPromise) {
+    sentenceToolsPromise = Promise.all([
+      import("wink-nlp"),
+      import("wink-eng-lite-web-model"),
+    ]).then(([winkModule, modelModule]) => {
+      const winkNLP = winkModule.default;
+      const model = modelModule.default;
+      const nlp = winkNLP(model);
+      return { nlp, its: nlp.its };
+    });
+  }
+
+  return sentenceToolsPromise;
+};
 
 /**
  * Converts raw text into structured Paragraph objects.
  * Each paragraph ≈200 words max, tagged with IDs + optional section title.
  */
-export function processTextToParagraphs(
+export async function processTextToParagraphs(
   text: string,
   documentIndex: number
-): Paragraph[] {
+): Promise<Paragraph[]> {
   const paragraphs: Paragraph[] = [];
   let globalParagraphIndex = 1;
   const sectionTitle = getSectionTitle(text);
+  const { nlp, its } = await getSentenceTools();
 
   // Break into sentences
   const doc = nlp.readDoc(text);

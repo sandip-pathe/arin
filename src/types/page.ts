@@ -1,5 +1,3 @@
-import { Timestamp } from "firebase/firestore";
-
 export type ChatMessages = {
   id: string;
   role: string;
@@ -58,11 +56,19 @@ export type DocumentChunk = {
   tokenEstimate: number;
 };
 
+export type SessionTimestamp =
+  | Date
+  | number
+  | string
+  | {
+      toMillis: () => number;
+    };
+
 export type Session = {
   id: string;
   userId: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: SessionTimestamp;
+  updatedAt: SessionTimestamp;
   createdBy: string;
   owner: string;
   sharedWith: string[];
@@ -100,8 +106,8 @@ export type SidebarProps = {
 export type MinimalSession = {
   id: string;
   title: string;
-  updatedAt: Date;
-  createdAt: Date;
+  updatedAt: SessionTimestamp;
+  createdAt: SessionTimestamp;
   userId: string;
   isStarred: boolean;
   noOfAttachments: number;

@@ -11,7 +11,6 @@ import {
   FileText,
   FileImage,
   File,
-  FileSpreadsheet,
   Check,
   Camera,
   Upload,
@@ -39,7 +38,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useAuthStore } from "@/store/auth-store";
 import { FaPaperclip } from "react-icons/fa6";
 import OnboardingSamplePdf from "./onboarding/samplePDF";
 import { IoTextSharp } from "react-icons/io5";
@@ -50,6 +48,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSettingsStore } from "@/store/settings-store";
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -80,7 +79,7 @@ export function WelcomeModal({
   progressMessage,
   onUseSampleDoc,
 }: WelcomeModalProps) {
-  const { settings, updateSettings, membership } = useAuthStore();
+  const { settings, updateSettings } = useSettingsStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -95,11 +94,14 @@ export function WelcomeModal({
   const [showTextarea, setShowTextarea] = useState(false);
 
   useEffect(() => {
-    if (membership?.pagesRemaining === 10) {
-      const dismissed = localStorage.getItem("onboardingDismissed");
-      if (!dismissed) setShowOnboarding(true);
+    setShowOnboarding(localStorage.getItem("onboardingDismissed") !== "true");
+  }, []);
+
+  useEffect(() => {
+    if (inputText.trim()) {
+      setShowTextarea(true);
     }
-  }, [membership?.pagesRemaining]);
+  }, [inputText]);
 
   // Check if device is mobile/tablet
   useEffect(() => {
@@ -192,9 +194,6 @@ export function WelcomeModal({
         return <FileImage className="h-4 w-4 text-green-500" />;
       case "text":
         return <FileText className="h-4 w-4 text-blue-500" />;
-      case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "xlsx":
-        return <FileSpreadsheet className="h-4 w-4 text-green-600" />;
       default:
         return <File className="h-4 w-4 text-gray-500" />;
     }
@@ -297,7 +296,7 @@ export function WelcomeModal({
                       ref={fileInputRef}
                       onChange={handleFileChange}
                       className="hidden"
-                      accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.xls,.ppt,.pptx,.png,.jpg,.jpeg,.webp"
+                      accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg,.webp"
                       multiple
                     />
 
@@ -550,10 +549,12 @@ export function WelcomeModal({
                             </SelectItem>
                           </SelectContent>
                         </Select>
-                        <OnboardingSamplePdf
-                          onUseSampleDoc={onUseSampleDoc}
-                          onDismiss={handleDismissOnboarding}
-                        />
+                        {showOnboarding && (
+                          <OnboardingSamplePdf
+                            onUseSampleDoc={onUseSampleDoc}
+                            onDismiss={handleDismissOnboarding}
+                          />
+                        )}
                       </div>
 
                       <Button

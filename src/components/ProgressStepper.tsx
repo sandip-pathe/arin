@@ -41,12 +41,7 @@ const estimateTotalTime = (paragraphsCount: number): number => {
 };
 
 // Calculate step weights based on actual processing phases
-const getStepWeights = (paragraphsCount: number) => {
-  const batches = Math.ceil(paragraphsCount / 200);
-  const batchTime = batches * 10000;
-  const aggTime = 15000 + batches * 2000;
-  const totalTime = (batchTime + aggTime) * 1.1;
-
+const getStepWeights = () => {
   // Distribute time across steps
   return [
     0.05, // Reviewing document (quick)
@@ -76,15 +71,14 @@ export function ThinkingLoader({
   }, []);
 
   // Calculate estimated time and step durations
-  const { estimatedTotalTime, stepDurations, stepWeights } = useMemo(() => {
+  const { estimatedTotalTime, stepDurations } = useMemo(() => {
     const totalTime = estimateTotalTime(paragraphsCount);
-    const weights = getStepWeights(paragraphsCount);
+    const weights = getStepWeights();
     const durations = weights.map((weight) => weight * totalTime);
 
     return {
       estimatedTotalTime: totalTime,
       stepDurations: durations,
-      stepWeights: weights,
     };
   }, [paragraphsCount]);
 
@@ -253,7 +247,6 @@ export function ThinkingLoader({
         {steps.map((step, index) => {
           const isComplete = index < currentStep;
           const isCurrent = index === currentStep;
-          const isUpcoming = index > currentStep;
 
           return (
             <motion.div

@@ -38,9 +38,7 @@ interface SessionState {
   showSettingsModal: boolean;
   showSummarySettingsModal: boolean;
   showChatSettingsModal: boolean;
-  showAccountModal: boolean;
-  showMembershipModal: boolean;
-  showShareModal: boolean;
+  showExportModal: boolean;
   isDemoSession: boolean;
   setIsDemoSession: (val: boolean) => void;
 
@@ -74,9 +72,7 @@ interface SessionState {
   setShowSettingsModal: (show: boolean) => void;
   setShowSummarySettingsModal: (show: boolean) => void;
   setShowChatSettingsModal: (show: boolean) => void;
-  setShowAccountModal: (show: boolean) => void;
-  setShowMembershipModal: (show: boolean) => void;
-  setShowShareModal: (show: boolean) => void;
+  setShowExportModal: (show: boolean) => void;
 
   // Complex actions
   addAttachment: (attachment: Attachment) => void;
@@ -114,9 +110,7 @@ const useSessionStore = create<SessionState>((set) => ({
   showSettingsModal: false,
   showSummarySettingsModal: false,
   showChatSettingsModal: false,
-  showAccountModal: false,
-  showMembershipModal: false,
-  showShareModal: false,
+  showExportModal: false,
   isDemoSession: false,
   setIsDemoSession: (val) => set({ isDemoSession: val }),
   // Actions
@@ -151,9 +145,7 @@ const useSessionStore = create<SessionState>((set) => ({
     set({ showSummarySettingsModal }),
   setShowChatSettingsModal: (showChatSettingsModal) =>
     set({ showChatSettingsModal }),
-  setShowAccountModal: (showAccountModal) => set({ showAccountModal }),
-  setShowMembershipModal: (showMembershipModal) => set({ showMembershipModal }),
-  setShowShareModal: (showShareModal) => set({ showShareModal }),
+  setShowExportModal: (showExportModal) => set({ showExportModal }),
   // Toggle actions
   toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
   toggleSidebar: () =>
