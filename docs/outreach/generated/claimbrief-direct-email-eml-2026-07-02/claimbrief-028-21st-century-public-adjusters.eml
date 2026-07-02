@@ -1,0 +1,29 @@
+X-Unsent: 1
+To: 21stclaims@gmail.com
+Subject: denial packet brief?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+Hi 21st Century team,
+
+I saw 21st Century focuses on denied and underpaid PA/NJ claims and asks owners for denial letters policies estimates photos and carrier communication.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy

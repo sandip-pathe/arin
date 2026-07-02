@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +11,7 @@ const prospectFile = join(
   "claimbrief-prospects-2026-07-02.csv"
 );
 const outputDir = join(root, "docs", "outreach", "generated");
+const emlDir = join(outputDir, "claimbrief-direct-email-eml-2026-07-02");
 const trackerFile = join(root, "docs", "outreach", "claimbrief-pipeline-tracker.csv");
 const sampleUrl =
   process.env.CLAIMBRIEF_SAMPLE_URL ||
@@ -150,6 +151,86 @@ ${render(row)}
 Generated from \`docs/outreach/claimbrief-prospects-2026-07-02.csv\`.
 
 ${sections.join("\n")}
+`;
+};
+
+const slugify = (value) =>
+  String(value ?? "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 56);
+
+const toEml = (row) => {
+  const headers = [
+    "X-Unsent: 1",
+    `To: ${row.to}`,
+    `Subject: ${row.subject.replace(/[\r\n]+/g, " ")}`,
+    "MIME-Version: 1.0",
+    'Content-Type: text/plain; charset="UTF-8"',
+    "Content-Transfer-Encoding: 8bit",
+  ];
+
+  return `${headers.join("\r\n")}\r\n\r\n${row.body.replace(/\n/g, "\r\n")}\r\n`;
+};
+
+const toDayOnePacket = (emailRows, formRows) => {
+  const emailLines = emailRows
+    .map(
+      (row, index) =>
+        `| ${index + 1} | ${row.company} | ${row.to} | ${row.subject} | \`claimbrief-${String(index + 1).padStart(3, "0")}-${slugify(row.company)}.eml\` |`
+    )
+    .join("\n");
+
+  const firstFormRows = formRows.slice(0, 20);
+  const formLines = firstFormRows
+    .map(
+      (row, index) =>
+        `| ${index + 1} | ${row.company} | ${row.contact_url} | ${row.phone || "not found"} | ${row.subject} |`
+    )
+    .join("\n");
+
+  return `# ClaimBrief Day 1 Send Packet - 2026-07-02
+
+Generated from \`docs/outreach/claimbrief-prospects-2026-07-02.csv\`.
+
+This packet is for review and sending. It does not send anything by itself.
+
+## Send Rule
+
+- Review every email before sending.
+- Send only from the mailbox you want replies to land in.
+- After each send, update \`docs/outreach/claimbrief-pipeline-tracker.csv\`.
+- If a contact form asks for policyholder claim details, do not invent them. Use only the general message field or call instead.
+
+## Direct Emails
+
+Open the \`.eml\` files from \`docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/\`.
+
+| Order | Company | To | Subject | Draft File |
+| ---: | --- | --- | --- | --- |
+${emailLines}
+
+## First 20 Contact Forms Or Calls
+
+Use \`docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv\` or the send board for the exact message and phone opener.
+
+| Order | Company | Contact URL | Phone | Subject |
+| ---: | --- | --- | --- | --- |
+${formLines}
+
+## Day 1 Done Criteria
+
+- 35 direct emails sent or intentionally skipped with a tracker note.
+- First 20 forms/calls attempted or intentionally skipped with a tracker note.
+- Every sent or skipped lead has \`status\`, \`next_action\`, and \`last_touch_date\` updated.
+
+## Reply Handling
+
+Use \`docs/outreach/claimbrief-reply-and-close-playbook.md\`.
+
+If one person sends a real packet, stop adding features. Produce the sample and ask for payment.
 `;
 };
 
@@ -365,6 +446,8 @@ const trackerRows = prospects.map((row) => {
 });
 
 mkdirSync(outputDir, { recursive: true });
+rmSync(emlDir, { force: true, recursive: true });
+mkdirSync(emlDir, { recursive: true });
 
 writeFileSync(trackerFile, toCsv(trackerRows, trackerHeaders));
 
@@ -416,6 +499,13 @@ ${row.follow_up_body}
   )
 );
 
+emailRows.forEach((row, index) => {
+  const fileName = `claimbrief-${String(index + 1).padStart(3, "0")}-${slugify(
+    row.company
+  )}.eml`;
+  writeFileSync(join(emlDir, fileName), toEml(row));
+});
+
 writeFileSync(
   join(outputDir, "claimbrief-contact-form-drafts-2026-07-02.md"),
   toMarkdownDrafts(
@@ -442,7 +532,13 @@ writeFileSync(
   toSendBoard(emailRows, formRows)
 );
 
+writeFileSync(
+  join(outputDir, "claimbrief-day-1-send-packet-2026-07-02.md"),
+  toDayOnePacket(emailRows, formRows)
+);
+
 console.log(`Generated ${emailRows.length} direct-email rows.`);
 console.log(`Generated ${formRows.length} contact-form rows.`);
 console.log(`Generated ${trackerRows.length} tracker rows.`);
 console.log("Generated send board.");
+console.log(`Generated ${emailRows.length} .eml drafts.`);

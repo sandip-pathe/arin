@@ -21,6 +21,8 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
+- `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
 
 Use after replies start:
 
@@ -42,6 +44,7 @@ Do not pitch "AI." Pitch document review speed.
 ## Email-Ready First Batch
 
 Send these first because they have public email addresses or email-like contact values.
+For reviewable local drafts, open the `.eml` files in `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/` or use the Day 1 packet.
 
 | Order | Company | Contact | Why This Lead |
 | ---: | --- | --- | --- |

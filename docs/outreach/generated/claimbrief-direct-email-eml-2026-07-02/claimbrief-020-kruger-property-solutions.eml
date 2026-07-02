@@ -1,0 +1,29 @@
+X-Unsent: 1
+To: claims@callkruger.com
+Subject: restoration claim brief?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+Hi Kruger Property Solutions team,
+
+I saw Kruger's denial guide focuses on Florida insurance denials, documentation, policy review, and storm restoration workflow.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
