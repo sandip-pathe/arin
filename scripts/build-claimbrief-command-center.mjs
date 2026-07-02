@@ -27,6 +27,7 @@ const paths = {
   sendBoard: join(generatedDir, `claimbrief-send-board-${campaignDate}.html`),
   todayActionSheet: join(generatedDir, `claimbrief-today-action-sheet-${campaignDate}.html`),
   todayContactPaths: join(generatedDir, `claimbrief-today-contact-paths-${campaignDate}.md`),
+  todayExecutionPlan: join(generatedDir, `claimbrief-today-execution-plan-${campaignDate}.html`),
   formCallSprint: join(generatedDir, `claimbrief-form-call-sprint-${campaignDate}.html`),
   triggerSprint: join(generatedDir, `claimbrief-oklahoma-trigger-sprint-${campaignDate}.html`),
   fulfillmentKit: join(root, "docs", "outreach", "claimbrief-sample-fulfillment-kit.md"),
@@ -301,6 +302,7 @@ const html = `<!doctype html>
         <a class="button" href="${starterUrl}">Starter batch</a>
         <a class="button" href="${oklahomaUrl}">Oklahoma page</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
+        <a class="button primary" href="${relativeHref(paths.todayExecutionPlan)}">Today execution plan</a>
         <a class="button primary" href="${relativeHref(paths.todayActionSheet)}">Today action sheet</a>
         <a class="button" href="${relativeHref(paths.todayContactPaths)}">Today contact paths</a>
         <a class="button primary" href="${relativeHref(paths.formCallSprint)}">Form/call sprint</a>
@@ -370,6 +372,7 @@ npm run outreach:claimbrief:check:direct-email
 npm run outreach:claimbrief:live-check
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
+npm run outreach:claimbrief:today-plan
 npm run outreach:claimbrief:form-call-sprint
 npm run outreach:claimbrief:tracker</pre>
         <p class="muted">Direct email needs the postal-address blocker cleared. Start with the today action sheet, then the broader form/call queue. Submit manually only with action-time confirmation.</p>

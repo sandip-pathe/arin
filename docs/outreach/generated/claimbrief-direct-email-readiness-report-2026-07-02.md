@@ -49,6 +49,7 @@ Channel scope: **direct-email**
 | file:sendBoard | global | pass | docs/outreach/generated/claimbrief-send-board-2026-07-02.html |
 | file:todayActionSheet | form-call | pass | docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html |
 | file:todayContactPaths | form-call | pass | docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md |
+| file:todayExecutionPlan | form-call | pass | docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html |
 | file:formCallSprint | form-call | pass | docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html |
 | file:triggerSprint | form-call | pass | docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html |
 | file:liveRoutes | global | pass | docs/outreach/generated/claimbrief-live-routes-2026-07-02.md |

@@ -15,6 +15,7 @@ npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
+npm run outreach:claimbrief:today-plan
 npm run outreach:claimbrief:form-call-sprint
 ```
 
@@ -27,6 +28,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
+- `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
@@ -52,18 +54,23 @@ Use the today contact-path report before opening those pages. It checks the
 public target pages for static forms and flags claim-specific fields that should
 route you to a call instead of a form submit.
 
+Use the today execution plan as the actual operator board. It combines the
+target list and contact-path evidence into a form-first or call-first action,
+short message, phone opener, voicemail, and tracker commands.
+
 No-env first move:
 
 ```bash
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
+npm run outreach:claimbrief:today-plan
 npm run outreach:claimbrief:form-call-sprint
 ```
 
-Then open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
-and work the five target cards. Use the broader form/call sprint only if none
-of those creates a reply or packet request.
+Then open `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
+and work the five target cards. Use the broader form/call sprint only if none of
+those creates a reply or packet request.
 
 Use after replies start:
 

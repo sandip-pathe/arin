@@ -72,7 +72,8 @@ Timely trigger path:
 - Run `npm run outreach:claimbrief:trigger-sprint`.
 - Run `npm run outreach:claimbrief:today`.
 - Run `npm run outreach:claimbrief:today-paths`.
-- Open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
+- Run `npm run outreach:claimbrief:today-plan`.
+- Open `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
   before the larger trigger board.
 - Review `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`
   before submitting any form.
@@ -88,15 +89,16 @@ Use this when no ClaimBrief sales env vars are visible locally.
 3. Confirm the form/call report is `READY` or `READY_WITH_WARNINGS`.
 4. Run `npm run outreach:claimbrief:today`.
 5. Run `npm run outreach:claimbrief:today-paths`.
-6. Open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`.
-7. Review `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`.
-8. Work all five targets from top to bottom.
-9. For each target, open the public contact page and use only general contact fields.
-10. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
-11. After every submitted form, call, or skip, copy the matching tracker command from the sprint board and run it locally.
-12. If there is no reply, run `npm run outreach:claimbrief:form-call-sprint`
+6. Run `npm run outreach:claimbrief:today-plan`.
+7. Open `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`.
+8. Review `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`.
+9. Work all five targets from top to bottom.
+10. For each target, open the public contact page and use only general contact fields.
+11. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
+12. After every submitted form, call, voicemail, or skip, copy the matching tracker command from the execution plan and run it locally.
+13. If there is no reply, run `npm run outreach:claimbrief:form-call-sprint`
     and move to the broader queue.
-13. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
+14. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
 
 Stop the sprint immediately if someone replies, asks for a sample, or offers to
 send a packet. Move to reply handling and produce the sample before touching

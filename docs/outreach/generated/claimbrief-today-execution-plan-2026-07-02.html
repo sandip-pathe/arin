@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClaimBrief Today Execution Plan</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --panel: #fff;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #d8e0ea;
+        --primary: #111827;
+        --ok: #047857;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      header {
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+        padding: 24px;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 24px auto 56px;
+        display: grid;
+        gap: 18px;
+      }
+
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { margin-bottom: 8px; font-size: clamp(30px, 4vw, 44px); letter-spacing: 0; }
+      h2 { margin-bottom: 4px; font-size: 22px; }
+      h3 { margin: 16px 0 8px; font-size: 15px; }
+      a { color: #1d4ed8; }
+      pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #f8fafc;
+        padding: 14px;
+        color: #1e293b;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 13px;
+      }
+      .muted { color: var(--muted); }
+      .eyebrow { margin-bottom: 4px; color: var(--ok); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+      .banner { border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; padding: 14px; color: #1e3a8a; }
+      .card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 18px; box-shadow: 0 10px 28px rgb(15 23 42 / 7%); }
+      .card-head, .actions { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+      .actions { flex-wrap: wrap; justify-content: flex-end; }
+      .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 0 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+      .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      .notice { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 10px 12px; color: #78350f; }
+      .command-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
+      details { margin-top: 14px; }
+      summary { cursor: pointer; font-weight: 800; }
+
+      @media (max-width: 820px) {
+        main { width: min(100% - 20px, 1120px); }
+        .card-head, .actions { flex-direction: column; align-items: stretch; }
+        .command-grid { grid-template-columns: 1fr; }
+        .button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>ClaimBrief Today Execution Plan</h1>
+      <p class="muted">Five target submit/call plan. No messages are sent from this page.</p>
+    </header>
+    <main>
+      <section class="banner">
+        Work in order. Stop after any reply, sample request, packet offer, or pricing question.
+        Do not invent claim-specific details.
+        <br />
+        Live offer page: <a href="https://app.anaya.legal/claimbrief/oklahoma-hail" target="_blank" rel="noreferrer">https://app.anaya.legal/claimbrief/oklahoma-hail</a>
+      </section>
+      <article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Target 1 of 5</p>
+          <h2>Gavnat Oklahoma</h2>
+          <p class="muted">FORM_FIRST_IF_GENERAL_FIELDS_VISIBLE - 405-628-0126</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="https://www.gavnat.com/location/oklahoma/" target="_blank" rel="noreferrer">Open page</a>
+          <a class="button" href="tel:4056280126">Call</a>
+        </div>
+      </div>
+
+      <p class="notice">Try the public form only if visible fields are general contact fields. If a required dropdown or hidden flow asks for claim details, call instead.</p>
+      <p><strong>Detected email:</strong> info@gavnat.com</p>
+
+      <section>
+        <h3>Short form message</h3>
+        <pre id="message-1-gavnat-oklahoma">I saw Gavnat's Oklahoma page focuses on tornado, hail, and underpaid property claims.
+
+I am testing ClaimBrief for Oklahoma wind/hail, denial, and underpayment files. Send one old closed/redacted packet; I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+No carrier contact or legal advice.
+
+Sample: https://app.anaya.legal/claimbrief/oklahoma-hail
+
+Could I make one free sample?</pre>
+        <button class="button" data-copy="message-1-gavnat-oklahoma">Copy short form message</button>
+      </section>
+
+      <section>
+        <h3>Phone opener</h3>
+        <pre id="opener-1-gavnat-oklahoma">Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+
+The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+Who handles carrier-letter or policy-language review in your office?</pre>
+        <button class="button" data-copy="opener-1-gavnat-oklahoma">Copy phone opener</button>
+      </section>
+
+      <details>
+        <summary>Voicemail and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Voicemail</h3>
+            <pre id="voicemail-1-gavnat-oklahoma">Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+
+I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.</pre>
+            <button class="button" data-copy="voicemail-1-gavnat-oklahoma">Copy voicemail</button>
+          </section>
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-1-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted from today execution plan&quot;</pre>
+            <button class="button" data-copy="form-command-1-gavnat-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-1-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from today execution plan&quot;</pre>
+            <button class="button" data-copy="call-command-1-gavnat-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>After voicemail</h3>
+            <pre id="voicemail-command-1-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;left voicemail from today execution plan&quot;</pre>
+            <button class="button" data-copy="voicemail-command-1-gavnat-oklahoma">Copy voicemail tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-1-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped today execution target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-1-gavnat-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Target 2 of 5</p>
+          <h2>Prime Adjustments Oklahoma</h2>
+          <p class="muted">CALL_FIRST - 877-729-6365</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://primeadjustments.com/oklahoma-public-adjuster/" target="_blank" rel="noreferrer">Open page</a>
+          <a class="button primary" href="tel:8777296365">Call</a>
+        </div>
+      </div>
+
+      <p class="notice">Call first. No usable static form was found.</p>
+      <p><strong>Detected email:</strong> none</p>
+
+      <section>
+        <h3>Short form message</h3>
+        <pre id="message-2-prime-adjustments-oklahoma">I saw Prime Adjustments lists Oklahoma fire, hail, wind, water, and commercial roof claim reviews.
+
+I am testing ClaimBrief for Oklahoma wind/hail, denial, and underpayment files. Send one old closed/redacted packet; I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+No carrier contact or legal advice.
+
+Sample: https://app.anaya.legal/claimbrief/oklahoma-hail
+
+Could I make one free sample?</pre>
+        <button class="button" data-copy="message-2-prime-adjustments-oklahoma">Copy short form message</button>
+      </section>
+
+      <section>
+        <h3>Phone opener</h3>
+        <pre id="opener-2-prime-adjustments-oklahoma">Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+
+The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+Who handles carrier-letter or policy-language review in your office?</pre>
+        <button class="button" data-copy="opener-2-prime-adjustments-oklahoma">Copy phone opener</button>
+      </section>
+
+      <details>
+        <summary>Voicemail and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Voicemail</h3>
+            <pre id="voicemail-2-prime-adjustments-oklahoma">Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+
+I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.</pre>
+            <button class="button" data-copy="voicemail-2-prime-adjustments-oklahoma">Copy voicemail</button>
+          </section>
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-2-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted from today execution plan&quot;</pre>
+            <button class="button" data-copy="form-command-2-prime-adjustments-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-2-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from today execution plan&quot;</pre>
+            <button class="button" data-copy="call-command-2-prime-adjustments-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>After voicemail</h3>
+            <pre id="voicemail-command-2-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;left voicemail from today execution plan&quot;</pre>
+            <button class="button" data-copy="voicemail-command-2-prime-adjustments-oklahoma">Copy voicemail tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-2-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped today execution target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-2-prime-adjustments-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Target 3 of 5</p>
+          <h2>Brown-O'Haver Public Adjusters of Oklahoma</h2>
+          <p class="muted">CALL_FIRST_FORM_HAS_RISK_FIELDS - 405.735.5510</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://www.brown-ohaver.com/page/contact-us" target="_blank" rel="noreferrer">Open page</a>
+          <a class="button primary" href="tel:4057355510">Call</a>
+        </div>
+      </div>
+
+      <p class="notice">Call first. Form contains claim/detail-like fields: Address* / address / text.</p>
+      <p><strong>Detected email:</strong> bohok@brown-ohaver.com</p>
+
+      <section>
+        <h3>Short form message</h3>
+        <pre id="message-3-brown-o-haver-public-adjusters-of-oklahoma">I saw Brown-O'Haver has an Oklahoma office and writes about statewide disaster and large-loss claim work.
+
+I am testing ClaimBrief for Oklahoma wind/hail, denial, and underpayment files. Send one old closed/redacted packet; I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+No carrier contact or legal advice.
+
+Sample: https://app.anaya.legal/claimbrief/oklahoma-hail
+
+Could I make one free sample?</pre>
+        <button class="button" data-copy="message-3-brown-o-haver-public-adjusters-of-oklahoma">Copy short form message</button>
+      </section>
+
+      <section>
+        <h3>Phone opener</h3>
+        <pre id="opener-3-brown-o-haver-public-adjusters-of-oklahoma">Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+
+The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+Who handles carrier-letter or policy-language review in your office?</pre>
+        <button class="button" data-copy="opener-3-brown-o-haver-public-adjusters-of-oklahoma">Copy phone opener</button>
+      </section>
+
+      <details>
+        <summary>Voicemail and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Voicemail</h3>
+            <pre id="voicemail-3-brown-o-haver-public-adjusters-of-oklahoma">Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+
+I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.</pre>
+            <button class="button" data-copy="voicemail-3-brown-o-haver-public-adjusters-of-oklahoma">Copy voicemail</button>
+          </section>
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-3-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted from today execution plan&quot;</pre>
+            <button class="button" data-copy="form-command-3-brown-o-haver-public-adjusters-of-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-3-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from today execution plan&quot;</pre>
+            <button class="button" data-copy="call-command-3-brown-o-haver-public-adjusters-of-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>After voicemail</h3>
+            <pre id="voicemail-command-3-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;left voicemail from today execution plan&quot;</pre>
+            <button class="button" data-copy="voicemail-command-3-brown-o-haver-public-adjusters-of-oklahoma">Copy voicemail tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-3-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped today execution target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-3-brown-o-haver-public-adjusters-of-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Target 4 of 5</p>
+          <h2>Corbitt Public Adjusting Oklahoma</h2>
+          <p class="muted">CALL_FIRST - 888-303-6607</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://corbittpublicadjusting.com/states/oklahoma" target="_blank" rel="noreferrer">Open page</a>
+          <a class="button primary" href="tel:8883036607">Call</a>
+        </div>
+      </div>
+
+      <p class="notice">Call first. No usable static form was found.</p>
+      <p><strong>Detected email:</strong> none</p>
+
+      <section>
+        <h3>Short form message</h3>
+        <pre id="message-4-corbitt-public-adjusting-oklahoma">I saw Corbitt's Oklahoma page focuses on licensed public adjusting for hail and tornado damage.
+
+I am testing ClaimBrief for Oklahoma wind/hail, denial, and underpayment files. Send one old closed/redacted packet; I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+No carrier contact or legal advice.
+
+Sample: https://app.anaya.legal/claimbrief/oklahoma-hail
+
+Could I make one free sample?</pre>
+        <button class="button" data-copy="message-4-corbitt-public-adjusting-oklahoma">Copy short form message</button>
+      </section>
+
+      <section>
+        <h3>Phone opener</h3>
+        <pre id="opener-4-corbitt-public-adjusting-oklahoma">Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+
+The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+Who handles carrier-letter or policy-language review in your office?</pre>
+        <button class="button" data-copy="opener-4-corbitt-public-adjusting-oklahoma">Copy phone opener</button>
+      </section>
+
+      <details>
+        <summary>Voicemail and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Voicemail</h3>
+            <pre id="voicemail-4-corbitt-public-adjusting-oklahoma">Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+
+I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.</pre>
+            <button class="button" data-copy="voicemail-4-corbitt-public-adjusting-oklahoma">Copy voicemail</button>
+          </section>
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-4-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted from today execution plan&quot;</pre>
+            <button class="button" data-copy="form-command-4-corbitt-public-adjusting-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-4-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from today execution plan&quot;</pre>
+            <button class="button" data-copy="call-command-4-corbitt-public-adjusting-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>After voicemail</h3>
+            <pre id="voicemail-command-4-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;left voicemail from today execution plan&quot;</pre>
+            <button class="button" data-copy="voicemail-command-4-corbitt-public-adjusting-oklahoma">Copy voicemail tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-4-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped today execution target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-4-corbitt-public-adjusting-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Target 5 of 5</p>
+          <h2>Jansen Adjusters International Oklahoma</h2>
+          <p class="muted">CALL_FIRST_FORM_HAS_RISK_FIELDS - 800.779.8714</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/" target="_blank" rel="noreferrer">Open page</a>
+          <a class="button primary" href="tel:8007798714">Call</a>
+        </div>
+      </div>
+
+      <p class="notice">Call first. Form contains claim/detail-like fields: Address 1 / Address1 / ContactForm_ContactForm_Address1 / text; Address 2 / Address2 / ContactForm_ContactForm_Address2 / text.</p>
+      <p><strong>Detected email:</strong> info@jansenai.com</p>
+
+      <section>
+        <h3>Short form message</h3>
+        <pre id="message-5-jansen-adjusters-international-oklahoma">I saw Jansen's Oklahoma page discusses Oklahoma City/Tulsa public adjusting after natural and man-made disasters.
+
+I am testing ClaimBrief for Oklahoma wind/hail, denial, and underpayment files. Send one old closed/redacted packet; I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+No carrier contact or legal advice.
+
+Sample: https://app.anaya.legal/claimbrief/oklahoma-hail
+
+Could I make one free sample?</pre>
+        <button class="button" data-copy="message-5-jansen-adjusters-international-oklahoma">Copy short form message</button>
+      </section>
+
+      <section>
+        <h3>Phone opener</h3>
+        <pre id="opener-5-jansen-adjusters-international-oklahoma">Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+
+The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
+
+Who handles carrier-letter or policy-language review in your office?</pre>
+        <button class="button" data-copy="opener-5-jansen-adjusters-international-oklahoma">Copy phone opener</button>
+      </section>
+
+      <details>
+        <summary>Voicemail and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Voicemail</h3>
+            <pre id="voicemail-5-jansen-adjusters-international-oklahoma">Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+
+I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.</pre>
+            <button class="button" data-copy="voicemail-5-jansen-adjusters-international-oklahoma">Copy voicemail</button>
+          </section>
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-5-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted from today execution plan&quot;</pre>
+            <button class="button" data-copy="form-command-5-jansen-adjusters-international-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-5-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from today execution plan&quot;</pre>
+            <button class="button" data-copy="call-command-5-jansen-adjusters-international-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>After voicemail</h3>
+            <pre id="voicemail-command-5-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;left voicemail from today execution plan&quot;</pre>
+            <button class="button" data-copy="voicemail-command-5-jansen-adjusters-international-oklahoma">Copy voicemail tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-5-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped today execution target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-5-jansen-adjusters-international-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+    </main>
+    <script>
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-copy]");
+        if (!button) return;
+        const target = document.getElementById(button.dataset.copy);
+        if (!target) return;
+        await navigator.clipboard.writeText(target.innerText);
+        const original = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => {
+          button.textContent = original;
+        }, 1200);
+      });
+    </script>
+  </body>
+</html>
