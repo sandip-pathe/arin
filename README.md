@@ -76,6 +76,7 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Direct Email Mailmerge](docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv)
 - [ClaimBrief Contact Form Messages](docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv)
 - [ClaimBrief Send Board](docs/outreach/generated/claimbrief-send-board-2026-07-02.html)
+- [ClaimBrief First Attempt Packet](docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md)
 - [ClaimBrief Today Execution Plan](docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html)
 - [ClaimBrief Today Action Sheet](docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html)
 - [ClaimBrief Today Contact Paths](docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md)
@@ -150,6 +151,7 @@ npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan
+npm run outreach:claimbrief:first-attempt
 npm run outreach:claimbrief:form-call-sprint
 npm run outreach:claimbrief:trigger-sprint
 npm run outreach:claimbrief:live-check

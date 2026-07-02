@@ -18,6 +18,7 @@
     "outreach:claimbrief:today": "node scripts/build-claimbrief-today-action-sheet.mjs",
     "outreach:claimbrief:today-paths": "node scripts/check-claimbrief-today-contact-paths.mjs",
     "outreach:claimbrief:today-plan": "node scripts/build-claimbrief-today-execution-plan.mjs",
+    "outreach:claimbrief:first-attempt": "node scripts/build-claimbrief-first-attempt-packet.mjs",
     "outreach:claimbrief:form-call-sprint": "node scripts/build-claimbrief-form-call-sprint.mjs",
     "outreach:claimbrief:trigger-sprint": "node scripts/build-claimbrief-trigger-sprint.mjs",
     "outreach:claimbrief:live-check": "node scripts/check-claimbrief-live-routes.mjs"

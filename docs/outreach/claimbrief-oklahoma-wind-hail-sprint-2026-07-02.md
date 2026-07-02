@@ -105,6 +105,7 @@ priority 101-109:
 
 Generated sprint board:
 
+- `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`
@@ -120,6 +121,7 @@ Build command:
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan
+npm run outreach:claimbrief:first-attempt
 npm run outreach:claimbrief:trigger-sprint
 ```
 

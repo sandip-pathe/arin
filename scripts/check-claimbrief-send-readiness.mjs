@@ -76,6 +76,13 @@ const paths = {
     "generated",
     `claimbrief-today-execution-plan-${campaignDate}.html`
   ),
+  firstAttemptPacket: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-first-attempt-packet-${campaignDate}.md`
+  ),
   formCallSprint: join(
     root,
     "docs",
@@ -258,6 +265,7 @@ const pathScopes = {
   todayActionSheet: "form-call",
   todayContactPaths: "form-call",
   todayExecutionPlan: "form-call",
+  firstAttemptPacket: "form-call",
   formCallSprint: "form-call",
   triggerSprint: "form-call",
 };
