@@ -13,15 +13,62 @@ const prospectFile = join(
 const outputDir = join(root, "docs", "outreach", "generated");
 const emlDir = join(outputDir, "claimbrief-direct-email-eml-2026-07-02");
 const trackerFile = join(root, "docs", "outreach", "claimbrief-pipeline-tracker.csv");
+const campaignDate = "2026-07-02";
+const placeholderPostalAddress = "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+const outreachEnvNames = [
+  "CLAIMBRIEF_OPERATOR_FIRST_NAME",
+  "CLAIMBRIEF_OPERATOR_COMPANY",
+  "CLAIMBRIEF_REPLY_EMAIL",
+  "NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL",
+  "CLAIMBRIEF_SAMPLE_URL",
+  "CLAIMBRIEF_POSTAL_ADDRESS",
+];
+
+const readOutreachEnv = () => {
+  const env = {};
+
+  for (const fileName of [".env.local", ".env", ".env.production.local"]) {
+    const path = join(root, fileName);
+    if (!existsSync(path)) {
+      continue;
+    }
+
+    const lines = readFileSync(path, "utf8").split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
+        continue;
+      }
+
+      const [key, ...rest] = trimmed.split("=");
+      const cleanKey = key.trim();
+      if (!outreachEnvNames.includes(cleanKey) || env[cleanKey] != null) {
+        continue;
+      }
+      env[cleanKey] = rest.join("=").trim().replace(/^['"]|['"]$/g, "");
+    }
+  }
+
+  for (const name of outreachEnvNames) {
+    if (process.env[name]) {
+      env[name] = process.env[name];
+    }
+  }
+
+  return env;
+};
+
+const env = readOutreachEnv();
+const operatorFirstName = env.CLAIMBRIEF_OPERATOR_FIRST_NAME || "Sandip";
+const companyName = env.CLAIMBRIEF_OPERATOR_COMPANY || "Anaya";
+const replyEmail =
+  env.CLAIMBRIEF_REPLY_EMAIL || env.NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL || "";
 const sampleUrl =
-  process.env.CLAIMBRIEF_SAMPLE_URL ||
+  env.CLAIMBRIEF_SAMPLE_URL ||
   "https://app.anaya.legal/samples/claimbrief-sample-review.html";
-const postalAddress =
-  process.env.CLAIMBRIEF_POSTAL_ADDRESS ||
-  "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+const postalAddress = env.CLAIMBRIEF_POSTAL_ADDRESS || placeholderPostalAddress;
 const directEmailAllowed =
-  Boolean(process.env.CLAIMBRIEF_POSTAL_ADDRESS) &&
-  postalAddress !== "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+  Boolean(env.CLAIMBRIEF_POSTAL_ADDRESS) && postalAddress !== placeholderPostalAddress;
 const complianceFooter = `If this is not relevant, reply "no" and I will not follow up.
 Mailing address: ${postalAddress}`;
 
@@ -29,7 +76,7 @@ const baseEmail = (row) => `Hi ${salutation(row)},
 
 ${row.first_line}
 
-I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+I am ${operatorFirstName} from ${companyName}. I am testing ClaimBrief, a focused ${companyName} workflow that turns claim documents into a cited review brief for licensed claim professionals.
 
 It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
 
@@ -46,7 +93,8 @@ Sample format: ${sampleUrl}
 
 Worth trying on one file?
 
-Sandy
+${operatorFirstName}
+${companyName}
 
 ${complianceFooter}`;
 
@@ -62,20 +110,21 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 
 Sample format: ${sampleUrl}
 
-Sandy
+${operatorFirstName}
+${companyName}
 
 ${complianceFooter}`;
 
 const contactFormMessage = (row) => `${row.first_line}
 
-I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+I am ${operatorFirstName} from ${companyName}. I am testing ClaimBrief, a document-review workflow for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
 No carrier contact, no legal advice, no homeowner-facing promises. Sample format: ${sampleUrl}
 
 Could I create one free sample from an old closed or redacted claim packet?`;
 
 const phoneOpener = (row) =>
-  `Hi, I am calling about a tiny document-review tool for public adjusters. I saw ${row.company} handles ${row.observed_specialty}. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
+  `Hi, this is ${operatorFirstName} from ${companyName}. I am calling about a tiny document-review tool for public adjusters. I saw ${row.company} handles ${row.observed_specialty}. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
 
 const salutation = (row) => {
   const company = row.company || "there";
@@ -179,12 +228,67 @@ const toEml = (row) => {
     "X-Unsent: 1",
     `To: ${row.to}`,
     `Subject: ${row.subject.replace(/[\r\n]+/g, " ")}`,
+    ...(replyEmail ? [`Reply-To: ${replyEmail}`] : []),
     "MIME-Version: 1.0",
     'Content-Type: text/plain; charset="UTF-8"',
     "Content-Transfer-Encoding: 8bit",
   ];
 
   return `${headers.join("\r\n")}\r\n\r\n${row.body.replace(/\n/g, "\r\n")}\r\n`;
+};
+
+const shellQuote = (value) => `"${String(value ?? "").replace(/"/g, '\\"')}"`;
+
+const toFirstManualEmailBatch = (emailRows) => {
+  const firstRows = emailRows.slice(0, 20);
+  const drafts = firstRows
+    .map((row, index) => {
+      const trackerCommand = `npm run outreach:claimbrief:tracker -- --company ${shellQuote(
+        row.company
+      )} --contact ${shellQuote(
+        row.to
+      )} --status sent --next-action follow_up_48h --last-touch-date ${campaignDate} --append-note ${shellQuote(
+        "sent first manual email"
+      )}`;
+
+      return `## ${index + 1}. ${row.company}
+
+To: ${row.to}
+Subject: ${row.subject}
+Source: ${row.source_url}
+
+\`\`\`text
+${row.body}
+\`\`\`
+
+After sending:
+
+\`\`\`bash
+${trackerCommand}
+\`\`\``;
+    })
+    .join("\n\n");
+
+  return `# ClaimBrief First 20 Manual Emails - ${campaignDate}
+
+These are copy/paste drafts for manual sending. No email has been sent by this file or by the generator.
+
+Sender story:
+
+- Company/platform: ${companyName}
+- Workflow/offer: ClaimBrief
+- Sender name: ${operatorFirstName}
+- Reply inbox: ${replyEmail || "[send from the mailbox where you want replies]"}
+
+Pre-send rule:
+
+- Replace \`${placeholderPostalAddress}\` with a valid physical mailing address before sending any direct cold email.
+- Send from the mailbox where replies should land.
+- After each send, run the tracker command under that email.
+- If anyone replies "no", "unsubscribe", "remove me", "not interested", or similar, mark them opted out and do not follow up.
+
+${drafts}
+`;
 };
 
 const toDayOnePacket = (emailRows, formRows) => {
@@ -203,7 +307,7 @@ const toDayOnePacket = (emailRows, formRows) => {
     )
     .join("\n");
 
-  return `# ClaimBrief Day 1 Send Packet - 2026-07-02
+  return `# ClaimBrief Day 1 Send Packet - ${campaignDate}
 
 Generated from \`docs/outreach/claimbrief-prospects-2026-07-02.csv\`.
 
@@ -489,7 +593,7 @@ mkdirSync(emlDir, { recursive: true });
 writeFileSync(trackerFile, toCsv(trackerRows, trackerHeaders));
 
 writeFileSync(
-  join(outputDir, "claimbrief-direct-email-mailmerge-2026-07-02.csv"),
+  join(outputDir, `claimbrief-direct-email-mailmerge-${campaignDate}.csv`),
   toCsv(emailRows, [
     "priority",
     "company",
@@ -503,7 +607,7 @@ writeFileSync(
 );
 
 writeFileSync(
-  join(outputDir, "claimbrief-contact-form-messages-2026-07-02.csv"),
+  join(outputDir, `claimbrief-contact-form-messages-${campaignDate}.csv`),
   toCsv(formRows, [
     "priority",
     "company",
@@ -519,7 +623,7 @@ writeFileSync(
 writeFileSync(
   join(outputDir, "claimbrief-direct-email-drafts-2026-07-02.md"),
   toMarkdownDrafts(
-    "ClaimBrief Direct Email Drafts - 2026-07-02",
+    `ClaimBrief Direct Email Drafts - ${campaignDate}`,
     emailRows,
     (row) => `To: ${row.to}
 Subject: ${row.subject}
@@ -536,6 +640,11 @@ ${row.follow_up_body}
   )
 );
 
+writeFileSync(
+  join(outputDir, `claimbrief-first-20-manual-emails-${campaignDate}.md`),
+  toFirstManualEmailBatch(emailRows)
+);
+
 emailRows.forEach((row, index) => {
   const fileName = `claimbrief-${String(index + 1).padStart(3, "0")}-${slugify(
     row.company
@@ -544,9 +653,9 @@ emailRows.forEach((row, index) => {
 });
 
 writeFileSync(
-  join(outputDir, "claimbrief-contact-form-drafts-2026-07-02.md"),
+  join(outputDir, `claimbrief-contact-form-drafts-${campaignDate}.md`),
   toMarkdownDrafts(
-    "ClaimBrief Contact Form Drafts - 2026-07-02",
+    `ClaimBrief Contact Form Drafts - ${campaignDate}`,
     formRows,
     (row) => `URL: ${row.contact_url}
 Phone: ${row.phone || "not found"}
@@ -565,12 +674,12 @@ ${row.phone_opener}
 );
 
 writeFileSync(
-  join(outputDir, "claimbrief-send-board-2026-07-02.html"),
+  join(outputDir, `claimbrief-send-board-${campaignDate}.html`),
   toSendBoard(emailRows, formRows)
 );
 
 writeFileSync(
-  join(outputDir, "claimbrief-day-1-send-packet-2026-07-02.md"),
+  join(outputDir, `claimbrief-day-1-send-packet-${campaignDate}.md`),
   toDayOnePacket(emailRows, formRows)
 );
 
@@ -579,6 +688,6 @@ console.log(`Generated ${formRows.length} contact-form rows.`);
 console.log(`Generated ${trackerRows.length} tracker rows.`);
 console.log("Generated send board.");
 console.log(`Generated ${emailRows.length} .eml drafts.`);
-if (!process.env.CLAIMBRIEF_POSTAL_ADDRESS) {
+if (!env.CLAIMBRIEF_POSTAL_ADDRESS) {
   console.log("Warning: email drafts contain a mailing-address placeholder.");
 }
