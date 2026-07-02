@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "outreach:claimbrief": "node scripts/generate-claimbrief-outreach.mjs",
     "outreach:claimbrief:check": "node scripts/check-claimbrief-send-readiness.mjs",
-    "outreach:claimbrief:check:strict": "node scripts/check-claimbrief-send-readiness.mjs --strict"
+    "outreach:claimbrief:check:strict": "node scripts/check-claimbrief-send-readiness.mjs --strict",
+    "outreach:claimbrief:tracker": "node scripts/claimbrief-tracker.mjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",

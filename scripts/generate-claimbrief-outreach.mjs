@@ -438,13 +438,20 @@ const trackerRows = prospects.map((row) => {
   const existing = existingTrackerByCompany.get(row.company) || {};
   const defaultNextAction =
     row.contact_channel === "email" ? "send_email" : "submit_form_or_call";
+  const existingNextAction = existing.next_action || "";
+  const isUntouchedDefaultAction =
+    (existing.status || "not_sent") === "not_sent" &&
+    ["send_email", "submit_form_or_call"].includes(existingNextAction);
 
   return {
     company: row.company,
     contact: row.contact_value,
     channel: row.contact_channel,
     status: existing.status || "not_sent",
-    next_action: existing.next_action || defaultNextAction,
+    next_action:
+      !existingNextAction || isUntouchedDefaultAction
+        ? defaultNextAction
+        : existingNextAction,
     next_action_date: existing.next_action_date || "",
     last_touch_date: existing.last_touch_date || "",
     reply_bucket: existing.reply_bucket || "",

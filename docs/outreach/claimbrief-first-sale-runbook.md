@@ -40,7 +40,14 @@ determination, no homeowner-facing promise.
 - Send 35 direct emails or intentionally skip with tracker notes.
 - Submit or call the first 20 contact-form/call leads.
 - Update every touched row immediately: `status`, `last_touch_date`, `next_action`, and `notes`.
+- Run `npm run outreach:claimbrief:tracker` after each sending block to refresh the pipeline summary.
 - Do not add features, rewrite the product, or research a new wedge during Day 1.
+
+Tracker update example:
+
+```bash
+npm run outreach:claimbrief:tracker -- --company "Palco Claims" --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note "sent first email"
+```
 
 ## Call Script
 

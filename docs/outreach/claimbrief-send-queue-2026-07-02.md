@@ -25,6 +25,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
 - `docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md`
 
 Use after replies start:
 
