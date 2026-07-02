@@ -72,6 +72,7 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Send Board](docs/outreach/generated/claimbrief-send-board-2026-07-02.html)
 - [ClaimBrief Send Readiness Report](docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md)
 - [ClaimBrief Pipeline Summary](docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md)
+- [ClaimBrief Command Center](docs/outreach/generated/claimbrief-command-center-2026-07-02.html)
 - [ClaimBrief Sample Review Packet](public/samples/claimbrief-sample-review.html)
 
 ## Tech Stack
@@ -127,6 +128,7 @@ npm run typecheck
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
+npm run outreach:claimbrief:dashboard
 npm audit --omit=dev
 npm run build
 ```

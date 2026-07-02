@@ -11,7 +11,8 @@
     "outreach:claimbrief": "node scripts/generate-claimbrief-outreach.mjs",
     "outreach:claimbrief:check": "node scripts/check-claimbrief-send-readiness.mjs",
     "outreach:claimbrief:check:strict": "node scripts/check-claimbrief-send-readiness.mjs --strict",
-    "outreach:claimbrief:tracker": "node scripts/claimbrief-tracker.mjs"
+    "outreach:claimbrief:tracker": "node scripts/claimbrief-tracker.mjs",
+    "outreach:claimbrief:dashboard": "node scripts/build-claimbrief-command-center.mjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",

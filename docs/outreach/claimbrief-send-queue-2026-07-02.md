@@ -11,6 +11,8 @@ Generate send-ready files with:
 ```bash
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:tracker
+npm run outreach:claimbrief:dashboard
 ```
 
 The default sample URL is `https://app.anaya.legal/samples/claimbrief-sample-review.html`. Set `CLAIMBRIEF_SAMPLE_URL` before generating if a different deployed URL is needed.
@@ -26,6 +28,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
 - `docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-command-center-2026-07-02.html`
 
 Use after replies start:
 
