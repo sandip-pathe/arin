@@ -101,7 +101,7 @@ Create a local environment file:
 ```bash
 OPENAI_API_KEY=your_server_side_key
 
-# Optional ClaimBrief sales links.
+# Optional ClaimBrief sales links. If unset, CTAs use manual-invoice email fallbacks.
 CLAIMBRIEF_POSTAL_ADDRESS="Your compliant mailing address"
 CLAIMBRIEF_SAMPLE_URL=https://app.anaya.legal/samples/claimbrief-sample-review.html
 NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL=hello@anaya.legal

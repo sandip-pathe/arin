@@ -109,7 +109,7 @@ asks price.
 - `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL`: optional checkout URL for the $299/month pilot.
 - `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL`: optional checkout URL for white-label setup.
 
-When a checkout URL is absent, the CTA falls back to a prefilled `mailto:` message instead of hiding the offer.
+When a checkout URL is absent, the CTA falls back to a prefilled manual-invoice `mailto:` message instead of hiding the offer.
 
 ## File Extraction
 

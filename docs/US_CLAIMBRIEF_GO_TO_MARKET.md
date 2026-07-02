@@ -517,12 +517,12 @@ Those are for after a buyer pays.
 
 > If I could do 20 of these a month for your office, would $299/month be worth it?
 
-- If yes, send payment link.
+- If yes, send payment link or manual invoice instructions.
 - If no, ask what output would make it worth paying for.
 
-## Best First Payment Link
+## Best First Payment Setup
 
-Use a simple payment link. Do not build billing yet.
+Use a simple payment link if it is ready. If not, use manual invoice/payment instructions after a prospect says yes. Do not build billing yet.
 
 Suggested products:
 
@@ -533,11 +533,11 @@ Suggested products:
 Deploy wiring:
 
 - Set `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL` to the inbox that receives packets and buying questions.
-- Set `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL` to the $99 payment link.
-- Set `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL` to the $299/month payment link.
+- Optionally set `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL` to the $99 payment link.
+- Optionally set `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL` to the $299/month payment link.
 - Set `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL` only after one paid pilot proves the workflow.
 
-If the payment links are not set, the ClaimBrief page falls back to prefilled email CTAs. That keeps the sales page usable before checkout is ready.
+If the payment links are not set, the ClaimBrief page falls back to prefilled manual-invoice email CTAs. That keeps the sales page usable before checkout is ready.
 
 ## The Bet
 

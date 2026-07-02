@@ -138,7 +138,7 @@ If yes, I can do the starter batch:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Should I send the starter payment link?
+Should I send the starter payment or invoice instructions?
 ```
 
 ## If They Say It Was Useful
@@ -149,7 +149,7 @@ Great. Starter is $99 for 3 ClaimBriefs.
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Payment link: {{stripe_starter_payment_link}}
+Payment or invoice instructions: {{payment_or_invoice_instructions}}
 
 After payment, send up to 3 redacted or active claim packets and I will return each ClaimBrief as PDF + Markdown.
 ```
@@ -162,7 +162,7 @@ Monthly pilot is $299/month for up to 20 ClaimBriefs.
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Payment link: {{stripe_monthly_payment_link}}
+Payment or invoice instructions: {{payment_or_invoice_instructions}}
 
 This is still manual/concierge during the pilot: send files, receive review packets. If volume is real, I will automate the workflow around your process.
 ```
@@ -181,9 +181,9 @@ I am specifically trying to learn whether the artifact should focus more on:
 - something else
 ```
 
-## Payment Link Setup
+## Payment Or Invoice Setup
 
-Create these simple payment links before sending volume:
+Create these simple payment links if possible, or prepare equivalent invoice/payment instructions before a prospect says yes:
 
 | Product | Price | Notes |
 | --- | ---: | --- |
@@ -191,7 +191,7 @@ Create these simple payment links before sending volume:
 | ClaimBrief Monthly Pilot | $299/month | Up to 20 ClaimBriefs/month |
 | ClaimBrief White Label Setup | $1,500 one-time | Only offer after pilot demand |
 
-Payment page copy:
+Payment page or invoice copy:
 
 ```text
 ClaimBrief creates cited property-insurance claim review packets for professional review. It does not provide legal advice, public-adjusting services, carrier submission, claim negotiation, or coverage determinations.

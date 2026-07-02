@@ -26,7 +26,7 @@ const starterFallbackHref = buildMailto(
 
 I want to start the ClaimBrief $99 starter pilot for 3 claim briefs.
 
-Please send the payment link and packet instructions.
+Please send payment or invoice instructions and the packet workflow.
 `
 );
 
@@ -36,7 +36,7 @@ const monthlyFallbackHref = buildMailto(
 
 I want to start or discuss the ClaimBrief $299/month pilot for up to 20 claim briefs.
 
-Please send the payment link and packet workflow.
+Please send payment or invoice instructions and the packet workflow.
 `
 );
 
@@ -57,7 +57,7 @@ const pilotTiers = [
     detail: "3 ClaimBriefs",
     bestFor: "First paid batch after a useful free sample.",
     href: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL || starterFallbackHref,
-    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "Pay for starter" : "Request starter link",
+    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "Pay for starter" : "Request starter invoice",
   },
   {
     name: "Monthly",
@@ -65,7 +65,7 @@ const pilotTiers = [
     detail: "up to 20 ClaimBriefs/month",
     bestFor: "One office with repeated denial, underpayment, or scope-review files.",
     href: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL || monthlyFallbackHref,
-    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL ? "Start monthly" : "Request monthly link",
+    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL ? "Start monthly" : "Request monthly invoice",
   },
 ];
 
@@ -126,7 +126,8 @@ export default function ClaimBriefPilotPage() {
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
                 ClaimBrief is sold first as a small manual pilot: send files,
                 get cited review packets back, renew only if the output saves
-                review time for your office.
+                review time for your office. If checkout links are not set up
+                yet, the pilot can still close by manual invoice.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a

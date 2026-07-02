@@ -28,7 +28,7 @@ determination, no homeowner-facing promise.
 
 ## Day 0 Setup
 
-- Create payment links for `ClaimBrief Starter - $99` and `ClaimBrief Monthly Pilot - $299/month`.
+- Create payment links for `ClaimBrief Starter - $99` and `ClaimBrief Monthly Pilot - $299/month`, or prepare a manual invoice/payment reply. Do not wait on checkout setup before offering the free sample.
 - Set `CLAIMBRIEF_POSTAL_ADDRESS` and regenerate outreach drafts.
 - Run `npm run outreach:claimbrief:check` and fix every blocker before sending.
 - Open `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`.
@@ -139,7 +139,7 @@ If yes, I can do the starter batch:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Should I send the starter payment link?
+Should I send the starter payment or invoice instructions?
 ```
 
 If they say yes:
@@ -150,7 +150,7 @@ Great. Starter is $99 for 3 ClaimBriefs.
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Payment link: {{stripe_starter_payment_link}}
+Payment or invoice instructions: {{payment_or_invoice_instructions}}
 
 After payment, send up to 3 redacted or active claim packets and I will return
 each ClaimBrief as PDF + Markdown.

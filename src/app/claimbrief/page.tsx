@@ -84,7 +84,7 @@ const starterFallbackHref = buildMailto(
 
 I want to start the ClaimBrief $99 starter pilot for 3 claim briefs.
 
-Please send the payment link and packet instructions.
+Please send payment or invoice instructions and the packet workflow.
 `
 );
 
@@ -94,7 +94,7 @@ const monthlyFallbackHref = buildMailto(
 
 I want to discuss the ClaimBrief $299/month pilot for up to 20 claim briefs.
 
-Please send the payment link and packet workflow.
+Please send payment or invoice instructions and the packet workflow.
 `
 );
 
@@ -104,7 +104,7 @@ const whiteLabelFallbackHref = buildMailto(
 
 I want to discuss the ClaimBrief white-label setup.
 
-Please send the setup details, payment link, and rollout steps.
+Please send the setup details, payment or invoice instructions, and rollout steps.
 `
 );
 

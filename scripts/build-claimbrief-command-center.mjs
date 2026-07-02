@@ -304,7 +304,8 @@ const html = `<!doctype html>
 
       <section class="panel">
         <h2>Next Commands</h2>
-        <pre>set CLAIMBRIEF_POSTAL_ADDRESS and payment/contact envs
+        <pre>set CLAIMBRIEF_POSTAL_ADDRESS and contact inbox
+payment links are optional; manual invoice fallback is OK
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker</pre>

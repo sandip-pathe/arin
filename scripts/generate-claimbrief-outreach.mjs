@@ -241,7 +241,7 @@ ${formLines}
 Use \`docs/outreach/claimbrief-reply-and-close-playbook.md\`.
 Use \`docs/outreach/claimbrief-outbound-compliance-checklist.md\` before the first real send.
 
-If one person sends a real packet, stop adding features. Produce the sample and ask for payment.
+If one person sends a real packet, stop adding features. Produce the sample and ask for payment or invoice approval.
 `;
 };
 

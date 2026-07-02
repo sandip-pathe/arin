@@ -119,13 +119,14 @@
         </div>
         <div class="panel">
           <h2>Warnings</h2>
-          <ul class="warning-list"><li>env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL: Set the inbox that should receive sample and pilot requests.</li><li>env:NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL: Missing $99 checkout URL. The page can fall back to email, but payment collection is slower.</li><li>env:NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL: Missing $299/month checkout URL. Manual invoicing or email fallback is still possible.</li></ul>
+          <ul class="warning-list"><li>env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL: Set the inbox that should receive sample and pilot requests.</li></ul>
         </div>
       </section>
 
       <section class="panel">
         <h2>Next Commands</h2>
-        <pre>set CLAIMBRIEF_POSTAL_ADDRESS and payment/contact envs
+        <pre>set CLAIMBRIEF_POSTAL_ADDRESS and contact inbox
+payment links are optional; manual invoice fallback is OK
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker</pre>

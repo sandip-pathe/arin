@@ -1,7 +1,7 @@
 # ClaimBrief Outbound Compliance Checklist
 
 This is an operating checklist, not legal advice. Use it before any real email,
-contact-form, phone, or payment-link send.
+contact-form, phone, or payment/invoice send.
 
 ## Official References
 
@@ -42,7 +42,7 @@ contact-form, phone, or payment-link send.
 
 ## Payment And File Intake
 
-- Before sending payment links, state the pilot is manual/concierge.
+- Before sending payment or invoice instructions, state the pilot is manual/concierge.
 - Before accepting any packet, ask for old closed or redacted files first.
 - Do not promise confidentiality terms beyond what you can actually honor.
 - Do not use client files in demos, marketing, training data, or samples without explicit written permission.

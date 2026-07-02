@@ -217,4 +217,4 @@ Switch wedge only if 150 relevant prospects produce:
 - 0 sample claim packets,
 - and no one names a missing paid feature.
 
-If one person sends a real packet, do not build more features. Produce the sample, ask for payment, and learn from the output.
+If one person sends a real packet, do not build more features. Produce the sample, ask for payment or invoice approval, and learn from the output.

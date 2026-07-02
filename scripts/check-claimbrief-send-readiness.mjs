@@ -217,16 +217,18 @@ addCheck(
 
 addCheck(
   "env:NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL",
-  Boolean(env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL),
-  "Missing $99 checkout URL. The page can fall back to email, but payment collection is slower.",
-  "warning"
+  true,
+  env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL
+    ? "Checkout URL is set for the $99 starter pilot."
+    : "Optional. Missing checkout URL uses manual invoice/email fallback."
 );
 
 addCheck(
   "env:NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL",
-  Boolean(env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL),
-  "Missing $299/month checkout URL. Manual invoicing or email fallback is still possible.",
-  "warning"
+  true,
+  env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL
+    ? "Checkout URL is set for the $299/month pilot."
+    : "Optional. Missing checkout URL uses manual invoice/email fallback."
 );
 
 let prospects = [];
