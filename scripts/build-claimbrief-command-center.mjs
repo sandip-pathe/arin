@@ -19,6 +19,9 @@ const paths = {
   mailmerge: join(generatedDir, `claimbrief-direct-email-mailmerge-${campaignDate}.csv`),
   formMessages: join(generatedDir, `claimbrief-contact-form-messages-${campaignDate}.csv`),
   readiness: join(generatedDir, `claimbrief-send-readiness-report-${campaignDate}.md`),
+  directEmailReadiness: join(generatedDir, `claimbrief-direct-email-readiness-report-${campaignDate}.md`),
+  formCallReadiness: join(generatedDir, `claimbrief-form-call-readiness-report-${campaignDate}.md`),
+  liveRoutes: join(generatedDir, `claimbrief-live-routes-${campaignDate}.md`),
   pipeline: join(generatedDir, `claimbrief-pipeline-summary-${campaignDate}.md`),
   dayOne: join(generatedDir, `claimbrief-day-1-send-packet-${campaignDate}.md`),
   sendBoard: join(generatedDir, `claimbrief-send-board-${campaignDate}.html`),
@@ -302,6 +305,9 @@ const html = `<!doctype html>
         <a class="button" href="${relativeHref(paths.sendBoard)}">Send board</a>
         <a class="button" href="${relativeHref(paths.dayOne)}">Day 1 packet</a>
         <a class="button" href="${relativeHref(paths.readiness)}">Readiness report</a>
+        <a class="button" href="${relativeHref(paths.directEmailReadiness)}">Email readiness</a>
+        <a class="button" href="${relativeHref(paths.formCallReadiness)}">Form/call readiness</a>
+        <a class="button" href="${relativeHref(paths.liveRoutes)}">Live routes</a>
         <a class="button" href="${relativeHref(paths.pipeline)}">Pipeline summary</a>
       </div>
     </header>
@@ -355,6 +361,9 @@ const html = `<!doctype html>
 payment links are optional; manual invoice fallback is OK
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:check:form-call
+npm run outreach:claimbrief:check:direct-email
+npm run outreach:claimbrief:live-check
 npm run outreach:claimbrief:form-call-sprint
 npm run outreach:claimbrief:tracker</pre>
         <p class="muted">Direct email needs the postal-address blocker cleared. Forms/calls can be reviewed from the queue and submitted manually only with action-time confirmation.</p>

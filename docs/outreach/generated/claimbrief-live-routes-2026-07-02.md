@@ -8,12 +8,12 @@ Base URL: https://app.anaya.legal
 
 ## Routes
 
-| Route | Required | Result | Status | Expected Text | Time |
-| --- | --- | --- | ---: | --- | ---: |
-| ClaimBrief landing | yes | pass | 200 | found | 128ms |
-| Starter close | yes | pass | 200 | found | 98ms |
-| Sample packet | yes | pass | 200 | found | 115ms |
-| Oklahoma wind/hail page | no | pass | 200 | found | 96ms |
+| Route | Required | Result | Status | Expected Text |
+| --- | --- | --- | ---: | --- |
+| ClaimBrief landing | yes | pass | 200 | found |
+| Starter close | yes | pass | 200 | found |
+| Sample packet | yes | pass | 200 | found |
+| Oklahoma wind/hail page | no | pass | 200 | found |
 
 ## Notes
 

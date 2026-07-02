@@ -37,7 +37,6 @@ const routes = [
 ];
 
 const checkRoute = async (route) => {
-  const started = Date.now();
   try {
     const response = await fetch(route.url, { redirect: "follow" });
     const text = await response.text();
@@ -47,7 +46,6 @@ const checkRoute = async (route) => {
       ok: response.ok && expectedTextFound,
       status: response.status,
       expectedTextFound,
-      ms: Date.now() - started,
       error: "",
     };
   } catch (error) {
@@ -56,7 +54,6 @@ const checkRoute = async (route) => {
       ok: false,
       status: "error",
       expectedTextFound: false,
-      ms: Date.now() - started,
       error: error instanceof Error ? error.message : String(error),
     };
   }
@@ -77,14 +74,14 @@ Base URL: ${publicBaseUrl}
 
 ## Routes
 
-| Route | Required | Result | Status | Expected Text | Time |
-| --- | --- | --- | ---: | --- | ---: |
+| Route | Required | Result | Status | Expected Text |
+| --- | --- | --- | ---: | --- |
 ${results
   .map(
     (result) =>
       `| ${result.name} | ${result.required ? "yes" : "no"} | ${
         result.ok ? "pass" : "fail"
-      } | ${result.status} | ${result.expectedTextFound ? "found" : "missing"} | ${result.ms}ms |`
+      } | ${result.status} | ${result.expectedTextFound ? "found" : "missing"} |`
   )
   .join("\n")}
 

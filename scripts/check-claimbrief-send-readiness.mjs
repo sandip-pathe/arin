@@ -5,7 +5,20 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const strict = process.argv.includes("--strict");
+const channelArg =
+  process.argv.find((argument) => argument.startsWith("--channel="))?.split("=")[1] || "all";
+const validChannels = new Set(["all", "direct-email", "form-call"]);
+if (!validChannels.has(channelArg)) {
+  console.error("Invalid --channel. Use all, direct-email, or form-call.");
+  process.exit(1);
+}
+const selectedScopes =
+  channelArg === "all" ? new Set(["global", "direct-email", "form-call"]) : new Set(["global", channelArg]);
 const campaignDate = "2026-07-02";
+const reportName =
+  channelArg === "all"
+    ? `claimbrief-send-readiness-report-${campaignDate}.md`
+    : `claimbrief-${channelArg}-readiness-report-${campaignDate}.md`;
 
 const paths = {
   prospects: join(root, "docs", "outreach", `claimbrief-prospects-${campaignDate}.csv`),
@@ -42,6 +55,27 @@ const paths = {
     "generated",
     `claimbrief-send-board-${campaignDate}.html`
   ),
+  formCallSprint: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-form-call-sprint-${campaignDate}.html`
+  ),
+  triggerSprint: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-oklahoma-trigger-sprint-${campaignDate}.html`
+  ),
+  liveRoutes: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-live-routes-${campaignDate}.md`
+  ),
   dayOnePacket: join(
     root,
     "docs",
@@ -61,7 +95,7 @@ const paths = {
     "docs",
     "outreach",
     "generated",
-    `claimbrief-send-readiness-report-${campaignDate}.md`
+    reportName
   ),
 };
 
@@ -174,8 +208,11 @@ const blockers = [];
 const warnings = [];
 const notes = [];
 
-const addCheck = (name, ok, detail, severity = "blocker") => {
-  checks.push({ name, ok, detail });
+const addCheck = (name, ok, detail, severity = "blocker", scope = "global") => {
+  checks.push({ name, ok, detail, scope });
+  if (!selectedScopes.has(scope)) {
+    return;
+  }
   if (!ok && severity === "blocker") {
     blockers.push(`${name}: ${detail}`);
   }
@@ -193,11 +230,19 @@ const formatDetail = (detail) => {
   return value;
 };
 
+const pathScopes = {
+  mailmerge: "direct-email",
+  emlDir: "direct-email",
+  formMessages: "form-call",
+  formCallSprint: "form-call",
+  triggerSprint: "form-call",
+};
+
 for (const [name, path] of Object.entries(paths)) {
   if (name === "report") {
     continue;
   }
-  addCheck(`file:${name}`, existsSync(path), path);
+  addCheck(`file:${name}`, existsSync(path), path, "blocker", pathScopes[name] || "global");
 }
 
 const env = readEnvFiles();
@@ -205,14 +250,17 @@ const postalAddress = env.CLAIMBRIEF_POSTAL_ADDRESS || "";
 addCheck(
   "env:CLAIMBRIEF_POSTAL_ADDRESS",
   Boolean(postalAddress && postalAddress !== placeholder),
-  "Set this before sending email drafts."
+  "Set this before sending email drafts.",
+  "blocker",
+  "direct-email"
 );
 
 addCheck(
   "env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL",
   Boolean(env.NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL),
   "Set the inbox that should receive sample and pilot requests.",
-  "warning"
+  "warning",
+  "global"
 );
 
 addCheck(
@@ -260,12 +308,16 @@ addCheck("count:prospects", prospects.length >= 100, `${prospects.length} prospe
 addCheck(
   "count:mailmerge",
   mailmergeRows.length === expectedEmailCount,
-  `${mailmergeRows.length} email rows found; expected ${expectedEmailCount}.`
+  `${mailmergeRows.length} email rows found; expected ${expectedEmailCount}.`,
+  "blocker",
+  "direct-email"
 );
 addCheck(
   "count:forms",
   formRows.length === expectedFormCount,
-  `${formRows.length} form/call rows found; expected ${expectedFormCount}.`
+  `${formRows.length} form/call rows found; expected ${expectedFormCount}.`,
+  "blocker",
+  "form-call"
 );
 addCheck(
   "count:tracker",
@@ -275,7 +327,9 @@ addCheck(
 addCheck(
   "count:eml",
   emlFiles.length === expectedEmailCount,
-  `${emlFiles.length} .eml drafts found; expected ${expectedEmailCount}.`
+  `${emlFiles.length} .eml drafts found; expected ${expectedEmailCount}.`,
+  "blocker",
+  "direct-email"
 );
 
 const emlTexts = emlFiles.map((fileName) => ({
@@ -293,22 +347,30 @@ const malformedDrafts = emlTexts.filter(
 addCheck(
   "drafts:opt_out",
   missingOptOut.length === 0,
-  `${missingOptOut.length} .eml drafts are missing opt-out text.`
+  `${missingOptOut.length} .eml drafts are missing opt-out text.`,
+  "blocker",
+  "direct-email"
 );
 addCheck(
   "drafts:mailing_address",
   missingAddress.length === 0,
-  `${missingAddress.length} .eml drafts are missing a mailing-address line.`
+  `${missingAddress.length} .eml drafts are missing a mailing-address line.`,
+  "blocker",
+  "direct-email"
 );
 addCheck(
   "drafts:postal_placeholder",
   placeholderDrafts.length === 0,
-  `${placeholderDrafts.length} .eml drafts still contain the postal-address placeholder.`
+  `${placeholderDrafts.length} .eml drafts still contain the postal-address placeholder.`,
+  "blocker",
+  "direct-email"
 );
 addCheck(
   "drafts:headers",
   malformedDrafts.length === 0,
-  `${malformedDrafts.length} .eml drafts are missing basic headers.`
+  `${malformedDrafts.length} .eml drafts are missing basic headers.`,
+  "blocker",
+  "direct-email"
 );
 
 const trackerStatusCounts = trackerRows.reduce((accumulator, row) => {
@@ -351,11 +413,26 @@ const channelStatus = (channelBlockers, channelWarnings) =>
 const emailChannelStatus = channelStatus(emailChannelBlockers, emailChannelWarnings);
 const formCallChannelStatus = channelStatus(formCallChannelBlockers, formCallChannelWarnings);
 const status = blockers.length > 0 ? "BLOCKED" : warnings.length > 0 ? "READY_WITH_WARNINGS" : "READY";
+const nextActionText = (() => {
+  if (channelArg === "form-call" && blockers.length === 0) {
+    return "Form/call outreach is ready for manual review and action-time confirmation. Work the sprint board one card at a time; do not submit forms that ask for claim-specific details.";
+  }
+  if (channelArg === "direct-email" && blockers.length > 0) {
+    return "Direct email remains blocked. Set CLAIMBRIEF_POSTAL_ADDRESS, regenerate drafts, then rerun this check before sending.";
+  }
+  if (blockers.length) {
+    return "Direct email remains blocked. You can still review the form/call queue, then submit or call manually only with action-time confirmation.";
+  }
+  return "Review the first 5 drafts manually, then send only with action-time confirmation.";
+})();
+
 const report = `# ClaimBrief Send Readiness Report - ${campaignDate}
 
 Status: **${status}**
 
 Generated by \`npm run outreach:claimbrief:check\`.
+
+Channel scope: **${channelArg}**
 
 ## Summary
 
@@ -390,12 +467,12 @@ ${warnings.length ? warnings.map((item) => `- ${item}`).join("\n") : "- None"}
 
 ## Checks
 
-| Check | Result | Detail |
-| --- | --- | --- |
+| Check | Scope | Result | Detail |
+| --- | --- | --- | --- |
 ${checks
   .map(
     (check) =>
-      `| ${check.name} | ${check.ok ? "pass" : "fail"} | ${formatDetail(check.detail).replace(/\|/g, "\\|")} |`
+      `| ${check.name} | ${check.scope} | ${check.ok ? "pass" : "fail"} | ${formatDetail(check.detail).replace(/\|/g, "\\|")} |`
   )
   .join("\n")}
 
@@ -405,15 +482,11 @@ ${notes.map((item) => `- ${item}`).join("\n")}
 
 ## Next Action
 
-${
-  blockers.length
-    ? "Direct email remains blocked. You can still review the form/call queue, then submit or call manually only with action-time confirmation."
-    : "Review the first 5 drafts manually, then send only with action-time confirmation."
-}
+${nextActionText}
 `;
 
 writeFileSync(paths.report, report);
-console.log(`ClaimBrief send readiness: ${status}`);
+console.log(`ClaimBrief send readiness (${channelArg}): ${status}`);
 console.log(`Report: ${paths.report}`);
 if (blockers.length) {
   console.log("Blockers:");

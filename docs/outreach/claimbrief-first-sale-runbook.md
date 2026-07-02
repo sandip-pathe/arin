@@ -31,6 +31,8 @@ determination, no homeowner-facing promise.
 - Create payment links for `ClaimBrief Starter - $99` and `ClaimBrief Monthly Pilot - $299/month`, or prepare a manual invoice/payment reply. Do not wait on checkout setup before offering the free sample.
 - Set `CLAIMBRIEF_POSTAL_ADDRESS` and regenerate outreach drafts.
 - Run `npm run outreach:claimbrief:check` and fix every blocker before sending.
+- Run `npm run outreach:claimbrief:check:form-call` when working only the
+  contact-form/call channel while direct email is blocked.
 - Open `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`.
 - Keep `docs/outreach/claimbrief-pipeline-tracker.csv` open while sending.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
@@ -50,6 +52,9 @@ determination, no homeowner-facing promise.
 No-address path:
 
 - Work only `contact_form` rows until `CLAIMBRIEF_POSTAL_ADDRESS` is set.
+- Run `npm run outreach:claimbrief:check:form-call` and use
+  `docs/outreach/generated/claimbrief-form-call-readiness-report-2026-07-02.md`
+  as the channel gate.
 - Use the generated form/call copy and public phone numbers.
 - Do not send `.eml` drafts while the postal placeholder is present.
 
@@ -72,14 +77,15 @@ Timely trigger path:
 Use this when no ClaimBrief sales env vars are visible locally.
 
 1. Run `npm run outreach:claimbrief:check`.
-2. Confirm `Contact forms/calls` is `READY_WITH_WARNINGS`.
-3. Run `npm run outreach:claimbrief:form-call-sprint`.
-4. Open `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`.
-5. Work targets from top to bottom.
-6. For each target, open the public contact page and use only general contact fields.
-7. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
-8. After every submitted form, call, or skip, copy the matching tracker command from the sprint board and run it locally.
-9. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
+2. Run `npm run outreach:claimbrief:check:form-call`.
+3. Confirm the form/call report is `READY` or `READY_WITH_WARNINGS`.
+4. Run `npm run outreach:claimbrief:form-call-sprint`.
+5. Open `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`.
+6. Work targets from top to bottom.
+7. For each target, open the public contact page and use only general contact fields.
+8. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
+9. After every submitted form, call, or skip, copy the matching tracker command from the sprint board and run it locally.
+10. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
 
 Stop the sprint immediately if someone replies, asks for a sample, or offers to
 send a packet. Move to reply handling and produce the sample before touching

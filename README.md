@@ -79,6 +79,8 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Form/Call Sprint](docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html)
 - [ClaimBrief Oklahoma Trigger Sprint](docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html)
 - [ClaimBrief Send Readiness Report](docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md)
+- [ClaimBrief Direct Email Readiness Report](docs/outreach/generated/claimbrief-direct-email-readiness-report-2026-07-02.md)
+- [ClaimBrief Form/Call Readiness Report](docs/outreach/generated/claimbrief-form-call-readiness-report-2026-07-02.md)
 - [ClaimBrief Live Route Report](docs/outreach/generated/claimbrief-live-routes-2026-07-02.md)
 - [ClaimBrief Pipeline Summary](docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md)
 - [ClaimBrief Command Center](docs/outreach/generated/claimbrief-command-center-2026-07-02.html)
@@ -138,6 +140,8 @@ npm run lint
 npm run typecheck
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:check:form-call
+npm run outreach:claimbrief:check:direct-email
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:form-call-sprint
