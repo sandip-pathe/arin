@@ -36,6 +36,7 @@ determination, no homeowner-facing promise.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
 - Use `/claimbrief/intake` after a positive reply so the prospect knows what to redact and send.
 - Use `/claimbrief/pilot` when someone asks price or after a useful free sample.
+- If direct email is blocked by the missing postal address, start with contact forms and calls. Do not wait to sell.
 
 ## Day 1 Execution
 
@@ -44,6 +45,12 @@ determination, no homeowner-facing promise.
 - Update every touched row immediately: `status`, `last_touch_date`, `next_action`, and `notes`.
 - Run `npm run outreach:claimbrief:tracker` after each sending block to refresh the pipeline summary.
 - Do not add features, rewrite the product, or research a new wedge during Day 1.
+
+No-address path:
+
+- Work only `contact_form` rows until `CLAIMBRIEF_POSTAL_ADDRESS` is set.
+- Use the generated form/call copy and public phone numbers.
+- Do not send `.eml` drafts while the postal placeholder is present.
 
 Tracker update example:
 

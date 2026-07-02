@@ -30,6 +30,10 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-command-center-2026-07-02.html`
 
+Readiness is channel-specific. Direct email requires a valid physical mailing
+address. Contact forms and manual calls can be worked first if email remains
+blocked.
+
 Use after replies start:
 
 - `docs/outreach/claimbrief-reply-and-close-playbook.md`

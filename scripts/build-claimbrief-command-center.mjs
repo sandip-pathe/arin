@@ -115,6 +115,18 @@ const statusMatch = readinessText.match(/Status:\s+\*\*(.+?)\*\*/);
 const readinessStatus = statusMatch?.[1] || "UNKNOWN";
 const blockers = markdownList(readinessText, "Blockers").filter((item) => item !== "None");
 const warnings = markdownList(readinessText, "Warnings").filter((item) => item !== "None");
+const channelRow = (label) => {
+  const match = readinessText
+    .split(/\r?\n/)
+    .find((line) => line.startsWith(`| ${label} |`))
+    ?.match(/^\| [^|]+ \| ([^|]+) \| ([^|]+) \|$/);
+  return {
+    status: match?.[1]?.trim() || "UNKNOWN",
+    reason: match?.[2]?.trim() || "Run readiness check to refresh channel status.",
+  };
+};
+const directEmailReadiness = channelRow("Direct email");
+const formCallReadiness = channelRow("Contact forms/calls");
 
 const prospects = readCsv(paths.prospects);
 const trackerRows = readCsv(paths.tracker);
@@ -287,8 +299,33 @@ const html = `<!doctype html>
     <main>
       <section class="grid three">
         ${statCard("Prospects", prospects.length, "US public adjuster/property-claim leads")}
-        ${statCard("Direct email drafts", emailRows.length, isBlocked ? "blocked until mailing address is set" : "ready for manual review")}
-        ${statCard("Form/call targets", formRows.length, "manual contact-form or phone workflow")}
+        ${statCard("Direct email drafts", emailRows.length, `${directEmailReadiness.status}: ${directEmailReadiness.reason}`)}
+        ${statCard("Form/call targets", formRows.length, `${formCallReadiness.status}: ${formCallReadiness.reason}`)}
+      </section>
+
+      <section class="grid two">
+        <div class="panel">
+          <h2>Direct Email</h2>
+          <div class="status ${
+            directEmailReadiness.status === "BLOCKED"
+              ? "blocked"
+              : directEmailReadiness.status === "READY_WITH_WARNINGS"
+                ? "warning"
+                : "ready"
+          }">${escapeHtml(directEmailReadiness.status)}</div>
+          <p class="muted">${escapeHtml(directEmailReadiness.reason)}</p>
+        </div>
+        <div class="panel">
+          <h2>Forms And Calls</h2>
+          <div class="status ${
+            formCallReadiness.status === "BLOCKED"
+              ? "blocked"
+              : formCallReadiness.status === "READY_WITH_WARNINGS"
+                ? "warning"
+                : "ready"
+          }">${escapeHtml(formCallReadiness.status)}</div>
+          <p class="muted">${escapeHtml(formCallReadiness.reason)}</p>
+        </div>
       </section>
 
       <section class="grid two">
@@ -309,7 +346,7 @@ payment links are optional; manual invoice fallback is OK
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker</pre>
-        <p class="muted">Only after readiness is no longer blocked: review drafts, send manually, then update the tracker immediately.</p>
+        <p class="muted">Direct email needs the postal-address blocker cleared. Forms/calls can be reviewed from the queue and submitted manually only with action-time confirmation.</p>
       </section>
 
       <section class="grid three">
