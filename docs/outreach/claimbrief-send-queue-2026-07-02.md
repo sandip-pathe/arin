@@ -24,6 +24,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
+- `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
 - `docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md`
@@ -33,6 +34,10 @@ Generated outputs:
 Readiness is channel-specific. Direct email requires a valid physical mailing
 address. Contact forms and manual calls can be worked first if email remains
 blocked.
+
+Use the form/call sprint board for the no-address path. It shows only the
+unattempted contact-form/call queue and copyable text; it does not submit
+anything.
 
 Use after replies start:
 

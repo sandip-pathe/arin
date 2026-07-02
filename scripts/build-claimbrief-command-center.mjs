@@ -20,6 +20,7 @@ const paths = {
   pipeline: join(generatedDir, `claimbrief-pipeline-summary-${campaignDate}.md`),
   dayOne: join(generatedDir, `claimbrief-day-1-send-packet-${campaignDate}.md`),
   sendBoard: join(generatedDir, `claimbrief-send-board-${campaignDate}.html`),
+  formCallSprint: join(generatedDir, `claimbrief-form-call-sprint-${campaignDate}.html`),
   sample: join(root, "public", "samples", "claimbrief-sample-review.html"),
   emlDir: join(generatedDir, `claimbrief-direct-email-eml-${campaignDate}`),
   commandCenter: join(generatedDir, `claimbrief-command-center-${campaignDate}.html`),
@@ -289,6 +290,7 @@ const html = `<!doctype html>
         <a class="button" href="${intakeUrl}">Packet instructions</a>
         <a class="button" href="${pilotUrl}">Pilot details</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
+        <a class="button primary" href="${relativeHref(paths.formCallSprint)}">Form/call sprint</a>
         <a class="button" href="${relativeHref(paths.sendBoard)}">Send board</a>
         <a class="button" href="${relativeHref(paths.dayOne)}">Day 1 packet</a>
         <a class="button" href="${relativeHref(paths.readiness)}">Readiness report</a>

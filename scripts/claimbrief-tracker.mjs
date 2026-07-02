@@ -219,6 +219,7 @@ Update one company:
   npm run outreach:claimbrief:tracker -- --company "Palco Claims" --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note "sent first email"
 
 Supported fields:
+  --contact
   --status
   --next-action
   --next-action-date
@@ -249,7 +250,16 @@ if (args.company) {
   const query = args.company.toLowerCase();
   const exactMatches = rows.filter((row) => row.company.toLowerCase() === query);
   const fuzzyMatches = rows.filter((row) => row.company.toLowerCase().includes(query));
-  const matches = exactMatches.length ? exactMatches : fuzzyMatches;
+  let matches = exactMatches.length ? exactMatches : fuzzyMatches;
+
+  if (args.contact && matches.length > 1) {
+    const contactQuery = args.contact.toLowerCase();
+    matches = matches.filter(
+      (row) =>
+        row.contact.toLowerCase() === contactQuery ||
+        row.contact.toLowerCase().includes(contactQuery)
+    );
+  }
 
   if (matches.length !== 1) {
     console.error(`Expected exactly one company match for "${args.company}", found ${matches.length}.`);
