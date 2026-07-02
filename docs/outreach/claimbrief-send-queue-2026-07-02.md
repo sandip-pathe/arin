@@ -4,7 +4,7 @@ Purpose: turn the ClaimBrief wedge into replies, sample files, and first paid pi
 
 This queue uses only public company/contact information collected from company pages, public search results, and public directories/pages. Do not invent missing emails. If the row says `contact_form`, use the form or call the office after sending the form.
 
-Current queue size: 85 prospects, with 27 direct-email leads and 58 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
+Current queue size: 100 prospects, with 35 direct-email leads and 65 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
 
 Generate send-ready files with:
 
@@ -72,10 +72,18 @@ Send these first because they have public email addresses or email-like contact 
 | 25 | Feller Loss Consultants | `info@FellerClaims.com` | Nevada and nearby-state commercial and homeowner property-damage claims. |
 | 26 | Accurate Claims Consulting | `info@myaccurateclaim.com` | California/Arizona/Connecticut/Georgia public adjusting with water/fire/mold claim examples. |
 | 27 | Loti | `mike@loti.com` | Homeowner major-loss insurance recovery with software-enabled claim support. |
+| 28 | 21st Century Public Adjusters | `21stclaims@gmail.com` | PA/NJ denied and underpaid claims with denial-letter upload workflow. |
+| 29 | ProMaxx Public Adjusters | `promaxxadjusting@gmail.com` | PA/NJ/DE/MD residential damage claim review with carrier/damage intake fields. |
+| 30 | Miller Public Adjusters | `contact@millerpublicadjusters.com` | Wisconsin/Iowa property claim review and denied fire-claim guidance. |
+| 31 | Copper State Adjusting | `claims@csadjusting.com` | Arizona wind, hail, fire, water, storm, mold, and commercial BI claims. |
+| 32 | SafeHnd Public Adjusters | `support@safehnd.com` | Virtual review for underpaid or denied claims and documentation strategy. |
+| 33 | Rise Public Adjusters | `RisePAGeneral@gmail.com` | Florida/Texas/Georgia/Tennessee denied, underpaid, and delayed claims. |
+| 34 | Tiger Adjusters | `info@tigeradjusters.com` | National public-adjuster network for policy interpretation, scoping, and estimates. |
+| 35 | PrimeState Public Adjusters | `info@primestateadjusters.com` | Multi-office public adjusting for commercial and residential claims. |
 
 ## Contact Form / Phone First Batch
 
-Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 58 form/call targets; use the send board for every generated message. The table below is just the first manual batch so the page stays readable.
+Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 65 form/call targets; use the send board for every generated message. The table below is just the first manual batch so the page stays readable.
 
 | Order | Company | Contact Path | Phone |
 | ---: | --- | --- | --- |
@@ -170,20 +178,20 @@ Sandy
 
 Day 1:
 
-- Send all 27 direct emails from the send board.
-- Submit the first 15 contact forms or make 15 office calls.
+- Send all 35 direct emails from the send board.
+- Submit the first 20 contact forms or make 20 office calls.
 - Track every outcome in `claimbrief-pipeline-tracker.csv`.
 
 Day 2:
 
 - Follow up with non-responders from the email-ready batch.
 - Submit the next 25 contact forms/calls.
-- Add 15 restoration-contractor prospects only if the first 85 produce no replies.
+- Add 25 restoration-contractor prospects only if the first 100 produce no replies.
 - Record a 60-90 second demo from `/claimbrief`.
 
 Day 3:
 
-- Submit the remaining 18 contact forms/calls.
+- Submit the remaining 20 contact forms/calls.
 - Manually produce every free sample with Anaya/ClaimBrief.
 - Ask: "If I could do 20 of these a month for your office, would $299/month be worth it?"
 
