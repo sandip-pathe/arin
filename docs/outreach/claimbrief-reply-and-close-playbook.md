@@ -53,6 +53,10 @@ I will return:
 Target turnaround: 24 hours.
 ```
 
+After they send the packet, use
+`docs/outreach/claimbrief-sample-fulfillment-kit.md` before opening or
+processing the files.
+
 ## "Can I See A Sample?"
 
 ```text

@@ -67,6 +67,7 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Send Queue](docs/outreach/claimbrief-send-queue-2026-07-02.md)
 - [ClaimBrief Reply And Close Playbook](docs/outreach/claimbrief-reply-and-close-playbook.md)
 - [ClaimBrief First Sale Runbook](docs/outreach/claimbrief-first-sale-runbook.md)
+- [ClaimBrief Sample Fulfillment Kit](docs/outreach/claimbrief-sample-fulfillment-kit.md)
 - [ClaimBrief Outbound Compliance Checklist](docs/outreach/claimbrief-outbound-compliance-checklist.md)
 - [ClaimBrief Pipeline Tracker](docs/outreach/claimbrief-pipeline-tracker.csv)
 - [ClaimBrief Direct Email Mailmerge](docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv)

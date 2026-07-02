@@ -23,6 +23,10 @@
 .vscode/
 .modified
 
+# local ClaimBrief fulfillment workspace; never commit client packets
+/docs/outreach/workbench/
+/docs/outreach/received-packets/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

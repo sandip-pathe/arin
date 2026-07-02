@@ -70,6 +70,10 @@ Stop the sprint immediately if someone replies, asks for a sample, or offers to
 send a packet. Move to reply handling and produce the sample before touching
 more leads.
 
+Fulfillment kit:
+
+- `docs/outreach/claimbrief-sample-fulfillment-kit.md`
+
 Tracker update example:
 
 ```bash
@@ -140,6 +144,7 @@ Target turnaround: 24 hours.
 
 ## Sample Production Checklist
 
+- Open `docs/outreach/claimbrief-sample-fulfillment-kit.md`.
 - Load the file into the local app or current ClaimBrief workflow.
 - Extract cited source references before writing conclusions.
 - Flag missing documents instead of guessing.
