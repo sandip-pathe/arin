@@ -4,6 +4,19 @@ Purpose: turn the ClaimBrief wedge into replies, sample files, and first paid pi
 
 This queue uses only public company/contact information collected from company pages, public search results, and public directories/pages. Do not invent missing emails. If the row says `contact_form`, use the form or call the office after sending the form.
 
+Generate send-ready files with:
+
+```bash
+npm run outreach:claimbrief
+```
+
+Generated outputs:
+
+- `docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv`
+- `docs/outreach/generated/claimbrief-direct-email-drafts-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
+- `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
+
 ## Offer To Send
 
 Use the "free sample" offer:
