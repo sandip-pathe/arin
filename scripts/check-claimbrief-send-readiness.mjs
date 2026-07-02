@@ -256,7 +256,7 @@ if (existsSync(paths.emlDir)) {
 const expectedEmailCount = prospects.filter((row) => row.contact_channel === "email").length;
 const expectedFormCount = prospects.filter((row) => row.contact_channel === "contact_form").length;
 
-addCheck("count:prospects", prospects.length === 100, `${prospects.length} prospects found.`);
+addCheck("count:prospects", prospects.length >= 100, `${prospects.length} prospects found.`);
 addCheck(
   "count:mailmerge",
   mailmergeRows.length === expectedEmailCount,

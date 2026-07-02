@@ -1432,3 +1432,135 @@ Phone opener:
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw Churchill Public Adjusters handles South Florida flood and property claims; free inspection; denied claim example. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 
+## 101. Gavnat Oklahoma
+
+URL: https://www.gavnat.com/location/oklahoma/
+Phone: not found
+Subject: Oklahoma hail brief?
+
+```text
+I saw Gavnat's Oklahoma page focuses on tornado, hail, and underpaid property claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Gavnat Oklahoma handles Oklahoma tornado hail fire flood denied delayed and underpaid claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 102. Prime Adjustments Oklahoma
+
+URL: https://primeadjustments.com/oklahoma-public-adjuster/
+Phone: 877-729-6365
+Subject: Oklahoma wind brief?
+
+```text
+I saw Prime Adjustments lists Oklahoma fire, hail, wind, water, and commercial roof claim reviews.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Prime Adjustments Oklahoma handles Oklahoma fire hail wind water smoke business interruption and commercial roof claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 105. Brown-O'Haver Public Adjusters of Oklahoma
+
+URL: https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma
+Phone: 405.735.5510
+Subject: Oklahoma claim brief?
+
+```text
+I saw Brown-O'Haver is listed by NAPIA as an Oklahoma public-adjusting firm in Moore.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Brown-O'Haver Public Adjusters of Oklahoma handles Oklahoma public adjusting firm listed by NAPIA. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 106. Corbitt Public Adjusting Oklahoma
+
+URL: https://corbittpublicadjusting.com/states/oklahoma
+Phone: not found
+Subject: Oklahoma storm brief?
+
+```text
+I saw Corbitt's Oklahoma page focuses on licensed public adjusting for hail and tornado damage.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Corbitt Public Adjusting Oklahoma handles Oklahoma hail tornado and storm property claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 107. Jansen Adjusters International Oklahoma
+
+URL: https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/
+Phone: not found
+Subject: Oklahoma City brief?
+
+```text
+I saw Jansen's Oklahoma page discusses Oklahoma City/Tulsa public adjusting after natural and man-made disasters.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Jansen Adjusters International Oklahoma handles Oklahoma City and Tulsa public adjusters for complex property claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 108. ClaimsMate Oklahoma
+
+URL: https://claimsmate.com/public-adjusters-in-oklahoma/
+Phone: not found
+Subject: denied tornado brief?
+
+```text
+I saw ClaimsMate says its Oklahoma public adjusters handle denied tornado claims and business-interruption disputes.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw ClaimsMate Oklahoma handles Oklahoma tornado water damage and business interruption claim disputes. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+

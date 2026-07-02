@@ -52,6 +52,14 @@ No-address path:
 - Use the generated form/call copy and public phone numbers.
 - Do not send `.eml` drafts while the postal placeholder is present.
 
+Timely trigger path:
+
+- Use `docs/outreach/claimbrief-oklahoma-wind-hail-sprint-2026-07-02.md`
+  when the broad queue feels too generic.
+- Run `npm run outreach:claimbrief:trigger-sprint`.
+- Work Oklahoma wind/hail targets before adding more generic public-adjuster
+  leads.
+
 ## First 45-Minute Form/Call Sprint
 
 Use this when no ClaimBrief sales env vars are visible locally.

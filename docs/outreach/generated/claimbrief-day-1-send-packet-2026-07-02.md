@@ -53,6 +53,8 @@ Open the `.eml` files from `docs/outreach/generated/claimbrief-direct-email-eml-
 | 33 | Rise Public Adjusters | RisePAGeneral@gmail.com | denied/low-offer brief? | `claimbrief-033-rise-public-adjusters.eml` |
 | 34 | Tiger Adjusters | info@tigeradjusters.com | network claim brief? | `claimbrief-034-tiger-adjusters.eml` |
 | 35 | PrimeState Public Adjusters | info@primestateadjusters.com | multi-office claim brief? | `claimbrief-035-primestate-public-adjusters.eml` |
+| 36 | Skyline Adjusters Oklahoma | claims@skylineadjusters.com | Oklahoma claim brief? | `claimbrief-036-skyline-adjusters-oklahoma.eml` |
+| 37 | Palco Claims Chickasha OK | claims@palcoclaims.com | Chickasha claim brief? | `claimbrief-037-palco-claims-chickasha-ok.eml` |
 
 ## First 20 Contact Forms Or Calls
 

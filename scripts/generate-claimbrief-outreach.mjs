@@ -430,12 +430,13 @@ const trackerHeaders = [
 const existingTrackerRows = existsSync(trackerFile)
   ? parseCsv(readFileSync(trackerFile, "utf8"))
   : [];
-const existingTrackerByCompany = new Map(
-  existingTrackerRows.map((row) => [row.company, row])
+const trackerKey = (company, contact) => `${company}::${contact}`;
+const existingTrackerByContact = new Map(
+  existingTrackerRows.map((row) => [trackerKey(row.company, row.contact), row])
 );
 
 const trackerRows = prospects.map((row) => {
-  const existing = existingTrackerByCompany.get(row.company) || {};
+  const existing = existingTrackerByContact.get(trackerKey(row.company, row.contact_value)) || {};
   const defaultNextAction =
     row.contact_channel === "email" ? "send_email" : "submit_form_or_call";
   const existingNextAction = existing.next_action || "";
