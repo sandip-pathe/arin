@@ -32,6 +32,9 @@ The conclusion is not "attack State Farm." Do not say that. The conclusion is:
 No messages are sent by automation. Every email, form, or call requires manual
 review and action-time confirmation.
 
+While `CLAIMBRIEF_POSTAL_ADDRESS` is unset, direct email is intentionally
+disabled. Work this sprint by contact form or phone first.
+
 Do not:
 
 - Mention a specific carrier unless the prospect's own public page does.
@@ -65,18 +68,19 @@ packet?
 ## Prioritized Targets
 
 These were added to `docs/outreach/claimbrief-prospects-2026-07-02.csv` as
-priority 101-108:
+priority 101-109:
 
-| Priority | Company | Channel | Why |
-| ---: | --- | --- | --- |
-| 101 | Gavnat Oklahoma | Form | Oklahoma page names tornado, hail, denied, delayed, and underpaid claims. |
-| 102 | Prime Adjustments Oklahoma | Form/call | Oklahoma page lists fire, hail, wind, water, and commercial roof hail claims. |
-| 103 | Skyline Adjusters Oklahoma | Email/call | Oklahoma page publishes claims email and phone. |
-| 104 | Palco Claims Chickasha OK | Email/call | Oklahoma page discusses wind, hail, tornado, and denied claim support. |
-| 105 | Brown-O'Haver Public Adjusters of Oklahoma | Form/call | NAPIA profile lists an Oklahoma public-adjusting office in Moore. |
-| 106 | Corbitt Public Adjusting Oklahoma | Form | Oklahoma page positions around hail and tornado damage claims. |
-| 107 | Jansen Adjusters International Oklahoma | Form | Oklahoma page says they help residents and businesses navigate complex claims. |
-| 108 | ClaimsMate Oklahoma | Form | Oklahoma page mentions denied tornado claims and business-interruption disputes. |
+| Priority | Company | Phone | Channel | Why |
+| ---: | --- | --- | --- | --- |
+| 101 | Gavnat Oklahoma | 405-628-0126 | Form/call | Oklahoma page names tornado, hail, denied, delayed, and underpaid claims. |
+| 102 | Prime Adjustments Oklahoma | 877-729-6365 | Form/call | Oklahoma page lists fire, hail, wind, water, and commercial roof hail claims. |
+| 103 | Skyline Adjusters Oklahoma | +1 (800) 590-7293 | Call/email after readiness | Oklahoma page publishes claims email and phone. |
+| 104 | Palco Claims Chickasha OK | (512) 553-6432 | Call/email after readiness | Oklahoma page discusses wind, hail, tornado, and denied claim support. |
+| 105 | Brown-O'Haver Public Adjusters of Oklahoma | 405.735.5510 | Form/call | Official contact page lists a Moore, OK office and email. |
+| 106 | Corbitt Public Adjusting Oklahoma | 888-303-6607 | Form/call | Oklahoma page positions around hail and tornado damage claims. |
+| 107 | Jansen Adjusters International Oklahoma | 800.779.8714 | Form/call | Oklahoma page says they help residents and businesses navigate complex claims. |
+| 108 | ClaimsMate Oklahoma | (877) 202-0204 | Form/call | Oklahoma page mentions denied tornado claims and business-interruption disputes. |
+| 109 | Noble Public Adjusting Group Oklahoma | 866-935-5717 | Form/call | Oklahoma page says Noble represents property owners, not insurance companies. |
 
 Generated sprint board:
 

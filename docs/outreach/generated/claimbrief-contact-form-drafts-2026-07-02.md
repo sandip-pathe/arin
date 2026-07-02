@@ -1435,7 +1435,7 @@ Hi, I am calling about a tiny document-review tool for public adjusters. I saw C
 ## 101. Gavnat Oklahoma
 
 URL: https://www.gavnat.com/location/oklahoma/
-Phone: not found
+Phone: 405-628-0126
 Subject: Oklahoma hail brief?
 
 ```text
@@ -1478,12 +1478,12 @@ Hi, I am calling about a tiny document-review tool for public adjusters. I saw P
 
 ## 105. Brown-O'Haver Public Adjusters of Oklahoma
 
-URL: https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma
+URL: https://www.brown-ohaver.com/page/contact-us
 Phone: 405.735.5510
 Subject: Oklahoma claim brief?
 
 ```text
-I saw Brown-O'Haver is listed by NAPIA as an Oklahoma public-adjusting firm in Moore.
+I saw Brown-O'Haver has an Oklahoma office and writes about statewide disaster and large-loss claim work.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
@@ -1495,13 +1495,13 @@ Could I create one free sample from an old closed or redacted claim packet?
 Phone opener:
 
 ```text
-Hi, I am calling about a tiny document-review tool for public adjusters. I saw Brown-O'Haver Public Adjusters of Oklahoma handles Oklahoma public adjusting firm listed by NAPIA. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Brown-O'Haver Public Adjusters of Oklahoma handles Oklahoma public adjusting firm; tornado recovery; Moore office. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 
 ## 106. Corbitt Public Adjusting Oklahoma
 
 URL: https://corbittpublicadjusting.com/states/oklahoma
-Phone: not found
+Phone: 888-303-6607
 Subject: Oklahoma storm brief?
 
 ```text
@@ -1523,7 +1523,7 @@ Hi, I am calling about a tiny document-review tool for public adjusters. I saw C
 ## 107. Jansen Adjusters International Oklahoma
 
 URL: https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/
-Phone: not found
+Phone: 800.779.8714
 Subject: Oklahoma City brief?
 
 ```text
@@ -1545,7 +1545,7 @@ Hi, I am calling about a tiny document-review tool for public adjusters. I saw J
 ## 108. ClaimsMate Oklahoma
 
 URL: https://claimsmate.com/public-adjusters-in-oklahoma/
-Phone: not found
+Phone: (877) 202-0204
 Subject: denied tornado brief?
 
 ```text
@@ -1562,5 +1562,27 @@ Phone opener:
 
 ```text
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw ClaimsMate Oklahoma handles Oklahoma tornado water damage and business interruption claim disputes. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 109. Noble Public Adjusting Group Oklahoma
+
+URL: https://noblepagroup.com/locations/ok/
+Phone: 866-935-5717
+Subject: Oklahoma review brief?
+
+```text
+I saw Noble's Oklahoma page positions around reviewed Oklahoma public-adjuster claim help.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Noble Public Adjusting Group Oklahoma handles Oklahoma public adjusting; large fire losses; property insurance claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 

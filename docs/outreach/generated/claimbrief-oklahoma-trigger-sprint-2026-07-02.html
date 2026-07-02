@@ -63,6 +63,8 @@
       .actions { flex-wrap: wrap; justify-content: flex-end; }
       .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 0 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
       .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      .button.disabled { cursor: not-allowed; opacity: .6; }
+      .notice { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 10px 12px; color: #78350f; }
       .command-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
       details { margin-top: 14px; }
       summary { cursor: pointer; font-weight: 800; }
@@ -78,7 +80,7 @@
   <body>
     <header>
       <h1>ClaimBrief Oklahoma Wind/Hail Trigger Sprint</h1>
-      <p class="muted">15 unattempted Oklahoma-specific leads with wind, hail, denial, or underpayment signals.</p>
+      <p class="muted">16 unattempted Oklahoma-specific leads with wind, hail, denial, or underpayment signals.</p>
     </header>
     <main>
       <section class="banner">
@@ -87,16 +89,17 @@
       <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 1 of 15</p>
+          <p class="eyebrow">Trigger target 1 of 16</p>
           <h2>Palco Claims</h2>
           <p class="muted">TX/OK/NV/CO · email · (512) 553-6432</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="mailto:claims%40palcoclaims.com?subject=quick%20claim%20brief%3F&body=I%20saw%20Palco%20handles%20commercial%20roofs%2C%20hail%2C%20fire%2C%20and%20water%20losses%20across%20multiple%20states.%0A%0AI%20am%20testing%20ClaimBrief%20for%20wind%2Fhail%2C%20denial%2C%20and%20underpayment%20files.%20It%20turns%20a%20policy%2C%20carrier%20letter%2C%20estimates%2C%20and%20correspondence%20into%20a%20cited%20review%20brief%3A%20carrier%20position%2C%20policy%20language%20mentioned%2C%20missing%20evidence%2C%20and%20draft%20response%20outline.%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed%20for%20a%20licensed%20claim%20professional.%0A%0ACould%20I%20create%20one%20free%20sample%20from%20an%20old%20closed%20or%20redacted%20Oklahoma%20wind%2Fhail%20packet%3F">Open email</a>
-          <a class="button" href="tel:5125536432">Call</a>
+          <a class="button primary" href="tel:5125536432">Call</a>
+          <span class="button disabled">Email blocked</span>
         </div>
       </div>
       <p><strong>Why this lead:</strong> Site lists claims@palcoclaims.com and damage categories.</p>
+      <p class="notice">Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear.</p>
       <p><strong>Subject:</strong> quick claim brief?</p>
       <pre id="message-1-palco-claims">I saw Palco handles commercial roofs, hail, fire, and water losses across multiple states.
 
@@ -115,11 +118,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-1-palco-claims">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-1-palco-claims">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-1-palco-claims">npm run outreach:claimbrief:tracker -- --company &quot;Palco Claims&quot; --contact &quot;claims@palcoclaims.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-1-palco-claims">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-1-palco-claims">npm run outreach:claimbrief:tracker -- --company &quot;Palco Claims&quot; --contact &quot;claims@palcoclaims.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -141,7 +140,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 2 of 15</p>
+          <p class="eyebrow">Trigger target 2 of 16</p>
           <h2>South Wind Public Adjusters</h2>
           <p class="muted">TX/LA/OK/NM · contact_form · 1-866-979-4631</p>
         </div>
@@ -151,6 +150,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
         </div>
       </div>
       <p><strong>Why this lead:</strong> Homepage lists loss types, denied/underpaid claim status, state licenses, and phone.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> denied claim brief?</p>
       <pre id="message-2-south-wind-public-adjusters">I saw South Wind's intake form covers hail, hurricane, tornado, denied, and underpaid claims.
 
@@ -169,11 +169,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-2-south-wind-public-adjusters">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-2-south-wind-public-adjusters">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-2-south-wind-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;South Wind Public Adjusters&quot; --contact &quot;https://southwindpa.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-2-south-wind-public-adjusters">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-2-south-wind-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;South Wind Public Adjusters&quot; --contact &quot;https://southwindpa.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -195,16 +191,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 3 of 15</p>
+          <p class="eyebrow">Trigger target 3 of 16</p>
           <h2>Claims Public Adjusting</h2>
           <p class="muted">TX/OK/CA · email · +1 (855) 979-3200</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="mailto:Claims%40Claimspa.com?subject=Texas%20claim%20packet%20brief%3F&body=I%20saw%20Claims%20Public%20Adjusting%20represents%20homeowners%20and%20business%20owners%20across%20Texas%20Oklahoma%20and%20California.%0A%0AI%20am%20testing%20ClaimBrief%20for%20wind%2Fhail%2C%20denial%2C%20and%20underpayment%20files.%20It%20turns%20a%20policy%2C%20carrier%20letter%2C%20estimates%2C%20and%20correspondence%20into%20a%20cited%20review%20brief%3A%20carrier%20position%2C%20policy%20language%20mentioned%2C%20missing%20evidence%2C%20and%20draft%20response%20outline.%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed%20for%20a%20licensed%20claim%20professional.%0A%0ACould%20I%20create%20one%20free%20sample%20from%20an%20old%20closed%20or%20redacted%20Oklahoma%20wind%2Fhail%20packet%3F">Open email</a>
-          <a class="button" href="tel:+18559793200">Call</a>
+          <a class="button primary" href="tel:+18559793200">Call</a>
+          <span class="button disabled">Email blocked</span>
         </div>
       </div>
       <p><strong>Why this lead:</strong> Homepage lists Claims@Claimspa.com phone and licensed public-adjuster positioning.</p>
+      <p class="notice">Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear.</p>
       <p><strong>Subject:</strong> Texas claim packet brief?</p>
       <pre id="message-3-claims-public-adjusting">I saw Claims Public Adjusting represents homeowners and business owners across Texas Oklahoma and California.
 
@@ -223,11 +220,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-3-claims-public-adjusting">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-3-claims-public-adjusting">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-3-claims-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Claims Public Adjusting&quot; --contact &quot;Claims@Claimspa.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-3-claims-public-adjusting">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-3-claims-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Claims Public Adjusting&quot; --contact &quot;Claims@Claimspa.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -249,7 +242,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 4 of 15</p>
+          <p class="eyebrow">Trigger target 4 of 16</p>
           <h2>True View Commercial</h2>
           <p class="muted">TX/OK/OH · contact_form · 214.808.9163</p>
         </div>
@@ -259,6 +252,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
         </div>
       </div>
       <p><strong>Why this lead:</strong> Contact page lists claim-assessment form categories and NAPIA lists phone.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> large-loss claim brief?</p>
       <pre id="message-4-true-view-commercial">I saw True View Commercial offers large-loss public adjusting and claim-management support around DFW.
 
@@ -277,11 +271,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-4-true-view-commercial">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-4-true-view-commercial">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-4-true-view-commercial">npm run outreach:claimbrief:tracker -- --company &quot;True View Commercial&quot; --contact &quot;https://www.trueviewcommercial.com/contact&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-4-true-view-commercial">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-4-true-view-commercial">npm run outreach:claimbrief:tracker -- --company &quot;True View Commercial&quot; --contact &quot;https://www.trueviewcommercial.com/contact&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -303,16 +293,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 5 of 15</p>
+          <p class="eyebrow">Trigger target 5 of 16</p>
           <h2>Mission Property Loss Consultants</h2>
           <p class="muted">TX/GA/OK/NC/SC/TN · email · +1-833-446-7728</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="mailto:info%40missionae.com?subject=commercial%20policy%20brief%3F&body=I%20saw%20Mission%20PLC%20focuses%20on%20commercial%20public%20adjusting%20policy%20review%20and%20storm%20fire%20smoke%20water%20and%20business-interruption%20claims.%0A%0AI%20am%20testing%20ClaimBrief%20for%20wind%2Fhail%2C%20denial%2C%20and%20underpayment%20files.%20It%20turns%20a%20policy%2C%20carrier%20letter%2C%20estimates%2C%20and%20correspondence%20into%20a%20cited%20review%20brief%3A%20carrier%20position%2C%20policy%20language%20mentioned%2C%20missing%20evidence%2C%20and%20draft%20response%20outline.%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed%20for%20a%20licensed%20claim%20professional.%0A%0ACould%20I%20create%20one%20free%20sample%20from%20an%20old%20closed%20or%20redacted%20Oklahoma%20wind%2Fhail%20packet%3F">Open email</a>
-          <a class="button" href="tel:+18334467728">Call</a>
+          <a class="button primary" href="tel:+18334467728">Call</a>
+          <span class="button disabled">Email blocked</span>
         </div>
       </div>
       <p><strong>Why this lead:</strong> Contact page lists info@missionae.com phone and public-adjusting contact form.</p>
+      <p class="notice">Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear.</p>
       <p><strong>Subject:</strong> commercial policy brief?</p>
       <pre id="message-5-mission-property-loss-consultants">I saw Mission PLC focuses on commercial public adjusting policy review and storm fire smoke water and business-interruption claims.
 
@@ -331,11 +322,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-5-mission-property-loss-consultants">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-5-mission-property-loss-consultants">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-5-mission-property-loss-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Mission Property Loss Consultants&quot; --contact &quot;info@missionae.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-5-mission-property-loss-consultants">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-5-mission-property-loss-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Mission Property Loss Consultants&quot; --contact &quot;info@missionae.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -357,7 +344,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 6 of 15</p>
+          <p class="eyebrow">Trigger target 6 of 16</p>
           <h2>D.A. Lamont Public Adjusters</h2>
           <p class="muted">TX/CO/FL/LA/GA/NC/OK/SC · contact_form · 817.637.8824</p>
         </div>
@@ -367,6 +354,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
         </div>
       </div>
       <p><strong>Why this lead:</strong> NAPIA profile lists phone multi-state licenses and large-loss disaster positioning.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> large-loss disaster brief?</p>
       <pre id="message-6-d-a-lamont-public-adjusters">I saw D.A. Lamont positions itself around large-loss public adjusting and disaster recovery claims.
 
@@ -385,11 +373,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-6-d-a-lamont-public-adjusters">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-6-d-a-lamont-public-adjusters">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-6-d-a-lamont-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;D.A. Lamont Public Adjusters&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/da-lamont&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-6-d-a-lamont-public-adjusters">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-6-d-a-lamont-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;D.A. Lamont Public Adjusters&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/da-lamont&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -411,7 +395,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 7 of 15</p>
+          <p class="eyebrow">Trigger target 7 of 16</p>
           <h2>Victory Claims Consulting</h2>
           <p class="muted">FL/TX/GA/OK/SC/TN/UT · contact_form · 800.957.1239</p>
         </div>
@@ -421,6 +405,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
         </div>
       </div>
       <p><strong>Why this lead:</strong> NAPIA profile lists phone website Florida and Texas related offices and claim-recovery positioning.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> policy exam brief?</p>
       <pre id="message-7-victory-claims-consulting">I saw Victory Claims Consulting combines public adjusting appraisal and policy examinations for property-damage claims.
 
@@ -439,11 +424,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-7-victory-claims-consulting">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-7-victory-claims-consulting">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-7-victory-claims-consulting">npm run outreach:claimbrief:tracker -- --company &quot;Victory Claims Consulting&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/victory-claims-consulting&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-7-victory-claims-consulting">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-7-victory-claims-consulting">npm run outreach:claimbrief:tracker -- --company &quot;Victory Claims Consulting&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/victory-claims-consulting&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -465,15 +446,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 8 of 15</p>
+          <p class="eyebrow">Trigger target 8 of 16</p>
           <h2>Gavnat Oklahoma</h2>
-          <p class="muted">OK · contact_form · phone not found</p>
+          <p class="muted">OK · contact_form · 405-628-0126</p>
         </div>
         <div class="actions">
           <a class="button primary" href="https://www.gavnat.com/location/oklahoma/" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button" href="tel:4056280126">Call</a>
         </div>
       </div>
-      <p><strong>Why this lead:</strong> Official Oklahoma page discusses tornado hail flood wildfire and denied/delayed/underpaid claims.</p>
+      <p><strong>Why this lead:</strong> Official locations page lists Oklahoma Public Adjusters with phone 405-628-0126; Oklahoma page discusses tornado hail flood wildfire and denied/delayed/underpaid claims.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> Oklahoma hail brief?</p>
       <pre id="message-8-gavnat-oklahoma">I saw Gavnat's Oklahoma page focuses on tornado, hail, and underpaid property claims.
 
@@ -492,11 +475,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-8-gavnat-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-8-gavnat-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-8-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-8-gavnat-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-8-gavnat-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat Oklahoma&quot; --contact &quot;https://www.gavnat.com/location/oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -518,7 +497,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 9 of 15</p>
+          <p class="eyebrow">Trigger target 9 of 16</p>
           <h2>Prime Adjustments Oklahoma</h2>
           <p class="muted">OK · contact_form · 877-729-6365</p>
         </div>
@@ -528,6 +507,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
         </div>
       </div>
       <p><strong>Why this lead:</strong> Official Oklahoma page lists phone, licensed states, and property claim categories.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> Oklahoma wind brief?</p>
       <pre id="message-9-prime-adjustments-oklahoma">I saw Prime Adjustments lists Oklahoma fire, hail, wind, water, and commercial roof claim reviews.
 
@@ -546,11 +526,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-9-prime-adjustments-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-9-prime-adjustments-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-9-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-9-prime-adjustments-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-9-prime-adjustments-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments Oklahoma&quot; --contact &quot;https://primeadjustments.com/oklahoma-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -572,16 +548,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 10 of 15</p>
+          <p class="eyebrow">Trigger target 10 of 16</p>
           <h2>Skyline Adjusters Oklahoma</h2>
           <p class="muted">OK · email · +1 (800) 590-7293</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="mailto:claims%40skylineadjusters.com?subject=Oklahoma%20claim%20brief%3F&body=I%20saw%20Skyline%20has%20an%20Oklahoma%20public-adjuster%20page%20with%20claims%40skylineadjusters.com%20for%20claim%20review.%0A%0AI%20am%20testing%20ClaimBrief%20for%20wind%2Fhail%2C%20denial%2C%20and%20underpayment%20files.%20It%20turns%20a%20policy%2C%20carrier%20letter%2C%20estimates%2C%20and%20correspondence%20into%20a%20cited%20review%20brief%3A%20carrier%20position%2C%20policy%20language%20mentioned%2C%20missing%20evidence%2C%20and%20draft%20response%20outline.%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed%20for%20a%20licensed%20claim%20professional.%0A%0ACould%20I%20create%20one%20free%20sample%20from%20an%20old%20closed%20or%20redacted%20Oklahoma%20wind%2Fhail%20packet%3F">Open email</a>
-          <a class="button" href="tel:+18005907293">Call</a>
+          <a class="button primary" href="tel:+18005907293">Call</a>
+          <span class="button disabled">Email blocked</span>
         </div>
       </div>
       <p><strong>Why this lead:</strong> Official Oklahoma page lists claims@skylineadjusters.com and phone.</p>
+      <p class="notice">Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear.</p>
       <p><strong>Subject:</strong> Oklahoma claim brief?</p>
       <pre id="message-10-skyline-adjusters-oklahoma">I saw Skyline has an Oklahoma public-adjuster page with claims@skylineadjusters.com for claim review.
 
@@ -600,11 +577,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-10-skyline-adjusters-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-10-skyline-adjusters-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-10-skyline-adjusters-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Skyline Adjusters Oklahoma&quot; --contact &quot;claims@skylineadjusters.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-10-skyline-adjusters-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-10-skyline-adjusters-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Skyline Adjusters Oklahoma&quot; --contact &quot;claims@skylineadjusters.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -626,16 +599,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 11 of 15</p>
+          <p class="eyebrow">Trigger target 11 of 16</p>
           <h2>Palco Claims Chickasha OK</h2>
           <p class="muted">OK · email · (512) 553-6432</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="mailto:claims%40palcoclaims.com?subject=Chickasha%20claim%20brief%3F&body=I%20saw%20Palco's%20Chickasha%20page%20discusses%20wind%2C%20hail%2C%20tornado%2C%20water%2C%20fire%2C%20and%20denied%20claim%20support.%0A%0AI%20am%20testing%20ClaimBrief%20for%20wind%2Fhail%2C%20denial%2C%20and%20underpayment%20files.%20It%20turns%20a%20policy%2C%20carrier%20letter%2C%20estimates%2C%20and%20correspondence%20into%20a%20cited%20review%20brief%3A%20carrier%20position%2C%20policy%20language%20mentioned%2C%20missing%20evidence%2C%20and%20draft%20response%20outline.%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed%20for%20a%20licensed%20claim%20professional.%0A%0ACould%20I%20create%20one%20free%20sample%20from%20an%20old%20closed%20or%20redacted%20Oklahoma%20wind%2Fhail%20packet%3F">Open email</a>
-          <a class="button" href="tel:5125536432">Call</a>
+          <a class="button primary" href="tel:5125536432">Call</a>
+          <span class="button disabled">Email blocked</span>
         </div>
       </div>
       <p><strong>Why this lead:</strong> Official page discusses Oklahoma storm/wind/hail/tornado claims and lists the public claims email elsewhere on site.</p>
+      <p class="notice">Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear.</p>
       <p><strong>Subject:</strong> Chickasha claim brief?</p>
       <pre id="message-11-palco-claims-chickasha-ok">I saw Palco's Chickasha page discusses wind, hail, tornado, water, fire, and denied claim support.
 
@@ -654,11 +628,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-11-palco-claims-chickasha-ok">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-11-palco-claims-chickasha-ok">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-11-palco-claims-chickasha-ok">npm run outreach:claimbrief:tracker -- --company &quot;Palco Claims Chickasha OK&quot; --contact &quot;claims@palcoclaims.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-11-palco-claims-chickasha-ok">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-11-palco-claims-chickasha-ok">npm run outreach:claimbrief:tracker -- --company &quot;Palco Claims Chickasha OK&quot; --contact &quot;claims@palcoclaims.com&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -680,18 +650,19 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 12 of 15</p>
+          <p class="eyebrow">Trigger target 12 of 16</p>
           <h2>Brown-O'Haver Public Adjusters of Oklahoma</h2>
           <p class="muted">OK · contact_form · 405.735.5510</p>
         </div>
         <div class="actions">
-          <a class="button primary" href="https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button primary" href="https://www.brown-ohaver.com/page/contact-us" target="_blank" rel="noreferrer">Open form</a>
           <a class="button" href="tel:4057355510">Call</a>
         </div>
       </div>
-      <p><strong>Why this lead:</strong> NAPIA profile lists Oklahoma office address, phone, and related members.</p>
+      <p><strong>Why this lead:</strong> Official contact page lists Moore OK office phone 4057355510 and bohok@brown-ohaver.com; homepage says the team helped Oklahomans after tornado disasters.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> Oklahoma claim brief?</p>
-      <pre id="message-12-brown-o-haver-public-adjusters-of-oklahoma">I saw Brown-O'Haver is listed by NAPIA as an Oklahoma public-adjusting firm in Moore.
+      <pre id="message-12-brown-o-haver-public-adjusters-of-oklahoma">I saw Brown-O'Haver has an Oklahoma office and writes about statewide disaster and large-loss claim work.
 
 I am testing ClaimBrief for wind/hail, denial, and underpayment files. It turns a policy, carrier letter, estimates, and correspondence into a cited review brief: carrier position, policy language mentioned, missing evidence, and draft response outline.
 
@@ -708,24 +679,20 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-12-brown-o-haver-public-adjusters-of-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-12-brown-o-haver-public-adjusters-of-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-12-brown-o-haver-public-adjusters-of-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
-            <pre id="form-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
+            <pre id="form-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
             <button class="button" data-copy="form-command-12-brown-o-haver-public-adjusters-of-oklahoma">Copy form tracker command</button>
           </section>
           <section>
             <h3>After call</h3>
-            <pre id="call-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from Oklahoma wind/hail trigger sprint&quot;</pre>
+            <pre id="call-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from Oklahoma wind/hail trigger sprint&quot;</pre>
             <button class="button" data-copy="call-command-12-brown-o-haver-public-adjusters-of-oklahoma">Copy call tracker command</button>
           </section>
           <section>
             <h3>If unusable</h3>
-            <pre id="skip-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.napia.com/find-a-public-adjuster/brown---o%27haver-public-adjusters-of-oklahoma&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped Oklahoma trigger target because contact path was not usable&quot;</pre>
+            <pre id="skip-command-12-brown-o-haver-public-adjusters-of-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Brown-O'Haver Public Adjusters of Oklahoma&quot; --contact &quot;https://www.brown-ohaver.com/page/contact-us&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped Oklahoma trigger target because contact path was not usable&quot;</pre>
             <button class="button" data-copy="skip-command-12-brown-o-haver-public-adjusters-of-oklahoma">Copy skip tracker command</button>
           </section>
         </div>
@@ -734,15 +701,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 13 of 15</p>
+          <p class="eyebrow">Trigger target 13 of 16</p>
           <h2>Corbitt Public Adjusting Oklahoma</h2>
-          <p class="muted">OK · contact_form · phone not found</p>
+          <p class="muted">OK · contact_form · 888-303-6607</p>
         </div>
         <div class="actions">
           <a class="button primary" href="https://corbittpublicadjusting.com/states/oklahoma" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button" href="tel:8883036607">Call</a>
         </div>
       </div>
-      <p><strong>Why this lead:</strong> Official Oklahoma page describes hail and tornado public-adjuster work.</p>
+      <p><strong>Why this lead:</strong> Official site lists 888-303-6607 and Oklahoma page describes hail and tornado public-adjuster work.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> Oklahoma storm brief?</p>
       <pre id="message-13-corbitt-public-adjusting-oklahoma">I saw Corbitt's Oklahoma page focuses on licensed public adjusting for hail and tornado damage.
 
@@ -761,11 +730,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-13-corbitt-public-adjusting-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-13-corbitt-public-adjusting-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-13-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-13-corbitt-public-adjusting-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-13-corbitt-public-adjusting-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting Oklahoma&quot; --contact &quot;https://corbittpublicadjusting.com/states/oklahoma&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -787,15 +752,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 14 of 15</p>
+          <p class="eyebrow">Trigger target 14 of 16</p>
           <h2>Jansen Adjusters International Oklahoma</h2>
-          <p class="muted">OK · contact_form · phone not found</p>
+          <p class="muted">OK · contact_form · 800.779.8714</p>
         </div>
         <div class="actions">
           <a class="button primary" href="https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button" href="tel:8007798714">Call</a>
         </div>
       </div>
-      <p><strong>Why this lead:</strong> Official Oklahoma page discusses Oklahoma residents and business owners navigating complex property claims.</p>
+      <p><strong>Why this lead:</strong> Official Tulsa office page lists 800.779.8714 and 405.445.0455; page discusses policy review and complex property claims.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> Oklahoma City brief?</p>
       <pre id="message-14-jansen-adjusters-international-oklahoma">I saw Jansen's Oklahoma page discusses Oklahoma City/Tulsa public adjusting after natural and man-made disasters.
 
@@ -814,11 +781,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-14-jansen-adjusters-international-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-14-jansen-adjusters-international-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-14-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-14-jansen-adjusters-international-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-14-jansen-adjusters-international-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Jansen Adjusters International Oklahoma&quot; --contact &quot;https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -840,15 +803,17 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 <article class="card">
       <div class="card-head">
         <div>
-          <p class="eyebrow">Trigger target 15 of 15</p>
+          <p class="eyebrow">Trigger target 15 of 16</p>
           <h2>ClaimsMate Oklahoma</h2>
-          <p class="muted">OK · contact_form · phone not found</p>
+          <p class="muted">OK · contact_form · (877) 202-0204</p>
         </div>
         <div class="actions">
           <a class="button primary" href="https://claimsmate.com/public-adjusters-in-oklahoma/" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button" href="tel:8772020204">Call</a>
         </div>
       </div>
-      <p><strong>Why this lead:</strong> Official Oklahoma page discusses denied tornado claims, water damage increases, and business-interruption disputes.</p>
+      <p><strong>Why this lead:</strong> Official contact page lists (877) 202-0204; Oklahoma page discusses denied tornado claims, water damage increases, and business-interruption disputes.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
       <p><strong>Subject:</strong> denied tornado brief?</p>
       <pre id="message-15-claimsmate-oklahoma">I saw ClaimsMate says its Oklahoma public adjusters handle denied tornado claims and business-interruption disputes.
 
@@ -867,11 +832,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <pre id="phone-15-claimsmate-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
             <button class="button" data-copy="phone-15-claimsmate-oklahoma">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="email-command-15-claimsmate-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;ClaimsMate Oklahoma&quot; --contact &quot;https://claimsmate.com/public-adjusters-in-oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;sent Oklahoma wind/hail trigger email&quot;</pre>
-            <button class="button" data-copy="email-command-15-claimsmate-oklahoma">Copy email tracker command</button>
-          </section>
+
           <section>
             <h3>After form</h3>
             <pre id="form-command-15-claimsmate-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;ClaimsMate Oklahoma&quot; --contact &quot;https://claimsmate.com/public-adjusters-in-oklahoma/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
@@ -886,6 +847,57 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
             <h3>If unusable</h3>
             <pre id="skip-command-15-claimsmate-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;ClaimsMate Oklahoma&quot; --contact &quot;https://claimsmate.com/public-adjusters-in-oklahoma/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped Oklahoma trigger target because contact path was not usable&quot;</pre>
             <button class="button" data-copy="skip-command-15-claimsmate-oklahoma">Copy skip tracker command</button>
+          </section>
+        </div>
+      </details>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Trigger target 16 of 16</p>
+          <h2>Noble Public Adjusting Group Oklahoma</h2>
+          <p class="muted">OK · contact_form · 866-935-5717</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="https://noblepagroup.com/locations/ok/" target="_blank" rel="noreferrer">Open form</a>
+          <a class="button" href="tel:8669355717">Call</a>
+        </div>
+      </div>
+      <p><strong>Why this lead:</strong> Official Oklahoma page lists 866-935-5717 and says Noble represents property owners, not the insurance company.</p>
+      <p class="notice">Use only general contact fields. Do not submit claim-specific details.</p>
+      <p><strong>Subject:</strong> Oklahoma review brief?</p>
+      <pre id="message-16-noble-public-adjusting-group-oklahoma">I saw Noble's Oklahoma page positions around reviewed Oklahoma public-adjuster claim help.
+
+I am testing ClaimBrief for wind/hail, denial, and underpayment files. It turns a policy, carrier letter, estimates, and correspondence into a cited review brief: carrier position, policy language mentioned, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed for a licensed claim professional.
+
+Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?</pre>
+      <button class="button" data-copy="message-16-noble-public-adjusting-group-oklahoma">Copy message</button>
+
+      <details>
+        <summary>Phone opener and tracker commands</summary>
+        <div class="command-grid">
+          <section>
+            <h3>Phone opener</h3>
+            <pre id="phone-16-noble-public-adjusting-group-oklahoma">Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+            <button class="button" data-copy="phone-16-noble-public-adjusting-group-oklahoma">Copy phone opener</button>
+          </section>
+
+          <section>
+            <h3>After form</h3>
+            <pre id="form-command-16-noble-public-adjusting-group-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group Oklahoma&quot; --contact &quot;https://noblepagroup.com/locations/ok/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted Oklahoma wind/hail trigger form&quot;</pre>
+            <button class="button" data-copy="form-command-16-noble-public-adjusting-group-oklahoma">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-16-noble-public-adjusting-group-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group Oklahoma&quot; --contact &quot;https://noblepagroup.com/locations/ok/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from Oklahoma wind/hail trigger sprint&quot;</pre>
+            <button class="button" data-copy="call-command-16-noble-public-adjusting-group-oklahoma">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If unusable</h3>
+            <pre id="skip-command-16-noble-public-adjusting-group-oklahoma">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group Oklahoma&quot; --contact &quot;https://noblepagroup.com/locations/ok/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped Oklahoma trigger target because contact path was not usable&quot;</pre>
+            <button class="button" data-copy="skip-command-16-noble-public-adjusting-group-oklahoma">Copy skip tracker command</button>
           </section>
         </div>
       </details>

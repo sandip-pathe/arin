@@ -19,6 +19,9 @@ const sampleUrl =
 const postalAddress =
   process.env.CLAIMBRIEF_POSTAL_ADDRESS ||
   "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+const directEmailAllowed =
+  Boolean(process.env.CLAIMBRIEF_POSTAL_ADDRESS) &&
+  postalAddress !== "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
 const complianceFooter = `If this is not relevant, reply "no" and I will not follow up.
 Mailing address: ${postalAddress}`;
 
@@ -267,8 +270,17 @@ const toSendBoard = (emailRows, formRows) => {
             <h2>${escapeHtml(row.company)}</h2>
             <p class="muted">${escapeHtml(row.to)}</p>
           </div>
-          <a class="button primary" href="${mailtoHref(row)}">Open email</a>
+          ${
+            directEmailAllowed
+              ? `<a class="button primary" href="${mailtoHref(row)}">Open email</a>`
+              : '<span class="button disabled">Email blocked</span>'
+          }
         </div>
+        ${
+          directEmailAllowed
+            ? ""
+            : '<p class="warning">Set CLAIMBRIEF_POSTAL_ADDRESS and regenerate before opening direct email sends.</p>'
+        }
         <p><strong>Subject:</strong> ${escapeHtml(row.subject)}</p>
         <pre>${escapeHtml(row.body)}</pre>
       </article>`
@@ -352,6 +364,8 @@ const toSendBoard = (emailRows, formRows) => {
       .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
       .button { display: inline-flex; align-items: center; justify-content: center; min-width: 112px; height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-weight: 700; text-decoration: none; }
       .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      .button.disabled { cursor: not-allowed; opacity: .6; }
+      .warning { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 10px 12px; color: #78350f; }
       pre { overflow-x: auto; white-space: pre-wrap; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; padding: 14px; color: #1e293b; font-family: "SFMono-Regular", Consolas, monospace; font-size: 13px; }
       details { margin-top: 12px; }
       summary { cursor: pointer; font-weight: 700; }

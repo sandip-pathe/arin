@@ -6,6 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const campaignDate = "2026-07-02";
 const generatedDir = join(root, "docs", "outreach", "generated");
+const emailPlaceholder = "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
 
 const paths = {
   prospects: join(root, "docs", "outreach", `claimbrief-prospects-${campaignDate}.csv`),
@@ -73,6 +74,35 @@ const parseCsv = (text) => {
 
 const readCsv = (path) => (existsSync(path) ? parseCsv(readFileSync(path, "utf8")) : []);
 
+const readEnvFiles = () => {
+  const env = {};
+
+  for (const fileName of [".env.local", ".env", ".env.production.local"]) {
+    const path = join(root, fileName);
+    if (!existsSync(path)) {
+      continue;
+    }
+
+    const lines = readFileSync(path, "utf8").split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
+        continue;
+      }
+      const [key, ...rest] = trimmed.split("=");
+      if (key.trim() === "CLAIMBRIEF_POSTAL_ADDRESS" && !env.CLAIMBRIEF_POSTAL_ADDRESS) {
+        env.CLAIMBRIEF_POSTAL_ADDRESS = rest.join("=").trim().replace(/^['"]|['"]$/g, "");
+      }
+    }
+  }
+
+  if (process.env.CLAIMBRIEF_POSTAL_ADDRESS) {
+    env.CLAIMBRIEF_POSTAL_ADDRESS = process.env.CLAIMBRIEF_POSTAL_ADDRESS;
+  }
+
+  return env;
+};
+
 const escapeHtml = (value) =>
   String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -90,6 +120,10 @@ const slugify = (value) =>
 
 const shellQuote = (value) => `"${String(value ?? "").replace(/"/g, '\\"')}"`;
 const trackerKey = (company, contact) => `${company}::${contact}`;
+const env = readEnvFiles();
+const directEmailAllowed =
+  Boolean(env.CLAIMBRIEF_POSTAL_ADDRESS) &&
+  env.CLAIMBRIEF_POSTAL_ADDRESS !== emailPlaceholder;
 
 const prospects = readCsv(paths.prospects);
 const trackerRows = readCsv(paths.tracker);
@@ -134,7 +168,11 @@ I am testing ClaimBrief for wind/hail, denial, and underpayment files. It turns 
 
 No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed for a licensed claim professional.
 
-Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?`;
+Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?${
+  row.contact_channel === "email" && directEmailAllowed
+    ? `\n\nIf this is not relevant, reply "no" and I will not follow up.\nMailing address: ${env.CLAIMBRIEF_POSTAL_ADDRESS}`
+    : ""
+}`;
 
 const trackerCommand = (row, mode) => {
   const modes = {
@@ -177,18 +215,43 @@ const cards = triggerRows
     const slug = `${index + 1}-${slugify(row.company)}`;
     const messageId = `message-${slug}`;
     const phoneId = `phone-${slug}`;
-    const emailCommandId = `email-command-${slug}`;
     const formCommandId = `form-command-${slug}`;
     const callCommandId = `call-command-${slug}`;
     const skipCommandId = `skip-command-${slug}`;
-    const openButton =
-      row.contact_channel === "email"
-        ? `<a class="button primary" href="${mailtoHref(row)}">Open email</a>`
-        : `<a class="button primary" href="${escapeHtml(row.contact_value)}" target="_blank" rel="noreferrer">Open form</a>`;
     const callButton = row.phone
       ? `<a class="button" href="tel:${escapeHtml(row.phone.replace(/[^0-9+]/g, ""))}">Call</a>`
       : "";
-    const actionButtons = [openButton, callButton].filter(Boolean).join("\n          ");
+    const openButton =
+      row.contact_channel === "email"
+        ? directEmailAllowed
+          ? `<a class="button primary" href="${mailtoHref(row)}">Open email</a>`
+          : ""
+        : `<a class="button primary" href="${escapeHtml(row.contact_value)}" target="_blank" rel="noreferrer">Open form</a>`;
+    const blockedEmailButton =
+      row.contact_channel === "email" && !directEmailAllowed
+        ? '<span class="button disabled">Email blocked</span>'
+        : "";
+    const actionButtons = [
+      openButton,
+      row.contact_channel === "email" && !directEmailAllowed && callButton
+        ? callButton.replace('class="button"', 'class="button primary"')
+        : callButton,
+      blockedEmailButton,
+    ]
+      .filter(Boolean)
+      .join("\n          ");
+    const channelNote =
+      row.contact_channel === "email" && !directEmailAllowed
+        ? "Direct email is disabled until CLAIMBRIEF_POSTAL_ADDRESS is set. Call first or use the broad email drafts only after readiness is clear."
+        : "Use only general contact fields. Do not submit claim-specific details.";
+    const emailCommandSection =
+      row.contact_channel === "email" && directEmailAllowed
+        ? `<section>
+            <h3>After email</h3>
+            <pre id="email-command-${slug}">${escapeHtml(trackerCommand(row, "email"))}</pre>
+            <button class="button" data-copy="email-command-${slug}">Copy email tracker command</button>
+          </section>`
+        : "";
     const phoneOpener = `Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
 
     return `<article class="card">
@@ -203,6 +266,7 @@ const cards = triggerRows
         </div>
       </div>
       <p><strong>Why this lead:</strong> ${escapeHtml(row.evidence_note)}</p>
+      <p class="notice">${escapeHtml(channelNote)}</p>
       <p><strong>Subject:</strong> ${escapeHtml(row.recommended_subject)}</p>
       <pre id="${messageId}">${escapeHtml(triggerMessage(row))}</pre>
       <button class="button" data-copy="${messageId}">Copy message</button>
@@ -215,11 +279,7 @@ const cards = triggerRows
             <pre id="${phoneId}">${escapeHtml(phoneOpener)}</pre>
             <button class="button" data-copy="${phoneId}">Copy phone opener</button>
           </section>
-          <section>
-            <h3>After email</h3>
-            <pre id="${emailCommandId}">${escapeHtml(trackerCommand(row, "email"))}</pre>
-            <button class="button" data-copy="${emailCommandId}">Copy email tracker command</button>
-          </section>
+${emailCommandSection}
           <section>
             <h3>After form</h3>
             <pre id="${formCommandId}">${escapeHtml(trackerCommand(row, "form"))}</pre>
@@ -306,6 +366,8 @@ const html = `<!doctype html>
       .actions { flex-wrap: wrap; justify-content: flex-end; }
       .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 0 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
       .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      .button.disabled { cursor: not-allowed; opacity: .6; }
+      .notice { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 10px 12px; color: #78350f; }
       .command-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
       details { margin-top: 14px; }
       summary { cursor: pointer; font-weight: 800; }
