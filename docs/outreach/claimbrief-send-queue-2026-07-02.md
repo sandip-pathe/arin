@@ -10,6 +10,8 @@ Generate send-ready files with:
 npm run outreach:claimbrief
 ```
 
+The default sample URL is `https://app.anaya.legal/samples/claimbrief-sample-review.html`. Set `CLAIMBRIEF_SAMPLE_URL` before generating if a different deployed URL is needed.
+
 Generated outputs:
 
 - `docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv`
@@ -22,6 +24,10 @@ Generated outputs:
 Use the "free sample" offer:
 
 > Send one old closed or redacted claim packet. I will return a ClaimBrief sample within 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample packet path:
+
+- `/samples/claimbrief-sample-review.html`
 
 Do not pitch "AI." Pitch document review speed.
 

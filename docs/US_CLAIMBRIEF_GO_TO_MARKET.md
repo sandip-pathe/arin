@@ -314,6 +314,7 @@ Reusable outreach assets:
 - Send queue: `docs/outreach/claimbrief-send-queue-2026-07-02.md`
 - Direct email mailmerge: `docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv`
 - Contact form messages: `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
+- Public sample packet: `public/samples/claimbrief-sample-review.html`
 - Email sequence: `docs/outreach/claimbrief-email-sequence.md`
 - AI personalization prompt: `docs/outreach/claimbrief-ai-personalization-prompt.md`
 

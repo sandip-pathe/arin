@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClaimBrief Sample Review Packet</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #0f172a;
+        --muted: #475569;
+        --line: #cbd5e1;
+        --soft: #f8fafc;
+        --accent: #0f766e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #e2e8f0;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      main {
+        width: min(960px, calc(100% - 32px));
+        margin: 32px auto;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 24px 80px rgb(15 23 42 / 14%);
+        overflow: hidden;
+      }
+
+      header {
+        padding: 32px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #fff, var(--soft));
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 8px;
+        font-size: clamp(30px, 5vw, 44px);
+        line-height: 1.08;
+      }
+
+      h2 {
+        margin-bottom: 12px;
+        font-size: 22px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+      }
+
+      h3 {
+        margin-bottom: 4px;
+        font-size: 16px;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 18px;
+        border: 1px solid #99f6e4;
+        border-radius: 999px;
+        background: #f0fdfa;
+        color: #115e59;
+        padding: 4px 10px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .notice {
+        margin-top: 18px;
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        background: #fffbeb;
+        padding: 14px 16px;
+        color: #713f12;
+        font-size: 14px;
+      }
+
+      section {
+        padding: 28px 32px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      section:last-child {
+        border-bottom: 0;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--soft);
+        padding: 16px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      li + li {
+        margin-top: 6px;
+      }
+
+      .ref {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        margin-left: 4px;
+        border-radius: 4px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .source {
+        border-left: 3px solid var(--accent);
+        padding-left: 12px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 720px) {
+        main {
+          width: 100%;
+          margin: 0;
+          border-left: 0;
+          border-right: 0;
+          border-radius: 0;
+        }
+
+        header,
+        section {
+          padding: 24px 20px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="badge">ClaimBrief sample</div>
+        <h1>ClaimBrief Review Packet</h1>
+        <p class="meta">
+          Matter: Lopez Roof Claim Review | Generated sample | Internal
+          claim-document review draft
+        </p>
+        <div class="notice">
+          ClaimBrief organizes claim documents for professional review. It does
+          not provide legal advice, public adjusting services, claim
+          negotiation, carrier submission, or coverage determinations.
+        </div>
+      </header>
+
+      <section>
+        <h2>Claim Overview</h2>
+        <p>
+          Insured Maria Lopez reported a residential wind/hail roof claim at 418
+          Cedar Ridge Lane, Austin, Texas, under policy HO-783921-TX with Lone
+          Star Mutual Insurance. The date of loss is April 18, 2026, and the
+          claim was reported on April 20, 2026. Lone Star Mutual denied roof
+          replacement in a May 12, 2026 letter, attributing the condition to
+          wear, deterioration, and improper maintenance.
+          <span class="ref">1</span>
+        </p>
+      </section>
+
+      <section>
+        <h2>Documents Reviewed</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Carrier denial letter</h3>
+            <p>
+              May 12, 2026 denial letter citing wear and tear, deterioration,
+              improper maintenance, and no observed storm-created opening.
+              <span class="ref">1</span>
+            </p>
+          </div>
+          <div class="card">
+            <h3>Policy excerpts</h3>
+            <p>
+              Coverage A, duties after loss, exclusions, and suit limitation
+              language from the claim packet.
+              <span class="ref">2</span>
+            </p>
+          </div>
+          <div class="card">
+            <h3>Contractor estimate</h3>
+            <p>
+              May 19, 2026 contractor estimate totaling $18,420 for roof and
+              interior items.
+              <span class="ref">3</span>
+            </p>
+          </div>
+          <div class="card">
+            <h3>Reviewer notes</h3>
+            <p>
+              Notes mention hail marks on soft metals/gutters and missing
+              engineer report or moisture readings.
+              <span class="ref">4</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Carrier Denial Or Underpayment Reasons</h2>
+        <ul>
+          <li>
+            Roof replacement was denied because observed roof conditions were
+            described as long-term wear, deterioration, and improper
+            maintenance. <span class="ref">1</span>
+          </li>
+          <li>
+            Interior ceiling staining was denied because the carrier stated no
+            storm-created opening was observed. <span class="ref">1</span>
+          </li>
+          <li>
+            The carrier estimate was $1,280 for minor repairs below the $2,500
+            deductible, while the contractor estimate was $18,420.
+            <span class="ref">3</span>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Policy Provisions And Deadlines Found</h2>
+        <ul>
+          <li>
+            Coverage A applies to direct physical loss to the dwelling unless an
+            exclusion applies. <span class="ref">2</span>
+          </li>
+          <li>
+            Duties after loss include prompt notice, protecting the property
+            from further damage, showing damaged property, and providing
+            requested records and documents. <span class="ref">2</span>
+          </li>
+          <li>
+            Listed exclusions include wear and tear, marring, deterioration,
+            latent defect, faulty workmanship, and neglect.
+            <span class="ref">2</span>
+          </li>
+          <li>
+            Suit against the company must be brought within two years and one
+            day after the date of loss. <span class="ref">2</span>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Missing Evidence Checklist</h2>
+        <ul>
+          <li>Engineer report addressing storm-created damage versus wear.</li>
+          <li>Moisture readings for the upstairs hallway staining.</li>
+          <li>Photo set mapping hail marks, soft metals, gutters, roof slopes, and interior damage.</li>
+          <li>Written response explaining why the contractor estimate was not addressed in the carrier letter.</li>
+          <li>Any prior roof maintenance records if wear/improper maintenance is disputed.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Draft Response Outline For Human Review</h2>
+        <ol>
+          <li>Identify the carrier's stated reasons for denial in its own wording.</li>
+          <li>Map each stated reason to the relevant policy exclusion or duty language.</li>
+          <li>Compare the carrier's $1,280 repair estimate with the contractor's $18,420 scope.</li>
+          <li>Ask the carrier to explain whether the contractor estimate and soft-metal/gutter photos were considered.</li>
+          <li>List missing expert or moisture evidence for the licensed reviewer to request or obtain.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Questions For The Licensed Reviewer</h2>
+        <ul>
+          <li>Is there enough evidence to dispute the wear-and-tear conclusion?</li>
+          <li>Does the interior staining need additional proof of storm-created opening?</li>
+          <li>What estimate line items are most important to reconcile first?</li>
+          <li>Are there any approaching policy or statutory deadlines?</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Source Index</h2>
+        <p class="source">
+          <strong>[1] Carrier denial letter:</strong> Coverage denied for roof
+          replacement because observed roof conditions are consistent with
+          long-term wear, deterioration, and improper maintenance. Interior
+          staining denied because no storm-created opening was observed.
+        </p>
+        <p class="source">
+          <strong>[2] Policy excerpts:</strong> Coverage A applies to direct
+          physical loss unless excluded. Duties after loss and exclusions are
+          listed. Suit limitation is two years and one day after date of loss.
+        </p>
+        <p class="source">
+          <strong>[3] Contractor estimate:</strong> Missing shingles, creased
+          shingles, damaged ridge cap, and water staining. Contractor total
+          $18,420; carrier estimate $1,280.
+        </p>
+        <p class="source">
+          <strong>[4] Reviewer notes:</strong> Photos show hail marks on soft
+          metals and gutters. No engineer report or moisture readings are
+          included.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

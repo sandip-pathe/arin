@@ -25,6 +25,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -42,6 +44,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -69,6 +73,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -86,6 +92,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -113,6 +121,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -130,6 +140,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -157,6 +169,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -174,6 +188,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -201,6 +217,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -218,6 +236,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -245,6 +265,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -262,6 +284,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```
@@ -289,6 +313,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -306,6 +332,8 @@ This is just a "brief this messy file" tool for policies, denial letters, estima
 The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
 ```

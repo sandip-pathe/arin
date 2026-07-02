@@ -106,6 +106,14 @@ export default function ClaimBriefPage() {
                 >
                   View outreach offer
                 </a>
+                <a
+                  href="/samples/claimbrief-sample-review.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  View sample packet
+                </a>
               </div>
 
               <p className="mt-4 text-sm leading-6 text-slate-500">
@@ -184,6 +192,14 @@ export default function ClaimBriefPage() {
               free ClaimBrief sample within 24 hours. If it is useless, tell me
               and I will not follow up.
             </p>
+            <a
+              href="/samples/claimbrief-sample-review.html"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50"
+            >
+              Open sample ClaimBrief
+            </a>
             <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-5 font-mono text-sm leading-7 text-slate-700">
               I am testing a small tool for public adjusters that turns claim
               documents into a cited review brief: denial reasons, policy

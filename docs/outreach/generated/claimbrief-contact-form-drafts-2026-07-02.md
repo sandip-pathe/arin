@@ -13,7 +13,9 @@ I saw Noble's Louisiana page focuses on catastrophic hurricane and large fire lo
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -33,7 +35,9 @@ I saw Abba handles fire, hail, wind, water leak, and denied/underpaid claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -53,7 +57,9 @@ I saw Experienced Public Adjusters explicitly reviews delayed, underpaid, denied
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -73,7 +79,9 @@ I saw Florida Public Adjusting handles hurricane, water, fire, mold, and denied 
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -93,7 +101,9 @@ I saw Florida Loss describes a document-heavy team with adjusters, estimators, a
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -113,7 +123,9 @@ I saw Tutwiler lists appraisals, mediation, hurricane/wind, large loss, and floo
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -133,7 +145,9 @@ I saw Insurance Claim Consultants handles roof, hurricane, water, wind, and hail
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -153,7 +167,9 @@ I saw Global Patriot's New Orleans page focuses on Hurricane Ida, roof, wind, an
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -173,7 +189,9 @@ I saw AAA Public Adjusters mentions Hurricane Laura property claims in Louisiana
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -193,7 +211,9 @@ I saw Prime Adjustments highlights Colorado hail and commercial roof hail claims
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -213,7 +233,9 @@ I saw Gavnat's Texas page calls out hail/wind events and commercial property cla
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -233,7 +255,9 @@ I saw Gavnat's Colorado page highlights hail disputes, wildfire smoke, and water
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -253,7 +277,9 @@ I saw your Florida page focuses on hurricane damage and documenting the full sco
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -273,7 +299,9 @@ I saw AIM's Colorado page discusses hail damage to roofs and siding.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -293,7 +321,9 @@ I saw Jansen's Louisiana page focuses on hurricane, flood, and New Orleans prope
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -313,7 +343,9 @@ I saw LRG's Louisiana FAQ emphasizes preserving evidence and organizing claim in
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -333,7 +365,9 @@ I saw Corbitt's Louisiana page focuses on hurricane, flood, and storm claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -353,7 +387,9 @@ I saw Cordo's Florida page discusses Hurricane Helene and Milton claim damage.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -373,7 +409,9 @@ I saw Liberty's Texas hail guide emphasizes public-adjuster help and proof-of-lo
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -393,7 +431,9 @@ I saw C3's DFW hail page discusses detailed claims packages and carrier red flag
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -413,7 +453,9 @@ I saw Empire's Colorado page lists storm, hail, water, roof, and vandalism claim
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -433,7 +475,9 @@ I saw Apex handles both residential and commercial property damage claims around
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:
@@ -453,7 +497,9 @@ I saw AllCity's Texas page highlights large losses and an in-house claims CRM.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 Phone opener:

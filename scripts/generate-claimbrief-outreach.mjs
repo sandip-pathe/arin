@@ -11,6 +11,9 @@ const prospectFile = join(
   "claimbrief-prospects-2026-07-02.csv"
 );
 const outputDir = join(root, "docs", "outreach", "generated");
+const sampleUrl =
+  process.env.CLAIMBRIEF_SAMPLE_URL ||
+  "https://app.anaya.legal/samples/claimbrief-sample-review.html";
 
 const baseEmail = (row) => `Hi ${salutation(row)},
 
@@ -29,6 +32,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: ${sampleUrl}
+
 Worth trying on one file?
 
 Sandy`;
@@ -43,13 +48,17 @@ The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
 
+Sample format: ${sampleUrl}
+
 Sandy`;
 
 const contactFormMessage = (row) => `${row.first_line}
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?`;
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: ${sampleUrl}
+
+Could I create one free sample from an old closed or redacted claim packet?`;
 
 const phoneOpener = (row) =>
   `Hi, I am calling about a tiny document-review tool for public adjusters. I saw ${row.company} handles ${row.observed_specialty}. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
