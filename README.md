@@ -93,6 +93,12 @@ Create a local environment file:
 
 ```bash
 OPENAI_API_KEY=your_server_side_key
+
+# Optional ClaimBrief sales links.
+NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL=hello@anaya.legal
+NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL=https://buy.stripe.com/...
+NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL=https://buy.stripe.com/...
+NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL=https://buy.stripe.com/...
 ```
 
 Run the app:

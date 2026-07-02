@@ -97,6 +97,15 @@ The `/claimbrief` route starts a new session with:
 
 The session page reads that query string and sets summary settings to the ClaimBrief workflow with US property-claim context. The workflow is sent to summary, quick skim, and chat API routes so prompts stay consistent.
 
+The `/claimbrief` page also exposes the first-sales path:
+
+- `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL`: recipient for free sample and fallback pilot emails.
+- `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL`: optional checkout URL for the $99 starter pilot.
+- `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL`: optional checkout URL for the $299/month pilot.
+- `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL`: optional checkout URL for white-label setup.
+
+When a checkout URL is absent, the CTA falls back to a prefilled `mailto:` message instead of hiding the offer.
+
 ## File Extraction
 
 Implementation: `src/lib/extraction.ts`

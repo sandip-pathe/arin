@@ -530,6 +530,15 @@ Suggested products:
 - ClaimBrief Monthly: $299/month for up to 20 briefs.
 - ClaimBrief White Label: $1,500 setup plus $299/month.
 
+Deploy wiring:
+
+- Set `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL` to the inbox that receives packets and buying questions.
+- Set `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL` to the $99 payment link.
+- Set `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL` to the $299/month payment link.
+- Set `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL` only after one paid pilot proves the workflow.
+
+If the payment links are not set, the ClaimBrief page falls back to prefilled email CTAs. That keeps the sales page usable before checkout is ready.
+
 ## The Bet
 
 Within 7 days, cold outreach to 150 public adjusters/restoration operators should produce at least:

@@ -8,7 +8,10 @@ import {
   BadgeDollarSign,
   FileCheck2,
   FileSearch,
+  Mail,
+  Receipt,
   ShieldCheck,
+  UploadCloud,
 } from "lucide-react";
 import Logo from "@/components/logo";
 import Footer from "@/components/footer";
@@ -33,10 +36,83 @@ const outputs = [
   "Draft response outline for human review",
 ];
 
+const contactEmail =
+  process.env.NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL || "hello@anaya.legal";
+
+const buildMailto = (subject: string, body: string) =>
+  `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+    body
+  )}`;
+
+const sampleRequestHref = buildMailto(
+  "ClaimBrief sample request",
+  `Hi Sandy,
+
+I want to try one free ClaimBrief sample.
+
+I can send an old closed or redacted property-insurance claim packet with:
+- policy excerpts or full policy
+- carrier denial or coverage letter
+- carrier estimate
+- contractor or public-adjuster estimate if available
+- key correspondence
+
+Please confirm the safest way to send the packet.
+`
+);
+
+const starterFallbackHref = buildMailto(
+  "ClaimBrief starter pilot",
+  `Hi Sandy,
+
+I want to start the ClaimBrief $99 starter pilot for 3 claim briefs.
+
+Please send the payment link and packet instructions.
+`
+);
+
+const monthlyFallbackHref = buildMailto(
+  "ClaimBrief monthly pilot",
+  `Hi Sandy,
+
+I want to discuss the ClaimBrief $299/month pilot for up to 20 claim briefs.
+
+Please send the payment link and packet workflow.
+`
+);
+
+const whiteLabelFallbackHref = buildMailto(
+  "ClaimBrief white-label setup",
+  `Hi Sandy,
+
+I want to discuss the ClaimBrief white-label setup.
+
+Please send the setup details, payment link, and rollout steps.
+`
+);
+
 const pricing = [
-  { name: "Starter", price: "$99", detail: "3 claim briefs" },
-  { name: "Monthly", price: "$299", detail: "up to 20 briefs" },
-  { name: "White label", price: "$1,500", detail: "setup plus monthly support" },
+  {
+    name: "Starter",
+    price: "$99",
+    detail: "3 claim briefs",
+    envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL,
+    fallbackHref: starterFallbackHref,
+  },
+  {
+    name: "Monthly",
+    price: "$299",
+    detail: "up to 20 briefs",
+    envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL,
+    fallbackHref: monthlyFallbackHref,
+  },
+  {
+    name: "White label",
+    price: "$1,500",
+    detail: "setup plus monthly support",
+    envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL,
+    fallbackHref: whiteLabelFallbackHref,
+  },
 ];
 
 export default function ClaimBriefPage() {
@@ -92,7 +168,7 @@ export default function ClaimBriefPage() {
                 outline.
               </p>
 
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Button
                   onClick={startClaimBrief}
                   className="h-12 rounded-md bg-slate-950 px-5 text-base text-white hover:bg-slate-800"
@@ -105,6 +181,12 @@ export default function ClaimBriefPage() {
                   className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
                 >
                   View outreach offer
+                </a>
+                <a
+                  href="#request-sample"
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-emerald-700 bg-emerald-700 px-5 text-base font-medium text-white hover:bg-emerald-800"
+                >
+                  Request free sample
                 </a>
                 <a
                   href="/samples/claimbrief-sample-review.html"
@@ -170,16 +252,87 @@ export default function ClaimBriefPage() {
                 {pricing.map((tier) => (
                   <div
                     key={tier.name}
-                    className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-4 py-3"
+                    className="grid gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-center"
                   >
                     <div>
                       <div className="font-medium">{tier.name}</div>
                       <div className="text-sm text-slate-500">{tier.detail}</div>
                     </div>
-                    <div className="text-lg font-semibold">{tier.price}</div>
+                    <div className="flex items-center gap-3 sm:justify-end">
+                      <div className="text-lg font-semibold">{tier.price}</div>
+                      <a
+                        href={tier.envUrl || tier.fallbackHref}
+                        target={tier.envUrl ? "_blank" : undefined}
+                        rel={tier.envUrl ? "noreferrer" : undefined}
+                        className="inline-flex h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                      >
+                        {tier.envUrl ? "Pay" : "Ask"}
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="request-sample"
+          className="border-b border-slate-200 bg-white px-4 py-10 sm:px-8"
+        >
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-800">
+                <UploadCloud className="h-4 w-4" />
+                Free first sample
+              </div>
+              <h2 className="text-3xl font-semibold tracking-tight">
+                Send one closed or redacted packet. Get a brief back in 24
+                hours.
+              </h2>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                The first useful sale is not a subscription screen. It is one
+                real packet, one useful output, then a small paid batch.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={sampleRequestHref}
+                  className="inline-flex h-11 items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800"
+                >
+                  <Mail className="mr-2 h-4 w-4" />
+                  Request sample by email
+                </a>
+                <a
+                  href={pricing[0].envUrl || pricing[0].fallbackHref}
+                  target={pricing[0].envUrl ? "_blank" : undefined}
+                  rel={pricing[0].envUrl ? "noreferrer" : undefined}
+                  className="inline-flex h-11 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                >
+                  <Receipt className="mr-2 h-4 w-4" />
+                  Start $99 pilot
+                </a>
+              </div>
+              <p className="mt-3 text-sm text-slate-500">
+                Contact email: {contactEmail}
+              </p>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                "Policy excerpts or full policy",
+                "Carrier denial or coverage letter",
+                "Carrier estimate",
+                "Contractor or public-adjuster estimate",
+                "Important claim correspondence",
+                "Questions the reviewer wants checked",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
         </section>

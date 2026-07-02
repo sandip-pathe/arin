@@ -214,3 +214,23 @@ Boundaries:
 - No settlement recommendation.
 
 The goal is fast paid validation through cold outreach, not a full SaaS build.
+
+## Decision 12: Use Concierge Payment Links Before Billing Infrastructure
+
+Decision:
+
+The ClaimBrief page should convert cold outreach into a free sample request or a paid pilot through email and configurable payment links, not a full self-serve billing system.
+
+Why:
+
+- The fastest path to money is one real packet, one useful output, then a small paid batch.
+- Billing accounts, subscriptions, and team workspaces would slow down validation.
+- Stripe or equivalent payment links can be swapped in through public env vars without changing code.
+- If a payment link is missing, the page falls back to a prefilled email ask so no CTA becomes dead.
+
+Config:
+
+- `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL`
+- `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL`
+- `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL`
+- `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL`
