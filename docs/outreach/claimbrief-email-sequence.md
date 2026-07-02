@@ -23,6 +23,9 @@ Worth trying on one file?
 
 {{signature}}
 
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: {{valid_physical_postal_address}}
+
 ## Email 2: Not A CRM
 
 Subject: not a CRM
@@ -38,6 +41,9 @@ The output is a PDF/Markdown review packet your team can edit or ignore.
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
 
 {{signature}}
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: {{valid_physical_postal_address}}
 
 ## Email 3: File Review Angle
 
@@ -56,6 +62,9 @@ I am looking for 5 public adjusters to test it on real closed files this week.
 Can I send you a sample?
 
 {{signature}}
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: {{valid_physical_postal_address}}
 
 ## LinkedIn Message
 
@@ -76,4 +85,3 @@ The starter pilot is $299/month for up to 20 briefs. I will keep it simple: send
 If no:
 
 What section was missing that would make this worth paying for?
-

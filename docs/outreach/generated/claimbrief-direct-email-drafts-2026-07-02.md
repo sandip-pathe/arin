@@ -30,6 +30,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -48,6 +51,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 2. DCS PIA
@@ -78,6 +84,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -96,6 +105,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 3. Ocean Point Claims
@@ -126,6 +138,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -144,6 +159,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 4. InterCoastal Public Adjusters
@@ -174,6 +192,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -192,6 +213,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 5. Skyline Adjusters
@@ -222,6 +246,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -240,6 +267,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 6. Skipton Claims Management
@@ -270,6 +300,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -288,6 +321,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 7. Your Public Adjuster
@@ -318,6 +354,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -336,6 +375,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 23. LRG Claims
@@ -366,6 +408,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -384,6 +429,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 30. AllCity Adjusting
@@ -414,6 +462,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -432,6 +483,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 33. Triumph Consulting
@@ -462,6 +516,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -480,6 +537,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 37. Peninsula Public Adjusters
@@ -510,6 +570,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -528,6 +591,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 39. United Claims Specialists
@@ -558,6 +624,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -576,6 +645,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 40. Sill Public Adjusters
@@ -606,6 +678,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -624,6 +699,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 42. Alpha Public Adjusting
@@ -654,6 +732,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -672,6 +753,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 46. Claim Monsters
@@ -702,6 +786,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -720,6 +807,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 48. National Claims Negotiators
@@ -750,6 +840,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -768,6 +861,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 49. First Call Public Adjusters
@@ -798,6 +894,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -816,6 +915,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 50. Continental Public Adjusters
@@ -846,6 +948,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -864,6 +969,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 51. Trust Public Adjusting Group
@@ -894,6 +1002,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -912,6 +1023,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 55. Kruger Property Solutions
@@ -942,6 +1056,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -960,6 +1077,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 56. Claims Public Adjusting
@@ -990,6 +1110,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1008,6 +1131,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 57. Horse & Crown
@@ -1038,6 +1164,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1056,6 +1185,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 58. 123Adjusting
@@ -1086,6 +1218,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1104,6 +1239,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 63. Mission Property Loss Consultants
@@ -1134,6 +1272,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1152,6 +1293,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 77. Feller Loss Consultants
@@ -1182,6 +1326,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1200,6 +1347,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 79. Accurate Claims Consulting
@@ -1230,6 +1380,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1248,6 +1401,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 85. Loti
@@ -1278,6 +1434,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1296,6 +1455,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 86. 21st Century Public Adjusters
@@ -1326,6 +1488,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1344,6 +1509,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 87. ProMaxx Public Adjusters
@@ -1374,6 +1542,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1392,6 +1563,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 88. Miller Public Adjusters
@@ -1422,6 +1596,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1440,6 +1617,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 90. Copper State Adjusting
@@ -1470,6 +1650,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1488,6 +1671,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 91. SafeHnd Public Adjusters
@@ -1518,6 +1704,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1536,6 +1725,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 92. Rise Public Adjusters
@@ -1566,6 +1758,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1584,6 +1779,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 93. Tiger Adjusters
@@ -1614,6 +1812,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1632,6 +1833,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 ## 95. PrimeState Public Adjusters
@@ -1662,6 +1866,9 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Worth trying on one file?
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 
 Follow-up subject: not a CRM
@@ -1680,5 +1887,8 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 
 Sandy
+
+If this is not relevant, reply "no" and I will not follow up.
+Mailing address: [ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]
 ```
 

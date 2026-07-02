@@ -16,6 +16,11 @@ const trackerFile = join(root, "docs", "outreach", "claimbrief-pipeline-tracker.
 const sampleUrl =
   process.env.CLAIMBRIEF_SAMPLE_URL ||
   "https://app.anaya.legal/samples/claimbrief-sample-review.html";
+const postalAddress =
+  process.env.CLAIMBRIEF_POSTAL_ADDRESS ||
+  "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+const complianceFooter = `If this is not relevant, reply "no" and I will not follow up.
+Mailing address: ${postalAddress}`;
 
 const baseEmail = (row) => `Hi ${salutation(row)},
 
@@ -38,7 +43,9 @@ Sample format: ${sampleUrl}
 
 Worth trying on one file?
 
-Sandy`;
+Sandy
+
+${complianceFooter}`;
 
 const followUpEmail = (row) => `Hi ${salutation(row)},
 
@@ -52,7 +59,9 @@ I can do one free sample from a closed/redacted file. Want me to show you what i
 
 Sample format: ${sampleUrl}
 
-Sandy`;
+Sandy
+
+${complianceFooter}`;
 
 const contactFormMessage = (row) => `${row.first_line}
 
@@ -201,6 +210,7 @@ This packet is for review and sending. It does not send anything by itself.
 
 - Review every email before sending.
 - Send only from the mailbox you want replies to land in.
+- Replace the mailing-address placeholder before any real send, or regenerate with \`CLAIMBRIEF_POSTAL_ADDRESS\`.
 - After each send, update \`docs/outreach/claimbrief-pipeline-tracker.csv\`.
 - If a contact form asks for policyholder claim details, do not invent them. Use only the general message field or call instead.
 
@@ -229,6 +239,7 @@ ${formLines}
 ## Reply Handling
 
 Use \`docs/outreach/claimbrief-reply-and-close-playbook.md\`.
+Use \`docs/outreach/claimbrief-outbound-compliance-checklist.md\` before the first real send.
 
 If one person sends a real packet, stop adding features. Produce the sample and ask for payment.
 `;
@@ -542,3 +553,6 @@ console.log(`Generated ${formRows.length} contact-form rows.`);
 console.log(`Generated ${trackerRows.length} tracker rows.`);
 console.log("Generated send board.");
 console.log(`Generated ${emailRows.length} .eml drafts.`);
+if (!process.env.CLAIMBRIEF_POSTAL_ADDRESS) {
+  console.log("Warning: email drafts contain a mailing-address placeholder.");
+}

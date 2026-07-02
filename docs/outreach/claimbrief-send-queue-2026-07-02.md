@@ -27,6 +27,8 @@ Generated outputs:
 Use after replies start:
 
 - `docs/outreach/claimbrief-reply-and-close-playbook.md`
+- `docs/outreach/claimbrief-first-sale-runbook.md`
+- `docs/outreach/claimbrief-outbound-compliance-checklist.md`
 - `docs/outreach/claimbrief-pipeline-tracker.csv`
 
 ## Offer To Send
@@ -45,6 +47,7 @@ Do not pitch "AI." Pitch document review speed.
 
 Send these first because they have public email addresses or email-like contact values.
 For reviewable local drafts, open the `.eml` files in `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/` or use the Day 1 packet.
+Before real sends, replace the mailing-address placeholder in the drafts or regenerate with `CLAIMBRIEF_POSTAL_ADDRESS`.
 
 | Order | Company | Contact | Why This Lead |
 | ---: | --- | --- | --- |

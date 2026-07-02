@@ -8,6 +8,7 @@ This packet is for review and sending. It does not send anything by itself.
 
 - Review every email before sending.
 - Send only from the mailbox you want replies to land in.
+- Replace the mailing-address placeholder before any real send, or regenerate with `CLAIMBRIEF_POSTAL_ADDRESS`.
 - After each send, update `docs/outreach/claimbrief-pipeline-tracker.csv`.
 - If a contact form asks for policyholder claim details, do not invent them. Use only the general message field or call instead.
 
@@ -89,5 +90,6 @@ Use `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv` or
 ## Reply Handling
 
 Use `docs/outreach/claimbrief-reply-and-close-playbook.md`.
+Use `docs/outreach/claimbrief-outbound-compliance-checklist.md` before the first real send.
 
 If one person sends a real packet, stop adding features. Produce the sample and ask for payment.
