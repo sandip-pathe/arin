@@ -332,28 +332,6 @@ Phone opener:
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw Jansen / Adjusters International handles Louisiana hurricane damage; flood; tornado; New Orleans claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 
-## 23. LRG Claims
-
-URL: https://www.lrgclaims.com/public-adjusters-louisiana
-Phone: not found
-Subject: evidence checklist?
-
-```text
-I saw LRG's Louisiana FAQ emphasizes preserving evidence and organizing claim information.
-
-I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
-
-No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
-
-Could I create one free sample from an old closed or redacted claim packet?
-```
-
-Phone opener:
-
-```text
-Hi, I am calling about a tiny document-review tool for public adjusters. I saw LRG Claims handles Louisiana hurricane; evidence preservation; claim organization. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
-```
-
 ## 24. Corbitt Public Adjusting
 
 URL: https://corbittpublicadjusting.com/states/louisiana
@@ -484,28 +462,6 @@ Phone opener:
 
 ```text
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw Apex Adjusting Group handles Denver residential and commercial property damage claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
-```
-
-## 30. AllCity Adjusting
-
-URL: https://allcityadjusting.com/public-adjuster/service-areas/texas-public-adjuster/
-Phone: 844-MY-ADJUSTER
-Subject: large loss brief?
-
-```text
-I saw AllCity's Texas page highlights large losses and an in-house claims CRM.
-
-I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
-
-No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
-
-Could I create one free sample from an old closed or redacted claim packet?
-```
-
-Phone opener:
-
-```text
-Hi, I am calling about a tiny document-review tool for public adjusters. I saw AllCity Adjusting handles large loss; fire; water; storm; in-house claims CRM. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 
 ## 31. South Wind Public Adjusters
@@ -726,5 +682,93 @@ Phone opener:
 
 ```text
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw Ademar Adjusters handles Miami public adjusters; denied or undervalued claims; hurricane; construction estimates. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 47. YPA Public Adjusters
+
+URL: https://www.ypapublicadjusters.com/texas/
+Phone: (682) 267-0336
+Subject: Texas claim review brief?
+
+```text
+I saw YPA's Texas page says you help after low settlement offers, denied claims, and complex storm damage.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw YPA Public Adjusters handles Texas hurricane, flood, fire, hail, wind, roof, underpaid, and denied claim appeals. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 52. Claim Warriors
+
+URL: https://www.claimwarriors.com/service-areas/colorado-public-adjuster
+Phone: 888-884-7050
+Subject: Colorado payout brief?
+
+```text
+I saw Claim Warriors lists Colorado hail, fire, flood, windstorm, water, mold, business interruption, and initial-offer disputes.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Claim Warriors handles Colorado public adjusters; hail, fire, flood, hurricane, windstorm, water, mold, business interruption; denied initial offers. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 53. Allclaims Pro
+
+URL: https://allclaimspro.com/
+Phone: (540) 252-6623
+Subject: multi-state claim brief?
+
+```text
+I saw Allclaims Pro serves multiple states and asks prospects to upload policies, claim documents, photos, damage type, and insurance company details.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Allclaims Pro handles multi-state public adjusting; fire, water, hail, wind, hurricane, tree, and storm damage; policy review and claim document uploads. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 54. Eagle Public Adjusting Group
+
+URL: https://www.eaglepublicadjustinggroup.com/contact/
+Phone: not found
+Subject: free review brief?
+
+```text
+I saw Eagle Public Adjusting Group offers free claim review and property inspection for Florida property owners.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Eagle Public Adjusting Group handles Florida and Wisconsin public adjusters; hurricane, fire, water, vandalism; residential and commercial. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 

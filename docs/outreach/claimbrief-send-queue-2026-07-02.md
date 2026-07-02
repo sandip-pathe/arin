@@ -4,7 +4,7 @@ Purpose: turn the ClaimBrief wedge into replies, sample files, and first paid pi
 
 This queue uses only public company/contact information collected from company pages, public search results, and public directories/pages. Do not invent missing emails. If the row says `contact_form`, use the form or call the office after sending the form.
 
-Current queue size: 45 prospects, with 12 direct-email leads and 33 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
+Current queue size: 55 prospects, with 20 direct-email leads and 35 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
 
 Generate send-ready files with:
 
@@ -52,15 +52,23 @@ Send these first because they have public email addresses or email-like contact 
 | 5 | Skyline Adjusters | `claims@skylineadjusters.com` | Public adjuster offices in Texas plus claims assistance. |
 | 6 | Skipton Claims Management | `Office@skiptoninc.com` | Colorado/Texas/Florida, hail damage and commercial losses. |
 | 7 | Your Public Adjuster | `info@YourPublicAdjuster.us` | Florida Hurricane Ian and wind/storm-surge claim work. |
-| 8 | Triumph Consulting | `claims@triumphfl.com` | Florida denied claim appeals, deadlines, and free file review. |
-| 9 | Peninsula Public Adjusters | `info@peninsulapublicadjusters.com` | Florida underpaid or denied claim evaluation and policy review. |
-| 10 | United Claims Specialists | `claims@ucspa.com` | Louisiana denied property claims plus commercial and large-loss work. |
-| 11 | Sill Public Adjusters | `info@sill.com` | Commercial and large residential property damage claims. |
-| 12 | Alpha Public Adjusting | `claims@alphapublicadjusting.com` | Georgia/Florida public adjusting with public contact email. |
+| 8 | LRG Claims | `info@lrgclaims.com` | Multi-state denied, delayed, underpaid, municipal, school, and multifamily claims. |
+| 9 | AllCity Adjusting | `info@allcityadjusting.com` | Large-loss public adjusting with an in-house claims CRM. |
+| 10 | Triumph Consulting | `claims@triumphfl.com` | Florida denied claim appeals, deadlines, and free file review. |
+| 11 | Peninsula Public Adjusters | `info@peninsulapublicadjusters.com` | Florida underpaid or denied claim evaluation and policy review. |
+| 12 | United Claims Specialists | `claims@ucspa.com` | Louisiana denied property claims plus commercial and large-loss work. |
+| 13 | Sill Public Adjusters | `info@sill.com` | Commercial and large residential property damage claims. |
+| 14 | Alpha Public Adjusting | `claims@alphapublicadjusting.com` | Georgia/Florida public adjusting with public contact email. |
+| 15 | Claim Monsters | `info@claimmonsters.com` | Texas denied and underpaid claims across hail, ice, wind, and hurricane damage. |
+| 16 | National Claims Negotiators | `claims@ncnmail.com` | Texas storm claims for commercial, churches, property managers, and residential policyholders. |
+| 17 | First Call Public Adjusters | `FirstCallPublicAdjusters@gmail.com` | Texas commercial roofs, residential claims, appraisals, and underpaid claims. |
+| 18 | Continental Public Adjusters | `claims@contpa.com` | Florida denied, delayed, and underpaid commercial, residential, and condo claims. |
+| 19 | Trust Public Adjusting Group | `Claims@TrustPublicAdjusting.com` | Florida residential and commercial claim review plus policy reviews. |
+| 20 | Kruger Property Solutions | `claims@callkruger.com` | Restoration operator with insurance-denial guidance and storm workflow. |
 
 ## Contact Form / Phone First Batch
 
-Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 33 form/call targets; use the send board for every generated message.
+Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 35 form/call targets; use the send board for every generated message.
 
 | Order | Company | Contact Path | Phone |
 | ---: | --- | --- | --- |
@@ -72,6 +80,10 @@ Use the same copy, but shorten the form message to 500 characters if needed. If 
 | 13 | Tutwiler & Associates | https://publicadjuster.com/contact/ | (813) 412-8357 |
 | 14 | Insurance Claim Consultants | https://www.insuranceclaimconsultants.com/ | (800) 572-7914 |
 | 15 | Global Patriot Adjusters | https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters | 813-402-8895 |
+| 16 | AAA Public Adjusters | https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/ |  |
+| 17 | Prime Adjustments | https://primeadjustments.com/colorado-public-adjuster/ | 720-664-9536 |
+| 18 | Gavnat | https://www.gavnat.com/location/texas/ |  |
+| 19 | Gavnat | https://www.gavnat.com/location/colorado/ |  |
 
 ## Subject Lines
 
@@ -151,15 +163,15 @@ Sandy
 
 Day 1:
 
-- Send all 12 direct emails from the send board.
+- Send all 20 direct emails from the send board.
 - Submit the first 12 contact forms or make 12 office calls.
 - Track every outcome in `claimbrief-pipeline-tracker.csv`.
 
 Day 2:
 
 - Follow up with non-responders from the email-ready batch.
-- Submit the remaining 21 contact forms/calls.
-- Add 40 more prospects from Texas and Florida.
+- Submit the remaining 23 contact forms/calls.
+- Add 45 more prospects from Texas, Florida, Colorado, and Louisiana.
 - Record a 60-90 second demo from `/claimbrief`.
 
 Day 3:
