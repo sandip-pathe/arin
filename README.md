@@ -79,6 +79,7 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Form/Call Sprint](docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html)
 - [ClaimBrief Oklahoma Trigger Sprint](docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html)
 - [ClaimBrief Send Readiness Report](docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md)
+- [ClaimBrief Live Route Report](docs/outreach/generated/claimbrief-live-routes-2026-07-02.md)
 - [ClaimBrief Pipeline Summary](docs/outreach/generated/claimbrief-pipeline-summary-2026-07-02.md)
 - [ClaimBrief Command Center](docs/outreach/generated/claimbrief-command-center-2026-07-02.html)
 - [ClaimBrief Sample Review Packet](public/samples/claimbrief-sample-review.html)
@@ -110,6 +111,8 @@ OPENAI_API_KEY=your_server_side_key
 # Optional ClaimBrief sales links. If unset, CTAs use manual-invoice email fallbacks.
 CLAIMBRIEF_POSTAL_ADDRESS="Your compliant mailing address"
 CLAIMBRIEF_SAMPLE_URL=https://app.anaya.legal/samples/claimbrief-sample-review.html
+CLAIMBRIEF_PUBLIC_BASE_URL=https://app.anaya.legal
+CLAIMBRIEF_OKLAHOMA_OFFER_URL=https://app.anaya.legal/claimbrief/oklahoma-hail
 NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL=hello@anaya.legal
 NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL=https://buy.stripe.com/...
 NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL=https://buy.stripe.com/...
@@ -139,6 +142,7 @@ npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:form-call-sprint
 npm run outreach:claimbrief:trigger-sprint
+npm run outreach:claimbrief:live-check
 npm audit --omit=dev
 npm run build
 ```

@@ -63,15 +63,28 @@ and draft response outline.
 No carrier contact, no legal advice, no homeowner-facing promises. Just document
 review speed for a licensed claim professional.
 
+Live sample/offer page: https://app.anaya.legal/claimbrief/oklahoma-hail
+
 Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 packet?
 ```
 
-Targeted offer page:
+Targeted route:
 
 ```text
 https://app.anaya.legal/claimbrief/oklahoma-hail
 ```
+
+Before outreach, run:
+
+```bash
+npm run outreach:claimbrief:live-check
+```
+
+The generated sprint uses the targeted route by default. If the live check ever
+shows that route is unavailable, set
+`CLAIMBRIEF_OKLAHOMA_OFFER_URL=https://app.anaya.legal/claimbrief` and
+regenerate before outreach.
 
 ## Prioritized Targets
 

@@ -7,7 +7,10 @@ const root = join(__dirname, "..");
 const campaignDate = "2026-07-02";
 const generatedDir = join(root, "docs", "outreach", "generated");
 const emailPlaceholder = "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
-const oklahomaOfferUrl = "https://app.anaya.legal/claimbrief/oklahoma-hail";
+const publicBaseUrl = process.env.CLAIMBRIEF_PUBLIC_BASE_URL || "https://app.anaya.legal";
+const oklahomaTargetUrl = `${publicBaseUrl}/claimbrief/oklahoma-hail`;
+const oklahomaOfferUrl =
+  process.env.CLAIMBRIEF_OKLAHOMA_OFFER_URL || oklahomaTargetUrl;
 
 const paths = {
   prospects: join(root, "docs", "outreach", `claimbrief-prospects-${campaignDate}.csv`),
@@ -169,7 +172,7 @@ I am testing ClaimBrief for wind/hail, denial, and underpayment files. It turns 
 
 No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed for a licensed claim professional.
 
-Oklahoma wind/hail sample page: ${oklahomaOfferUrl}
+Live sample/offer page: ${oklahomaOfferUrl}
 
 Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?${
   row.contact_channel === "email" && directEmailAllowed
@@ -392,7 +395,9 @@ const html = `<!doctype html>
       <section class="banner">
         Use this as the timely sprint after the June 2026 Oklahoma wind/hail claim-handling news cycle. Do not accuse any carrier in outreach. Ask for one old closed or redacted packet and offer a cited review brief.
         <br />
-        Offer page: <a href="${oklahomaOfferUrl}" target="_blank" rel="noreferrer">${oklahomaOfferUrl}</a>
+        Live offer page: <a href="${oklahomaOfferUrl}" target="_blank" rel="noreferrer">${oklahomaOfferUrl}</a>
+        <br />
+        Targeted route: <a href="${oklahomaTargetUrl}" target="_blank" rel="noreferrer">${oklahomaTargetUrl}</a>
       </section>
       ${cards || '<section class="card"><h2>No unattempted trigger targets found.</h2><p class="muted">Run the tracker summary to inspect follow-ups or reopen skipped targets.</p></section>'}
     </main>
