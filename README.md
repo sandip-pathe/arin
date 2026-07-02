@@ -27,6 +27,7 @@ The current product direction is deliberately narrow: a fast private legal readi
 - Creates private legal sessions in the current browser.
 - Offers a ClaimBrief route for US property-insurance claim packet review.
 - Offers a ClaimBrief packet-intake instruction route for safe redacted-file handoff.
+- Offers a ClaimBrief paid-pilot scope route that works with or without payment links.
 - Extracts text from PDF, DOCX, image, TXT, and Markdown files.
 - Uses local parsing, PDF text extraction, OCR, and sentence chunking before AI calls.
 - Generates quick skims, structured summaries, source-linked legal points, and legal ontology fields.
@@ -138,6 +139,8 @@ The latest verified build route table only includes:
 
 - `/`
 - `/claimbrief`
+- `/claimbrief/intake`
+- `/claimbrief/pilot`
 - `/s/[sessionId]`
 - `/api/ai/chat`
 - `/api/ai/quick-skim`

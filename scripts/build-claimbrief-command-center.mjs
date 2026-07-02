@@ -8,6 +8,7 @@ const campaignDate = "2026-07-02";
 const generatedDir = join(root, "docs", "outreach", "generated");
 const claimBriefUrl = "http://localhost:9002/claimbrief";
 const intakeUrl = "http://localhost:9002/claimbrief/intake";
+const pilotUrl = "http://localhost:9002/claimbrief/pilot";
 const sampleUrl = "http://localhost:9002/samples/claimbrief-sample-review.html";
 
 const paths = {
@@ -274,6 +275,7 @@ const html = `<!doctype html>
       <div class="button-row">
         <a class="button primary" href="${claimBriefUrl}">Open ClaimBrief page</a>
         <a class="button" href="${intakeUrl}">Packet instructions</a>
+        <a class="button" href="${pilotUrl}">Pilot details</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
         <a class="button" href="${relativeHref(paths.sendBoard)}">Send board</a>
         <a class="button" href="${relativeHref(paths.dayOne)}">Day 1 packet</a>

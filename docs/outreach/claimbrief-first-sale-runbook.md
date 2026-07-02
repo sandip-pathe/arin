@@ -35,6 +35,7 @@ determination, no homeowner-facing promise.
 - Keep `docs/outreach/claimbrief-pipeline-tracker.csv` open while sending.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
 - Use `/claimbrief/intake` after a positive reply so the prospect knows what to redact and send.
+- Use `/claimbrief/pilot` when someone asks price or after a useful free sample.
 
 ## Day 1 Execution
 
@@ -84,7 +85,7 @@ will make a free sample.
 | Signal | Meaning | Action |
 | --- | --- | --- |
 | Sends packet | Strongest signal | Produce sample before doing anything else. |
-| Asks price | Buying signal | Offer free sample and the $99 starter. |
+| Asks price | Buying signal | Send `/claimbrief/pilot`, offer free sample, and explain the $99 starter. |
 | Asks sample | Proof request | Send sample link, then ask for one redacted file. |
 | Asks security | Trust risk | Ask for old closed/redacted file; do not overpromise. |
 | Says no CRM | Category confusion | Reframe as a one-file review packet. |
@@ -135,6 +136,9 @@ If yes, I can do the starter batch:
 - I return PDF + Markdown review packets
 - no annual contract
 
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
+
 Should I send the starter payment link?
 ```
 
@@ -142,6 +146,9 @@ If they say yes:
 
 ```text
 Great. Starter is $99 for 3 ClaimBriefs.
+
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
 
 Payment link: {{stripe_starter_payment_link}}
 

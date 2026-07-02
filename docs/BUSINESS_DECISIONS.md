@@ -234,3 +234,26 @@ Config:
 - `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL`
 - `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL`
 - `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL`
+
+## Decision 13: Sell A Manual Pilot Before A Platform
+
+Decision:
+
+Add a paid-pilot scope page at `/claimbrief/pilot`, but keep the product promise
+manual and concierge until a stranger sends a real packet or pays.
+
+Why:
+
+- There is no existing audience, case-study base, payments motion, or support
+  workflow to justify platform language.
+- A clear pilot page answers price questions without pretending the SaaS is
+  already mature.
+- The first commercial proof should be one useful sample, then one $99 starter
+  batch or one $299/month pilot.
+- Missing checkout links should not block selling; fallback email CTAs keep the
+  motion manual and honest.
+
+Operational rule:
+
+Do not build account billing, upload portals, or team dashboards until at least
+one prospect sends a real packet or pays for the starter batch.

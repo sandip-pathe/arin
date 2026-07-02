@@ -8,6 +8,8 @@ Anaya is now a local-first Next.js application with a narrow server boundary for
 flowchart TD
   User["User browser"] --> Home["Home page"]
   User --> ClaimBrief["/claimbrief"]
+  ClaimBrief --> Intake["/claimbrief/intake"]
+  ClaimBrief --> Pilot["/claimbrief/pilot"]
   Home --> LocalIndex["localStorage session index"]
   ClaimBrief --> Session
   Home --> Session["/s/[sessionId]"]
@@ -58,7 +60,7 @@ Server routes:
 
 There are no session persistence APIs today. That is intentional. The current product choice is local browser storage plus explicit export.
 
-Workflow-specific prompting is selected through local settings. The `claim-brief` workflow changes summary, quick skim, and chat prompts without changing the storage model.
+Workflow-specific prompting is selected through local settings. The `claim-brief` workflow changes summary, quick skim, and chat prompts without changing the storage model. The `/claimbrief/intake` and `/claimbrief/pilot` routes are static sales/support surfaces; they do not upload files, create sessions, or persist user data.
 
 ## Data Flow
 
@@ -79,6 +81,11 @@ Workflow-specific prompting is selected through local settings. The `claim-brief
 3. The page creates a local session at `/s/{sessionId}?new=true&workflow=claim-brief`.
 4. The upload modal asks for policies, denial letters, estimates, and claim correspondence.
 5. Summary, quick skim, and chat requests use claim-review prompts and preserve the same local-first storage model.
+
+Supporting sales routes:
+
+- `/claimbrief/intake`: explains redaction and packet requirements for one sample.
+- `/claimbrief/pilot`: explains the manual starter/monthly pilot after the sample is useful or a prospect asks price.
 
 ### Existing Session
 

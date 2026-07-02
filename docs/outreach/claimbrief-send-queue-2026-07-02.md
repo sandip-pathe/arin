@@ -47,6 +47,7 @@ Sample packet path:
 
 - `/samples/claimbrief-sample-review.html`
 - `/claimbrief/intake`
+- `/claimbrief/pilot`
 
 Do not pitch "AI." Pitch document review speed.
 

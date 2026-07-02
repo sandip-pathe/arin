@@ -77,6 +77,9 @@ For the first pilot I am keeping it simple:
 - Starter: $99 for 3 ClaimBriefs
 - Monthly pilot: $299/month for up to 20 ClaimBriefs
 
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
+
 No annual contract. If the first paid batch is not useful, do not renew.
 
 Want to start with the free sample or the $99 starter batch?
@@ -132,6 +135,9 @@ If yes, I can do the starter batch:
 - I return PDF + Markdown review packets
 - no annual contract
 
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
+
 Should I send the starter payment link?
 ```
 
@@ -139,6 +145,9 @@ Should I send the starter payment link?
 
 ```text
 Great. Starter is $99 for 3 ClaimBriefs.
+
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
 
 Payment link: {{stripe_starter_payment_link}}
 
@@ -149,6 +158,9 @@ After payment, send up to 3 redacted or active claim packets and I will return e
 
 ```text
 Monthly pilot is $299/month for up to 20 ClaimBriefs.
+
+Pilot details:
+https://app.anaya.legal/claimbrief/pilot
 
 Payment link: {{stripe_monthly_payment_link}}
 

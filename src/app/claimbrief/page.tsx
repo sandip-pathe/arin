@@ -194,13 +194,11 @@ export default function ClaimBriefPage() {
                   Request free sample
                 </a>
                 <a
-                  href={pricing[0].envUrl || pricing[0].fallbackHref}
-                  target={pricing[0].envUrl ? "_blank" : undefined}
-                  rel={pricing[0].envUrl ? "noreferrer" : undefined}
+                  href="/claimbrief/pilot"
                   className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
                 >
                   <Receipt className="mr-2 h-4 w-4" />
-                  {pricing[0].envUrl ? "Start $99 pilot" : "Request $99 pilot"}
+                  Pilot details
                 </a>
                 <a
                   href="/samples/claimbrief-sample-review.html"

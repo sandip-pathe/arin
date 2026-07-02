@@ -6,6 +6,8 @@ Anaya runs on Next.js App Router with two major surfaces:
 
 - `src/app/page.tsx`: local session dashboard.
 - `src/app/claimbrief/page.tsx`: ClaimBrief sales/demo route.
+- `src/app/claimbrief/intake/page.tsx`: ClaimBrief packet-intake instruction route.
+- `src/app/claimbrief/pilot/page.tsx`: ClaimBrief paid-pilot scope and pricing route.
 - `src/app/s/[sessionId]/page.tsx`: document analysis workspace.
 
 Server routes live under:
@@ -97,7 +99,10 @@ The `/claimbrief` route starts a new session with:
 
 The session page reads that query string and sets summary settings to the ClaimBrief workflow with US property-claim context. The workflow is sent to summary, quick skim, and chat API routes so prompts stay consistent.
 
-The `/claimbrief` page also exposes the first-sales path:
+The `/claimbrief` page also exposes the first-sales path. `/claimbrief/intake`
+explains safe packet handoff for a free sample, and `/claimbrief/pilot`
+explains the paid starter/monthly scope once a sample is useful or a prospect
+asks price.
 
 - `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL`: recipient for free sample and fallback pilot emails.
 - `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL`: optional checkout URL for the $99 starter pilot.
