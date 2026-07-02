@@ -34,6 +34,8 @@ determination, no homeowner-facing promise.
 - Run `npm run outreach:claimbrief:check:form-call` when working only the
   contact-form/call channel while direct email is blocked.
 - Open `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`.
+- Open `docs/outreach/generated/claimbrief-first-20-manual-emails-2026-07-02.md`
+  when sending the first direct-email batch manually.
 - Keep `docs/outreach/claimbrief-pipeline-tracker.csv` open while sending.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
 - Use `/claimbrief/intake` after a positive reply so the prospect knows what to redact and send.
@@ -123,7 +125,7 @@ npm run outreach:claimbrief:tracker -- --company "Palco Claims" --status sent --
 ## Call Script
 
 ```text
-Hi, this is Sandy. I sent a short note about ClaimBrief, a document-review tool
+Hi, this is Sandip. I sent a short note about ClaimBrief, a document-review tool
 for public adjusters. The simple version is: send one old redacted claim packet,
 and I return a cited brief with denial reasons, policy language, missing evidence,
 and a response outline.
@@ -143,7 +145,7 @@ not follow up. Where should I send the sample format?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief. It turns a redacted property claim
+Hi, this is Sandip calling about ClaimBrief. It turns a redacted property claim
 packet into a cited review brief for a licensed professional to review. I sent
 the sample format by email. If one old file would be useful, reply there and I
 will make a free sample.
