@@ -48,7 +48,7 @@ Could I make one free sample?
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
@@ -58,7 +58,7 @@ Who handles carrier-letter or policy-language review in your office?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+Hi, this is Sandip calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
 
 I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.
 ```
@@ -113,7 +113,7 @@ Could I make one free sample?
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
@@ -123,7 +123,7 @@ Who handles carrier-letter or policy-language review in your office?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+Hi, this is Sandip calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
 
 I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.
 ```
@@ -178,7 +178,7 @@ Could I make one free sample?
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
@@ -188,7 +188,7 @@ Who handles carrier-letter or policy-language review in your office?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+Hi, this is Sandip calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
 
 I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.
 ```
@@ -243,7 +243,7 @@ Could I make one free sample?
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
@@ -253,7 +253,7 @@ Who handles carrier-letter or policy-language review in your office?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+Hi, this is Sandip calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
 
 I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.
 ```
@@ -308,7 +308,7 @@ Could I make one free sample?
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
@@ -318,7 +318,7 @@ Who handles carrier-letter or policy-language review in your office?
 Voicemail:
 
 ```text
-Hi, this is Sandy calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
+Hi, this is Sandip calling about ClaimBrief for Oklahoma wind and hail claim review. It turns one old redacted packet into a cited brief for a licensed professional to review.
 
 I am not asking for a meeting first. If one free sample would be useful, the page is https://app.anaya.legal/claimbrief/oklahoma-hail.
 ```
