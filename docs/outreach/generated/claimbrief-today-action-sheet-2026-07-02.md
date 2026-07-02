@@ -56,7 +56,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+Hi, this is Sandip. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 
@@ -112,7 +112,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+Hi, this is Sandip. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 
@@ -168,7 +168,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+Hi, this is Sandip. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 
@@ -224,7 +224,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+Hi, this is Sandip. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 
@@ -280,7 +280,7 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+Hi, this is Sandip. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 

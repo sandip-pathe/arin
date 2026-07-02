@@ -1,11 +1,14 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { campaignDate, generatedDir, getTodayTargets } from "./claimbrief-today-targets.mjs";
+import { readClaimBriefEnv } from "./claimbrief-identity.mjs";
 
 const publicBaseUrl = process.env.CLAIMBRIEF_PUBLIC_BASE_URL || "https://app.anaya.legal";
 const oklahomaTargetUrl = `${publicBaseUrl}/claimbrief/oklahoma-hail`;
 const oklahomaOfferUrl =
   process.env.CLAIMBRIEF_OKLAHOMA_OFFER_URL || oklahomaTargetUrl;
+const env = readClaimBriefEnv();
+const operatorFirstName = env.CLAIMBRIEF_OPERATOR_FIRST_NAME || "Sandip";
 
 const paths = {
   markdown: join(generatedDir, `claimbrief-today-action-sheet-${campaignDate}.md`),
@@ -46,7 +49,7 @@ Live sample/offer page: ${oklahomaOfferUrl}
 
 Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?`;
 
-const phoneOpenerFor = () => `Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
+const phoneOpenerFor = () => `Hi, this is ${operatorFirstName}. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files.
 
 The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline.
 
