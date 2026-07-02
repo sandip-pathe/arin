@@ -14,14 +14,14 @@ Channel scope: **direct-email**
 - Tracker rows: 109
 - EML drafts: 37
 - Blockers: 2
-- Warnings: 1
+- Warnings: 0
 
 ## Channel Readiness
 
 | Channel | Status | Reason |
 | --- | --- | --- |
-| Direct email | BLOCKED | Set CLAIMBRIEF_POSTAL_ADDRESS before sending direct email drafts. 37 .eml drafts still contain the postal-address placeholder. Set NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL or manually use the inbox that should receive replies. |
-| Contact forms/calls | READY_WITH_WARNINGS | Set NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL or manually use the inbox that should receive replies. |
+| Direct email | BLOCKED | Set CLAIMBRIEF_POSTAL_ADDRESS before sending direct email drafts. 37 .eml drafts still contain the postal-address placeholder. |
+| Contact forms/calls | READY | Ready for manual form/call review. No email mailing-address footer required. |
 
 ## Blockers
 
@@ -30,7 +30,7 @@ Channel scope: **direct-email**
 
 ## Warnings
 
-- env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL: Set the inbox that should receive sample and pilot requests.
+- None
 
 ## Checks
 
@@ -58,7 +58,7 @@ Channel scope: **direct-email**
 | file:identityReadiness | form-call | pass | docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md |
 | file:emlDir | direct-email | pass | docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02 |
 | env:CLAIMBRIEF_POSTAL_ADDRESS | direct-email | fail | Set this before sending email drafts. |
-| env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL | global | fail | Set the inbox that should receive sample and pilot requests. |
+| env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL | global | pass | Set the inbox that should receive sample and pilot requests. |
 | env:NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL | global | pass | Optional. Missing checkout URL uses manual invoice/email fallback. |
 | env:NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL | global | pass | Optional. Missing checkout URL uses manual invoice/email fallback. |
 | count:prospects | global | pass | 109 prospects found. |
@@ -73,7 +73,7 @@ Channel scope: **direct-email**
 
 ## Notes
 
-- Tracker status counts: not_sent=109
+- Tracker status counts: not_sent=108, skipped=1
 
 ## Next Action
 
