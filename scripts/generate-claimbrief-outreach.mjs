@@ -152,6 +152,145 @@ ${sections.join("\n")}
 `;
 };
 
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+const mailtoHref = (row) =>
+  `mailto:${encodeURIComponent(row.to)}?subject=${encodeURIComponent(
+    row.subject
+  )}&body=${encodeURIComponent(row.body)}`;
+
+const toSendBoard = (emailRows, formRows) => {
+  const emailCards = emailRows
+    .map(
+      (row) => `<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email ${escapeHtml(row.priority)}</p>
+            <h2>${escapeHtml(row.company)}</h2>
+            <p class="muted">${escapeHtml(row.to)}</p>
+          </div>
+          <a class="button primary" href="${mailtoHref(row)}">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> ${escapeHtml(row.subject)}</p>
+        <pre>${escapeHtml(row.body)}</pre>
+      </article>`
+    )
+    .join("\n");
+
+  const formCards = formRows
+    .map(
+      (row) => `<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form ${escapeHtml(row.priority)}</p>
+            <h2>${escapeHtml(row.company)}</h2>
+            <p class="muted">${escapeHtml(row.phone || "phone not found")}</p>
+          </div>
+          <a class="button" href="${escapeHtml(row.contact_url)}" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> ${escapeHtml(row.subject)}</p>
+        <pre>${escapeHtml(row.message)}</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>${escapeHtml(row.phone_opener)}</pre>
+        </details>
+      </article>`
+    )
+    .join("\n");
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClaimBrief Send Board</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef2f7;
+        --panel: #ffffff;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #cbd5e1;
+        --primary: #0f172a;
+        --accent: #0f766e;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        border-bottom: 1px solid var(--line);
+        background: rgb(255 255 255 / 94%);
+        padding: 20px 24px;
+        backdrop-filter: blur(12px);
+      }
+
+      main {
+        width: min(1160px, calc(100% - 32px));
+        margin: 24px auto 48px;
+      }
+
+      h1, h2, p { margin-top: 0; }
+      h1 { margin-bottom: 6px; font-size: clamp(28px, 4vw, 42px); }
+      h2 { margin-bottom: 4px; font-size: 20px; }
+      .muted { color: var(--muted); margin-bottom: 0; }
+      .eyebrow { margin-bottom: 4px; color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+      .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      .stat { border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; padding: 8px 10px; font-size: 14px; }
+      .section-title { margin: 30px 0 12px; font-size: 24px; }
+      .grid { display: grid; gap: 14px; }
+      .card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 18px; box-shadow: 0 10px 28px rgb(15 23 42 / 8%); }
+      .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+      .button { display: inline-flex; align-items: center; justify-content: center; min-width: 112px; height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-weight: 700; text-decoration: none; }
+      .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      pre { overflow-x: auto; white-space: pre-wrap; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; padding: 14px; color: #1e293b; font-family: "SFMono-Regular", Consolas, monospace; font-size: 13px; }
+      details { margin-top: 12px; }
+      summary { cursor: pointer; font-weight: 700; }
+
+      @media (max-width: 720px) {
+        header { position: static; }
+        main { width: min(100% - 20px, 1160px); }
+        .row { flex-direction: column; }
+        .button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>ClaimBrief Send Board</h1>
+      <p class="muted">Open each email/form, send, then update <code>claimbrief-pipeline-tracker.csv</code>.</p>
+      <div class="stats">
+        <div class="stat">${emailRows.length} direct emails</div>
+        <div class="stat">${formRows.length} contact forms/calls</div>
+        <div class="stat">Sample: ${escapeHtml(sampleUrl)}</div>
+      </div>
+    </header>
+    <main>
+      <h2 class="section-title">Direct Emails</h2>
+      <div class="grid">${emailCards}</div>
+      <h2 class="section-title">Contact Forms And Calls</h2>
+      <div class="grid">${formCards}</div>
+    </main>
+  </body>
+</html>`;
+};
+
 const prospects = parseCsv(readFileSync(prospectFile, "utf8"));
 const emailRows = prospects
   .filter((row) => row.contact_channel === "email")
@@ -250,5 +389,11 @@ ${row.phone_opener}
   )
 );
 
+writeFileSync(
+  join(outputDir, "claimbrief-send-board-2026-07-02.html"),
+  toSendBoard(emailRows, formRows)
+);
+
 console.log(`Generated ${emailRows.length} direct-email rows.`);
 console.log(`Generated ${formRows.length} contact-form rows.`);
+console.log("Generated send board.");

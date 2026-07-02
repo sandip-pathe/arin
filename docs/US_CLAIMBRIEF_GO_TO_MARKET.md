@@ -316,6 +316,7 @@ Reusable outreach assets:
 - Pipeline tracker: `docs/outreach/claimbrief-pipeline-tracker.csv`
 - Direct email mailmerge: `docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv`
 - Contact form messages: `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
+- Send board: `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
 - Public sample packet: `public/samples/claimbrief-sample-review.html`
 - Email sequence: `docs/outreach/claimbrief-email-sequence.md`
 - AI personalization prompt: `docs/outreach/claimbrief-ai-personalization-prompt.md`

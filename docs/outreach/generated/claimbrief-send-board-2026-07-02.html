@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClaimBrief Send Board</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef2f7;
+        --panel: #ffffff;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #cbd5e1;
+        --primary: #0f172a;
+        --accent: #0f766e;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        border-bottom: 1px solid var(--line);
+        background: rgb(255 255 255 / 94%);
+        padding: 20px 24px;
+        backdrop-filter: blur(12px);
+      }
+
+      main {
+        width: min(1160px, calc(100% - 32px));
+        margin: 24px auto 48px;
+      }
+
+      h1, h2, p { margin-top: 0; }
+      h1 { margin-bottom: 6px; font-size: clamp(28px, 4vw, 42px); }
+      h2 { margin-bottom: 4px; font-size: 20px; }
+      .muted { color: var(--muted); margin-bottom: 0; }
+      .eyebrow { margin-bottom: 4px; color: var(--accent); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+      .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      .stat { border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; padding: 8px 10px; font-size: 14px; }
+      .section-title { margin: 30px 0 12px; font-size: 24px; }
+      .grid { display: grid; gap: 14px; }
+      .card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 18px; box-shadow: 0 10px 28px rgb(15 23 42 / 8%); }
+      .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+      .button { display: inline-flex; align-items: center; justify-content: center; min-width: 112px; height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-weight: 700; text-decoration: none; }
+      .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
+      pre { overflow-x: auto; white-space: pre-wrap; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; padding: 14px; color: #1e293b; font-family: "SFMono-Regular", Consolas, monospace; font-size: 13px; }
+      details { margin-top: 12px; }
+      summary { cursor: pointer; font-weight: 700; }
+
+      @media (max-width: 720px) {
+        header { position: static; }
+        main { width: min(100% - 20px, 1160px); }
+        .row { flex-direction: column; }
+        .button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>ClaimBrief Send Board</h1>
+      <p class="muted">Open each email/form, send, then update <code>claimbrief-pipeline-tracker.csv</code>.</p>
+      <div class="stats">
+        <div class="stat">7 direct emails</div>
+        <div class="stat">23 contact forms/calls</div>
+        <div class="stat">Sample: https://app.anaya.legal/samples/claimbrief-sample-review.html</div>
+      </div>
+    </header>
+    <main>
+      <h2 class="section-title">Direct Emails</h2>
+      <div class="grid"><article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 1</p>
+            <h2>Palco Claims</h2>
+            <p class="muted">claims@palcoclaims.com</p>
+          </div>
+          <a class="button primary" href="mailto:claims%40palcoclaims.com?subject=quick%20claim%20brief%3F&body=Hi%20Palco%20team%2C%0A%0AI%20saw%20Palco%20handles%20commercial%20roofs%2C%20hail%2C%20fire%2C%20and%20water%20losses%20across%20multiple%20states.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> quick claim brief?</p>
+        <pre>Hi Palco team,
+
+I saw Palco handles commercial roofs, hail, fire, and water losses across multiple states.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 2</p>
+            <h2>DCS PIA</h2>
+            <p class="muted">claims@dcspia.com</p>
+          </div>
+          <a class="button primary" href="mailto:claims%40dcspia.com?subject=hail%20claim%20brief%3F&body=Hi%20DCS%20PIA%20team%2C%0A%0AI%20saw%20your%20San%20Antonio%20page%20focuses%20on%20hail%2Fflood%20damage%20and%20policy%20review%20for%20Texas%20claims.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> hail claim brief?</p>
+        <pre>Hi DCS PIA team,
+
+I saw your San Antonio page focuses on hail/flood damage and policy review for Texas claims.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 3</p>
+            <h2>Ocean Point Claims</h2>
+            <p class="muted">office@oceanpoint.claims</p>
+          </div>
+          <a class="button primary" href="mailto:office%40oceanpoint.claims?subject=denial%20brief%20sample%3F&body=Hi%20Ocean%20Point%20team%2C%0A%0AI%20saw%20Ocean%20Point%20breaks%20out%20denied%20claims%2C%20low%20settlements%2C%20delays%2C%20and%20roof%2Fhurricane%20claim%20workflows.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> denial brief sample?</p>
+        <pre>Hi Ocean Point team,
+
+I saw Ocean Point breaks out denied claims, low settlements, delays, and roof/hurricane claim workflows.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 4</p>
+            <h2>InterCoastal Public Adjusters</h2>
+            <p class="muted">claims@InterCoastalPA.com</p>
+          </div>
+          <a class="button primary" href="mailto:claims%40InterCoastalPA.com?subject=brief%20from%20denial%3F&body=Hi%20InterCoastal%20team%2C%0A%0AI%20saw%20InterCoastal%20works%20on%20denied%20home%2C%20business%2C%20and%20HOA%20claim%20packets.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> brief from denial?</p>
+        <pre>Hi InterCoastal team,
+
+I saw InterCoastal works on denied home, business, and HOA claim packets.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 5</p>
+            <h2>Skyline Adjusters</h2>
+            <p class="muted">claims@skylineadjusters.com</p>
+          </div>
+          <a class="button primary" href="mailto:claims%40skylineadjusters.com?subject=claim%20packet%20brief%3F&body=Hi%20Skyline%20team%2C%0A%0AI%20saw%20Skyline%20lists%20Dallas%2C%20Houston%2C%20and%20San%20Antonio%20public-adjuster%20offices.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> claim packet brief?</p>
+        <pre>Hi Skyline team,
+
+I saw Skyline lists Dallas, Houston, and San Antonio public-adjuster offices.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 6</p>
+            <h2>Skipton Claims Management</h2>
+            <p class="muted">Office@skiptoninc.com</p>
+          </div>
+          <a class="button primary" href="mailto:Office%40skiptoninc.com?subject=hail%20file%20brief%3F&body=Hi%20Skipton%20Claims%20Management%20team%2C%0A%0AI%20saw%20Skipton's%20Colorado%20page%20highlights%20hail%20damage%20and%20commercial-loss%20claim%20help.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> hail file brief?</p>
+        <pre>Hi Skipton Claims Management team,
+
+I saw Skipton's Colorado page highlights hail damage and commercial-loss claim help.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Email 7</p>
+            <h2>Your Public Adjuster</h2>
+            <p class="muted">info@YourPublicAdjuster.us</p>
+          </div>
+          <a class="button primary" href="mailto:info%40YourPublicAdjuster.us?subject=Ian%20claim%20brief%3F&body=Hi%20Your%20Public%20Adjuster%20team%2C%0A%0AI%20saw%20Your%20Public%20Adjuster%20discusses%20Hurricane%20Ian%2C%20wind%20attribution%2C%20and%20commercial%20claims.%0A%0AI%20am%20testing%20ClaimBrief%2C%20a%20small%20tool%20that%20turns%20claim%20documents%20into%20a%20cited%20review%20brief%20for%20licensed%20claim%20professionals.%0A%0AIt%20reads%20the%20policy%2C%20denial%20letter%2C%20carrier%20estimate%2C%20contractor%20estimate%2C%20and%20correspondence%2C%20then%20outputs%3A%0A%0A-%20denial%20reasons%20in%20the%20carrier's%20own%20wording%0A-%20policy%20provisions%20and%20exclusions%20mentioned%0A-%20missing%20evidence%20checklist%0A-%20draft%20response%20outline%20for%20human%20review%0A%0ANo%20carrier%20contact%2C%20no%20legal%20advice%2C%20no%20homeowner-facing%20promises.%20Just%20document%20review%20speed.%0A%0AIf%20you%20send%20one%20old%20closed%20or%20redacted%20claim%20packet%2C%20I%20will%20return%20a%20sample%20ClaimBrief%20in%2024%20hours.%20If%20it%20is%20useless%2C%20tell%20me%20and%20I%20will%20not%20follow%20up.%0A%0ASample%20format%3A%20https%3A%2F%2Fapp.anaya.legal%2Fsamples%2Fclaimbrief-sample-review.html%0A%0AWorth%20trying%20on%20one%20file%3F%0A%0ASandy">Open email</a>
+        </div>
+        <p><strong>Subject:</strong> Ian claim brief?</p>
+        <pre>Hi Your Public Adjuster team,
+
+I saw Your Public Adjuster discusses Hurricane Ian, wind attribution, and commercial claims.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy</pre>
+      </article></div>
+      <h2 class="section-title">Contact Forms And Calls</h2>
+      <div class="grid"><article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 8</p>
+            <h2>Noble Public Adjusting Group</h2>
+            <p class="muted">504-420-3466</p>
+          </div>
+          <a class="button" href="https://noblepagroup.com/locations/la/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> hurricane file brief?</p>
+        <pre>I saw Noble's Louisiana page focuses on catastrophic hurricane and large fire losses.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Noble Public Adjusting Group handles large fire losses; catastrophic hurricane claims; denied claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 9</p>
+            <h2>Abba Claims Consultants</h2>
+            <p class="muted">(888) 908-2042</p>
+          </div>
+          <a class="button" href="https://www.abbaclaims.com/public-adjuster-texas/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> denied claim brief?</p>
+        <pre>I saw Abba handles fire, hail, wind, water leak, and denied/underpaid claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Abba Claims Consultants handles fire; hail; wind; water leak; denied or underpaid claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 10</p>
+            <h2>Experienced Public Adjusters</h2>
+            <p class="muted">(888) 881-8416</p>
+          </div>
+          <a class="button" href="https://experiencedpublicadjusters.com/contact-us/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> disputed claim brief?</p>
+        <pre>I saw Experienced Public Adjusters explicitly reviews delayed, underpaid, denied, and disputed claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Experienced Public Adjusters handles new, delayed, underpaid, denied, and disputed Florida claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 11</p>
+            <h2>Florida Public Adjusting</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://flapublicadjusting.com/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> denial file brief?</p>
+        <pre>I saw Florida Public Adjusting handles hurricane, water, fire, mold, and denied claims statewide.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Florida Public Adjusting handles hurricane; water; fire; mold; denied claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 12</p>
+            <h2>Florida Loss Public Adjusters</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://floridaloss.com/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> claim docs brief?</p>
+        <pre>I saw Florida Loss describes a document-heavy team with adjusters, estimators, and project managers.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Florida Loss Public Adjusters handles property-related claims; estimators; project managers; South Florida. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 13</p>
+            <h2>Tutwiler &amp; Associates Public Adjusters</h2>
+            <p class="muted">(813) 412-8357</p>
+          </div>
+          <a class="button" href="https://publicadjuster.com/contact/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> large loss brief?</p>
+        <pre>I saw Tutwiler lists appraisals, mediation, hurricane/wind, large loss, and flood/water claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Tutwiler &amp; Associates Public Adjusters handles appraisal; mediation; hurricane/wind; large loss; flood/water. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 14</p>
+            <h2>Insurance Claim Consultants</h2>
+            <p class="muted">(800) 572-7914</p>
+          </div>
+          <a class="button" href="https://www.insuranceclaimconsultants.com/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> roof claim brief?</p>
+        <pre>I saw Insurance Claim Consultants handles roof, hurricane, water, wind, and hail claim types.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Insurance Claim Consultants handles fire; flood; hail; hurricane; roof; tornado; water; wind claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 15</p>
+            <h2>Global Patriot Adjusters</h2>
+            <p class="muted">813-402-8895</p>
+          </div>
+          <a class="button" href="https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Ida claim brief?</p>
+        <pre>I saw Global Patriot's New Orleans page focuses on Hurricane Ida, roof, wind, and flood claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Global Patriot Adjusters handles Hurricane Ida; roof; wind; flood; commercial property claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 16</p>
+            <h2>AAA Public Adjusters</h2>
+            <p class="muted">1-800-410-5054</p>
+          </div>
+          <a class="button" href="https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Laura claim brief?</p>
+        <pre>I saw AAA Public Adjusters mentions Hurricane Laura property claims in Louisiana.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw AAA Public Adjusters handles Hurricane Laura; Louisiana homeowner and business claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 17</p>
+            <h2>Prime Adjustments</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://primeadjustments.com/colorado-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> hail scope brief?</p>
+        <pre>I saw Prime Adjustments highlights Colorado hail and commercial roof hail claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Prime Adjustments handles Colorado hail; fire; water; wind; ice dam; commercial roof hail. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 18</p>
+            <h2>Gavnat</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.gavnat.com/location/texas/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Texas hail brief?</p>
+        <pre>I saw Gavnat's Texas page calls out hail/wind events and commercial property claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Gavnat handles Texas hail and wind; commercial and multi-property claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 19</p>
+            <h2>Gavnat</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.gavnat.com/location/colorado/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Colorado claim brief?</p>
+        <pre>I saw Gavnat's Colorado page highlights hail disputes, wildfire smoke, and water damage.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Gavnat handles Colorado hail; fire; water; wildfire smoke; freeze-thaw damage. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 20</p>
+            <h2>Adjusters International / GGG</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> hurricane scope brief?</p>
+        <pre>I saw your Florida page focuses on hurricane damage and documenting the full scope.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Adjusters International / GGG handles Florida hurricane damage; documenting full scope of damage. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 21</p>
+            <h2>AIM / Adjusters International</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> hail damage brief?</p>
+        <pre>I saw AIM's Colorado page discusses hail damage to roofs and siding.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw AIM / Adjusters International handles Colorado hail; fire; commercial and homeowner claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 22</p>
+            <h2>Jansen / Adjusters International</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Louisiana brief?</p>
+        <pre>I saw Jansen's Louisiana page focuses on hurricane, flood, and New Orleans property claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Jansen / Adjusters International handles Louisiana hurricane damage; flood; tornado; New Orleans claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 23</p>
+            <h2>LRG Claims</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.lrgclaims.com/public-adjusters-louisiana" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> evidence checklist?</p>
+        <pre>I saw LRG's Louisiana FAQ emphasizes preserving evidence and organizing claim information.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw LRG Claims handles Louisiana hurricane; evidence preservation; claim organization. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 24</p>
+            <h2>Corbitt Public Adjusting</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://corbittpublicadjusting.com/states/louisiana" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> storm claim brief?</p>
+        <pre>I saw Corbitt's Louisiana page focuses on hurricane, flood, and storm claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Corbitt Public Adjusting handles Louisiana hurricane; flood; storm claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 25</p>
+            <h2>Cordo Claims Group</h2>
+            <p class="muted">877-55-CORDO</p>
+          </div>
+          <a class="button" href="https://cordoclaims.com/florida-hurricane-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Milton file brief?</p>
+        <pre>I saw Cordo's Florida page discusses Hurricane Helene and Milton claim damage.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Cordo Claims Group handles Florida hurricane claims; Helene and Milton damage. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 26</p>
+            <h2>Liberty Insurance Adjusters</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Texas hail brief?</p>
+        <pre>I saw Liberty's Texas hail guide emphasizes public-adjuster help and proof-of-loss steps.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Liberty Insurance Adjusters handles Texas hail claims; proof of loss; claim FAQs. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 27</p>
+            <h2>C3 Group</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.c3adjusters.com/dfw-hailstorm-2023/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> DFW hail brief?</p>
+        <pre>I saw C3's DFW hail page discusses detailed claims packages and carrier red flags.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw C3 Group handles commercial property; DFW hail; red flags; estimates and claims package. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 28</p>
+            <h2>Empire Public Adjusters</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://empirepublicadjusters.com/service-areas/colorado-hail-damage/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Colorado hail brief?</p>
+        <pre>I saw Empire's Colorado page lists storm, hail, water, roof, and vandalism claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Empire Public Adjusters handles Colorado hail; storm; water; roof; vandalism claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 29</p>
+            <h2>Apex Adjusting Group</h2>
+            <p class="muted">phone not found</p>
+          </div>
+          <a class="button" href="https://www.apexadjustinggroup.com/locations/denver-public-adjusters" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> Denver claim brief?</p>
+        <pre>I saw Apex handles both residential and commercial property damage claims around Denver.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw Apex Adjusting Group handles Denver residential and commercial property damage claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article>
+<article class="card">
+        <div class="row">
+          <div>
+            <p class="eyebrow">Form 30</p>
+            <h2>AllCity Adjusting</h2>
+            <p class="muted">844-MY-ADJUSTER</p>
+          </div>
+          <a class="button" href="https://allcityadjusting.com/public-adjuster/service-areas/texas-public-adjuster/" target="_blank" rel="noreferrer">Open form</a>
+        </div>
+        <p><strong>Subject:</strong> large loss brief?</p>
+        <pre>I saw AllCity's Texas page highlights large losses and an in-house claims CRM.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?</pre>
+        <details>
+          <summary>Phone opener</summary>
+          <pre>Hi, I am calling about a tiny document-review tool for public adjusters. I saw AllCity Adjusting handles large loss; fire; water; storm; in-house claims CRM. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?</pre>
+        </details>
+      </article></div>
+    </main>
+  </body>
+</html>

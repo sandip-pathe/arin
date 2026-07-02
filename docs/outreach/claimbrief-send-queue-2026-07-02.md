@@ -18,6 +18,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-direct-email-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
 
 Use after replies start:
 
