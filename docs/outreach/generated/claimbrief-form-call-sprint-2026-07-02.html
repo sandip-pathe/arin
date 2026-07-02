@@ -63,13 +63,14 @@
       .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 0 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
       .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
       .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+      .command-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
       details { margin-top: 14px; }
       summary { cursor: pointer; font-weight: 800; }
 
       @media (max-width: 820px) {
         main { width: min(100% - 20px, 1180px); }
         .card-head, .actions { flex-direction: column; align-items: stretch; }
-        .split { grid-template-columns: 1fr; }
+        .split, .command-grid { grid-template-columns: 1fr; }
         .button { width: 100%; }
       }
     </style>
@@ -99,7 +100,8 @@
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> hurricane file brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-1-noble-public-adjusting-group">hurricane file brief?</span></p>
+          <button class="button" data-copy="subject-1-noble-public-adjusting-group">Copy subject</button>
           <pre id="message-1-noble-public-adjusting-group">I saw Noble's Louisiana page focuses on catastrophic hurricane and large fire losses.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -118,9 +120,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group&quot; --contact &quot;https://noblepagroup.com/locations/la/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group&quot; --contact &quot;https://noblepagroup.com/locations/la/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-1-noble-public-adjusting-group">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group&quot; --contact &quot;https://noblepagroup.com/locations/la/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-1-noble-public-adjusting-group">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-1-noble-public-adjusting-group">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group&quot; --contact &quot;https://noblepagroup.com/locations/la/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-1-noble-public-adjusting-group">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-1-noble-public-adjusting-group">npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Group&quot; --contact &quot;https://noblepagroup.com/locations/la/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-1-noble-public-adjusting-group">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -139,7 +155,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Noble Public Adjusting Gr
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> denied claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-2-abba-claims-consultants">denied claim brief?</span></p>
+          <button class="button" data-copy="subject-2-abba-claims-consultants">Copy subject</button>
           <pre id="message-2-abba-claims-consultants">I saw Abba handles fire, hail, wind, water leak, and denied/underpaid claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -158,9 +175,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&quot; --contact &quot;https://www.abbaclaims.com/public-adjuster-texas/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&quot; --contact &quot;https://www.abbaclaims.com/public-adjuster-texas/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-2-abba-claims-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&quot; --contact &quot;https://www.abbaclaims.com/public-adjuster-texas/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-2-abba-claims-consultants">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-2-abba-claims-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&quot; --contact &quot;https://www.abbaclaims.com/public-adjuster-texas/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-2-abba-claims-consultants">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-2-abba-claims-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&quot; --contact &quot;https://www.abbaclaims.com/public-adjuster-texas/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-2-abba-claims-consultants">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -179,7 +210,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Abba Claims Consultants&q
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> disputed claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-3-experienced-public-adjusters">disputed claim brief?</span></p>
+          <button class="button" data-copy="subject-3-experienced-public-adjusters">Copy subject</button>
           <pre id="message-3-experienced-public-adjusters">I saw Experienced Public Adjusters explicitly reviews delayed, underpaid, denied, and disputed claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -198,9 +230,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjusters&quot; --contact &quot;https://experiencedpublicadjusters.com/contact-us/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjusters&quot; --contact &quot;https://experiencedpublicadjusters.com/contact-us/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-3-experienced-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjusters&quot; --contact &quot;https://experiencedpublicadjusters.com/contact-us/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-3-experienced-public-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-3-experienced-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjusters&quot; --contact &quot;https://experiencedpublicadjusters.com/contact-us/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-3-experienced-public-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-3-experienced-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjusters&quot; --contact &quot;https://experiencedpublicadjusters.com/contact-us/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-3-experienced-public-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -218,7 +264,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Experienced Public Adjust
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> denial file brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-4-florida-public-adjusting">denial file brief?</span></p>
+          <button class="button" data-copy="subject-4-florida-public-adjusting">Copy subject</button>
           <pre id="message-4-florida-public-adjusting">I saw Florida Public Adjusting handles hurricane, water, fire, mold, and denied claims statewide.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -237,9 +284,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&quot; --contact &quot;https://flapublicadjusting.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&quot; --contact &quot;https://flapublicadjusting.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-4-florida-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&quot; --contact &quot;https://flapublicadjusting.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-4-florida-public-adjusting">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-4-florida-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&quot; --contact &quot;https://flapublicadjusting.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-4-florida-public-adjusting">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-4-florida-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&quot; --contact &quot;https://flapublicadjusting.com/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-4-florida-public-adjusting">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -257,7 +318,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Florida Public Adjusting&
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> claim docs brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-5-florida-loss-public-adjusters">claim docs brief?</span></p>
+          <button class="button" data-copy="subject-5-florida-loss-public-adjusters">Copy subject</button>
           <pre id="message-5-florida-loss-public-adjusters">I saw Florida Loss describes a document-heavy team with adjusters, estimators, and project managers.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -276,9 +338,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjusters&quot; --contact &quot;https://floridaloss.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjusters&quot; --contact &quot;https://floridaloss.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-5-florida-loss-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjusters&quot; --contact &quot;https://floridaloss.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-5-florida-loss-public-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-5-florida-loss-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjusters&quot; --contact &quot;https://floridaloss.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-5-florida-loss-public-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-5-florida-loss-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjusters&quot; --contact &quot;https://floridaloss.com/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-5-florida-loss-public-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -297,7 +373,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Florida Loss Public Adjus
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> large loss brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-6-tutwiler-and-associates-public-adjusters">large loss brief?</span></p>
+          <button class="button" data-copy="subject-6-tutwiler-and-associates-public-adjusters">Copy subject</button>
           <pre id="message-6-tutwiler-and-associates-public-adjusters">I saw Tutwiler lists appraisals, mediation, hurricane/wind, large loss, and flood/water claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -316,9 +393,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates Public Adjusters&quot; --contact &quot;https://publicadjuster.com/contact/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates Public Adjusters&quot; --contact &quot;https://publicadjuster.com/contact/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-6-tutwiler-and-associates-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates Public Adjusters&quot; --contact &quot;https://publicadjuster.com/contact/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-6-tutwiler-and-associates-public-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-6-tutwiler-and-associates-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates Public Adjusters&quot; --contact &quot;https://publicadjuster.com/contact/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-6-tutwiler-and-associates-public-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-6-tutwiler-and-associates-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates Public Adjusters&quot; --contact &quot;https://publicadjuster.com/contact/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-6-tutwiler-and-associates-public-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -337,7 +428,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Tutwiler &amp; Associates
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> roof claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-7-insurance-claim-consultants">roof claim brief?</span></p>
+          <button class="button" data-copy="subject-7-insurance-claim-consultants">Copy subject</button>
           <pre id="message-7-insurance-claim-consultants">I saw Insurance Claim Consultants handles roof, hurricane, water, wind, and hail claim types.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -356,9 +448,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultants&quot; --contact &quot;https://www.insuranceclaimconsultants.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultants&quot; --contact &quot;https://www.insuranceclaimconsultants.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-7-insurance-claim-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultants&quot; --contact &quot;https://www.insuranceclaimconsultants.com/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-7-insurance-claim-consultants">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-7-insurance-claim-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultants&quot; --contact &quot;https://www.insuranceclaimconsultants.com/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-7-insurance-claim-consultants">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-7-insurance-claim-consultants">npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultants&quot; --contact &quot;https://www.insuranceclaimconsultants.com/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-7-insurance-claim-consultants">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -377,7 +483,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Insurance Claim Consultan
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Ida claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-8-global-patriot-adjusters">Ida claim brief?</span></p>
+          <button class="button" data-copy="subject-8-global-patriot-adjusters">Copy subject</button>
           <pre id="message-8-global-patriot-adjusters">I saw Global Patriot's New Orleans page focuses on Hurricane Ida, roof, wind, and flood claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -396,9 +503,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&quot; --contact &quot;https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&quot; --contact &quot;https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-8-global-patriot-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&quot; --contact &quot;https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-8-global-patriot-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-8-global-patriot-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&quot; --contact &quot;https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-8-global-patriot-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-8-global-patriot-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&quot; --contact &quot;https://www.globalpatriotadjusters.com/new-orleans-la-public-insurance-adjusters&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-8-global-patriot-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -417,7 +538,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Global Patriot Adjusters&
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Laura claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-9-aaa-public-adjusters">Laura claim brief?</span></p>
+          <button class="button" data-copy="subject-9-aaa-public-adjusters">Copy subject</button>
           <pre id="message-9-aaa-public-adjusters">I saw AAA Public Adjusters mentions Hurricane Laura property claims in Louisiana.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -436,9 +558,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot; --contact &quot;https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot; --contact &quot;https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-9-aaa-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot; --contact &quot;https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-9-aaa-public-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-9-aaa-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot; --contact &quot;https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-9-aaa-public-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-9-aaa-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot; --contact &quot;https://aaapublicadjusters.com/public-adjuster-lake-dequincy-louisiana/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-9-aaa-public-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -456,7 +592,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;AAA Public Adjusters&quot
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> hail scope brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-10-prime-adjustments">hail scope brief?</span></p>
+          <button class="button" data-copy="subject-10-prime-adjustments">Copy subject</button>
           <pre id="message-10-prime-adjustments">I saw Prime Adjustments highlights Colorado hail and commercial roof hail claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -475,9 +612,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; --contact &quot;https://primeadjustments.com/colorado-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; --contact &quot;https://primeadjustments.com/colorado-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-10-prime-adjustments">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; --contact &quot;https://primeadjustments.com/colorado-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-10-prime-adjustments">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-10-prime-adjustments">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; --contact &quot;https://primeadjustments.com/colorado-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-10-prime-adjustments">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-10-prime-adjustments">npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; --contact &quot;https://primeadjustments.com/colorado-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-10-prime-adjustments">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -495,7 +646,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Prime Adjustments&quot; -
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Texas hail brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-11-gavnat">Texas hail brief?</span></p>
+          <button class="button" data-copy="subject-11-gavnat">Copy subject</button>
           <pre id="message-11-gavnat">I saw Gavnat's Texas page calls out hail/wind events and commercial property claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -514,9 +666,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/texas/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/texas/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-11-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/texas/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-11-gavnat">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-11-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/texas/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-11-gavnat">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-11-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/texas/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-11-gavnat">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -534,7 +700,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &q
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Colorado claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-12-gavnat">Colorado claim brief?</span></p>
+          <button class="button" data-copy="subject-12-gavnat">Copy subject</button>
           <pre id="message-12-gavnat">I saw Gavnat's Colorado page highlights hail disputes, wildfire smoke, and water damage.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -553,9 +720,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/colorado/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/colorado/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-12-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/colorado/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-12-gavnat">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-12-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/colorado/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-12-gavnat">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-12-gavnat">npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &quot;https://www.gavnat.com/location/colorado/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-12-gavnat">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -573,7 +754,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Gavnat&quot; --contact &q
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> hurricane scope brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-13-adjusters-international-ggg">hurricane scope brief?</span></p>
+          <button class="button" data-copy="subject-13-adjusters-international-ggg">Copy subject</button>
           <pre id="message-13-adjusters-international-ggg">I saw your Florida page focuses on hurricane damage and documenting the full scope.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -592,9 +774,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International / GGG&quot; --contact &quot;https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International / GGG&quot; --contact &quot;https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-13-adjusters-international-ggg">npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International / GGG&quot; --contact &quot;https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-13-adjusters-international-ggg">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-13-adjusters-international-ggg">npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International / GGG&quot; --contact &quot;https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-13-adjusters-international-ggg">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-13-adjusters-international-ggg">npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International / GGG&quot; --contact &quot;https://www.ggg-ai.com/contact/areas-served/florida-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-13-adjusters-international-ggg">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -612,7 +808,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Adjusters International /
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> hail damage brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-14-aim-adjusters-international">hail damage brief?</span></p>
+          <button class="button" data-copy="subject-14-aim-adjusters-international">Copy subject</button>
           <pre id="message-14-aim-adjusters-international">I saw AIM's Colorado page discusses hail damage to roofs and siding.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -631,9 +828,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters International&quot; --contact &quot;https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters International&quot; --contact &quot;https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-14-aim-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters International&quot; --contact &quot;https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-14-aim-adjusters-international">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-14-aim-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters International&quot; --contact &quot;https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-14-aim-adjusters-international">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-14-aim-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters International&quot; --contact &quot;https://www.aimbc.com/contact/areas-served/colorado-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-14-aim-adjusters-international">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -651,7 +862,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;AIM / Adjusters Internati
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Louisiana brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-15-jansen-adjusters-international">Louisiana brief?</span></p>
+          <button class="button" data-copy="subject-15-jansen-adjusters-international">Copy subject</button>
           <pre id="message-15-jansen-adjusters-international">I saw Jansen's Louisiana page focuses on hurricane, flood, and New Orleans property claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -670,9 +882,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters International&quot; --contact &quot;https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters International&quot; --contact &quot;https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-15-jansen-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters International&quot; --contact &quot;https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-15-jansen-adjusters-international">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-15-jansen-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters International&quot; --contact &quot;https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-15-jansen-adjusters-international">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-15-jansen-adjusters-international">npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters International&quot; --contact &quot;https://www.jansenai.com/contact/areas-served/louisiana-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-15-jansen-adjusters-international">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -690,7 +916,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Jansen / Adjusters Intern
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> storm claim brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-16-corbitt-public-adjusting">storm claim brief?</span></p>
+          <button class="button" data-copy="subject-16-corbitt-public-adjusting">Copy subject</button>
           <pre id="message-16-corbitt-public-adjusting">I saw Corbitt's Louisiana page focuses on hurricane, flood, and storm claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -709,9 +936,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&quot; --contact &quot;https://corbittpublicadjusting.com/states/louisiana&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&quot; --contact &quot;https://corbittpublicadjusting.com/states/louisiana&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-16-corbitt-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&quot; --contact &quot;https://corbittpublicadjusting.com/states/louisiana&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-16-corbitt-public-adjusting">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-16-corbitt-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&quot; --contact &quot;https://corbittpublicadjusting.com/states/louisiana&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-16-corbitt-public-adjusting">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-16-corbitt-public-adjusting">npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&quot; --contact &quot;https://corbittpublicadjusting.com/states/louisiana&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-16-corbitt-public-adjusting">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -730,7 +971,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Corbitt Public Adjusting&
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Milton file brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-17-cordo-claims-group">Milton file brief?</span></p>
+          <button class="button" data-copy="subject-17-cordo-claims-group">Copy subject</button>
           <pre id="message-17-cordo-claims-group">I saw Cordo's Florida page discusses Hurricane Helene and Milton claim damage.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -749,9 +991,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; --contact &quot;https://cordoclaims.com/florida-hurricane-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; --contact &quot;https://cordoclaims.com/florida-hurricane-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-17-cordo-claims-group">npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; --contact &quot;https://cordoclaims.com/florida-hurricane-public-adjuster/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-17-cordo-claims-group">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-17-cordo-claims-group">npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; --contact &quot;https://cordoclaims.com/florida-hurricane-public-adjuster/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-17-cordo-claims-group">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-17-cordo-claims-group">npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; --contact &quot;https://cordoclaims.com/florida-hurricane-public-adjuster/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-17-cordo-claims-group">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -769,7 +1025,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Cordo Claims Group&quot; 
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Texas hail brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-18-liberty-insurance-adjusters">Texas hail brief?</span></p>
+          <button class="button" data-copy="subject-18-liberty-insurance-adjusters">Copy subject</button>
           <pre id="message-18-liberty-insurance-adjusters">I saw Liberty's Texas hail guide emphasizes public-adjuster help and proof-of-loss steps.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -788,9 +1045,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjusters&quot; --contact &quot;https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjusters&quot; --contact &quot;https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-18-liberty-insurance-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjusters&quot; --contact &quot;https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-18-liberty-insurance-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-18-liberty-insurance-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjusters&quot; --contact &quot;https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-18-liberty-insurance-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-18-liberty-insurance-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjusters&quot; --contact &quot;https://www.libertyinsuranceadjusters.com/blog/texas-hail-claims&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-18-liberty-insurance-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -808,7 +1079,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;Liberty Insurance Adjuste
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> DFW hail brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-19-c3-group">DFW hail brief?</span></p>
+          <button class="button" data-copy="subject-19-c3-group">Copy subject</button>
           <pre id="message-19-c3-group">I saw C3's DFW hail page discusses detailed claims packages and carrier red flags.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -827,9 +1099,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact &quot;https://www.c3adjusters.com/dfw-hailstorm-2023/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact &quot;https://www.c3adjusters.com/dfw-hailstorm-2023/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-19-c3-group">npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact &quot;https://www.c3adjusters.com/dfw-hailstorm-2023/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-19-c3-group">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-19-c3-group">npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact &quot;https://www.c3adjusters.com/dfw-hailstorm-2023/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-19-c3-group">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-19-c3-group">npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact &quot;https://www.c3adjusters.com/dfw-hailstorm-2023/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-19-c3-group">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
 <article class="card">
@@ -847,7 +1133,8 @@ npm run outreach:claimbrief:tracker -- --company &quot;C3 Group&quot; --contact 
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> Colorado hail brief?</p>
+          <p><strong>Subject:</strong> <span id="subject-20-empire-public-adjusters">Colorado hail brief?</span></p>
+          <button class="button" data-copy="subject-20-empire-public-adjusters">Copy subject</button>
           <pre id="message-20-empire-public-adjusters">I saw Empire's Colorado page lists storm, hail, water, roof, and vandalism claims.
 
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
@@ -866,9 +1153,23 @@ Could I create one free sample from an old closed or redacted claim packet?</pre
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>npm run outreach:claimbrief:tracker -- --company &quot;Empire Public Adjusters&quot; --contact &quot;https://empirepublicadjusters.com/service-areas/colorado-hail-damage/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;
-
-npm run outreach:claimbrief:tracker -- --company &quot;Empire Public Adjusters&quot; --contact &quot;https://empirepublicadjusters.com/service-areas/colorado-hail-damage/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="form-command-20-empire-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Empire Public Adjusters&quot; --contact &quot;https://empirepublicadjusters.com/service-areas/colorado-hail-damage/&quot; --status sent --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;submitted contact form from form/call sprint&quot;</pre>
+            <button class="button" data-copy="form-command-20-empire-public-adjusters">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="call-command-20-empire-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Empire Public Adjusters&quot; --contact &quot;https://empirepublicadjusters.com/service-areas/colorado-hail-damage/&quot; --status called --next-action follow_up_48h --last-touch-date 2026-07-02 --append-note &quot;called from form/call sprint&quot;</pre>
+            <button class="button" data-copy="call-command-20-empire-public-adjusters">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="skip-command-20-empire-public-adjusters">npm run outreach:claimbrief:tracker -- --company &quot;Empire Public Adjusters&quot; --contact &quot;https://empirepublicadjusters.com/service-areas/colorado-hail-damage/&quot; --status skipped --next-action none --last-touch-date 2026-07-02 --append-note &quot;skipped because form required claim-specific details or wrong contact path&quot;</pre>
+            <button class="button" data-copy="skip-command-20-empire-public-adjusters">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>
     </main>

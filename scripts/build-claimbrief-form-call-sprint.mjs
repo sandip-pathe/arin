@@ -91,11 +91,14 @@ const slugify = (value) =>
     .slice(0, 56);
 
 const shellQuote = (value) => `"${String(value ?? "").replace(/"/g, '\\"')}"`;
+const rowKey = (company, contact) => `${company}::${contact}`;
 
 const trackerRows = readCsv(paths.tracker);
-const trackerByCompany = new Map(trackerRows.map((row) => [row.company, row]));
+const trackerByContact = new Map(
+  trackerRows.map((row) => [rowKey(row.company, row.contact), row])
+);
 const formRows = readCsv(paths.formMessages).map((row) => {
-  const tracker = trackerByCompany.get(row.company) || {};
+  const tracker = trackerByContact.get(rowKey(row.company, row.contact_url)) || {};
   return {
     ...row,
     status: tracker.status || "not_sent",
@@ -109,23 +112,42 @@ const queueRows = formRows.filter(
 const sprintRows = queueRows.slice(0, 20);
 
 const trackerCommand = (row, mode) => {
-  const note =
-    mode === "form"
-      ? "submitted contact form from form/call sprint"
-      : "called from form/call sprint";
+  const modes = {
+    form: {
+      status: "sent",
+      nextAction: "follow_up_48h",
+      note: "submitted contact form from form/call sprint",
+    },
+    call: {
+      status: "called",
+      nextAction: "follow_up_48h",
+      note: "called from form/call sprint",
+    },
+    skip: {
+      status: "skipped",
+      nextAction: "none",
+      note: "skipped because form required claim-specific details or wrong contact path",
+    },
+  };
+  const config = modes[mode];
   return `npm run outreach:claimbrief:tracker -- --company ${shellQuote(
     row.company
   )} --contact ${shellQuote(row.contact_url)} --status ${
-    mode === "form" ? "sent" : "called"
-  } --next-action follow_up_48h --last-touch-date ${campaignDate} --append-note ${shellQuote(note)}`;
+    config.status
+  } --next-action ${config.nextAction} --last-touch-date ${campaignDate} --append-note ${shellQuote(config.note)}`;
 };
 
 const cards = sprintRows
   .map((row, index) => {
+    const subjectId = `subject-${index + 1}-${slugify(row.company)}`;
     const messageId = `message-${index + 1}-${slugify(row.company)}`;
     const phoneId = `phone-${index + 1}-${slugify(row.company)}`;
+    const formCommandId = `form-command-${index + 1}-${slugify(row.company)}`;
+    const callCommandId = `call-command-${index + 1}-${slugify(row.company)}`;
+    const skipCommandId = `skip-command-${index + 1}-${slugify(row.company)}`;
     const formCommand = trackerCommand(row, "form");
     const callCommand = trackerCommand(row, "call");
+    const skipCommand = trackerCommand(row, "skip");
     const callButton = row.phone
       ? `<a class="button" href="tel:${escapeAttr(row.phone.replace(/[^0-9+]/g, ""))}">Call</a>`
       : "";
@@ -151,7 +173,8 @@ const cards = sprintRows
       <div class="split">
         <section>
           <h3>Form Message</h3>
-          <p><strong>Subject:</strong> ${escapeHtml(row.subject)}</p>
+          <p><strong>Subject:</strong> <span id="${subjectId}">${escapeHtml(row.subject)}</span></p>
+          <button class="button" data-copy="${subjectId}">Copy subject</button>
           <pre id="${messageId}">${escapeHtml(row.message)}</pre>
           <button class="button" data-copy="${messageId}">Copy form message</button>
         </section>
@@ -164,9 +187,23 @@ const cards = sprintRows
 
       <details>
         <summary>Tracker commands after action</summary>
-        <pre>${escapeHtml(formCommand)}
-
-${escapeHtml(callCommand)}</pre>
+        <div class="command-grid">
+          <section>
+            <h3>After form submit</h3>
+            <pre id="${formCommandId}">${escapeHtml(formCommand)}</pre>
+            <button class="button" data-copy="${formCommandId}">Copy form tracker command</button>
+          </section>
+          <section>
+            <h3>After call</h3>
+            <pre id="${callCommandId}">${escapeHtml(callCommand)}</pre>
+            <button class="button" data-copy="${callCommandId}">Copy call tracker command</button>
+          </section>
+          <section>
+            <h3>If form is not usable</h3>
+            <pre id="${skipCommandId}">${escapeHtml(skipCommand)}</pre>
+            <button class="button" data-copy="${skipCommandId}">Copy skip tracker command</button>
+          </section>
+        </div>
       </details>
     </article>`;
   })
@@ -237,13 +274,14 @@ const html = `<!doctype html>
       .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 0 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
       .button.primary { border-color: var(--primary); background: var(--primary); color: white; }
       .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+      .command-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
       details { margin-top: 14px; }
       summary { cursor: pointer; font-weight: 800; }
 
       @media (max-width: 820px) {
         main { width: min(100% - 20px, 1180px); }
         .card-head, .actions { flex-direction: column; align-items: stretch; }
-        .split { grid-template-columns: 1fr; }
+        .split, .command-grid { grid-template-columns: 1fr; }
         .button { width: 100%; }
       }
     </style>
