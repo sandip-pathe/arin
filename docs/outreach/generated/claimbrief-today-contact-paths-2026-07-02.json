@@ -1,0 +1,269 @@
+{
+  "campaignDate": "2026-07-02",
+  "reports": [
+    {
+      "company": "Gavnat Oklahoma",
+      "sourceUrl": "https://www.gavnat.com/location/oklahoma/",
+      "phone": "405-628-0126",
+      "status": "FORM_REVIEW_NEEDED",
+      "recommendation": "Open form, but call instead if required fields ask for claim-specific details.",
+      "page": {
+        "ok": true,
+        "statusCode": 200,
+        "finalUrl": "https://www.gavnat.com/location/oklahoma/",
+        "title": "Oklahoma Public Adjusters | Tornado & Hail Claims | Gavnat",
+        "forms": [
+          {
+            "action": "https://www.gavnat.com/location/oklahoma/#gf_1",
+            "method": "POST",
+            "fieldCount": 8,
+            "requiredFields": [
+              "input_7 / input_1_7 / text",
+              "input_8 / input_1_8 / text",
+              "input_4 / input_1_4 / email",
+              "input_3 / input_1_3 / tel",
+              "input_12.4 / input_1_12_4 / select"
+            ],
+            "riskyFields": [],
+            "generalFields": [
+              "input_4 / input_1_4 / email"
+            ],
+            "sampleFields": [
+              "input_14 / input_1_14 / text",
+              "input_7 / input_1_7 / text",
+              "input_8 / input_1_8 / text",
+              "input_4 / input_1_4 / email",
+              "input_3 / input_1_3 / tel",
+              "input_12.4 / input_1_12_4 / select",
+              "input_13 / input_1_13 / select",
+              "input_6 / input_1_6 / textarea"
+            ]
+          }
+        ],
+        "contactLinks": [
+          {
+            "text": "Contact Us",
+            "href": "https://www.gavnat.com/contact-us/"
+          },
+          {
+            "text": "Contact Us",
+            "href": "https://gavnat.com/contact-us/"
+          }
+        ],
+        "emails": [
+          "info@gavnat.com"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "company": "Prime Adjustments Oklahoma",
+      "sourceUrl": "https://primeadjustments.com/oklahoma-public-adjuster/",
+      "phone": "877-729-6365",
+      "status": "CALL_FIRST_NO_FORM_FOUND",
+      "recommendation": "Call first using the phone opener.",
+      "page": {
+        "ok": true,
+        "statusCode": 200,
+        "finalUrl": "https://primeadjustments.com/oklahoma-public-adjuster/",
+        "title": "Oklahoma Public Adjuster | Oklahoma Insurance Claim Help",
+        "forms": [],
+        "contactLinks": [
+          {
+            "text": "Contact",
+            "href": "https://primeadjustments.com/contact/"
+          }
+        ],
+        "emails": [],
+        "error": ""
+      }
+    },
+    {
+      "company": "Brown-O'Haver Public Adjusters of Oklahoma",
+      "sourceUrl": "https://www.brown-ohaver.com/page/contact-us",
+      "phone": "405.735.5510",
+      "status": "FORM_REVIEW_NEEDED",
+      "recommendation": "Open form, but call instead if required fields ask for claim-specific details.",
+      "page": {
+        "ok": true,
+        "statusCode": 200,
+        "finalUrl": "https://www.brown-ohaver.com/page/contact-us",
+        "title": "Make A FREE Insurance Claim Consultation with Brown Ohaver | Call Us",
+        "forms": [
+          {
+            "action": "(current page)",
+            "method": "GET/UNKNOWN",
+            "fieldCount": 7,
+            "requiredFields": [
+              "First Name* / first_name / text",
+              "Last Name* / last_name / text",
+              "Address* / address / text",
+              "State* / state / text",
+              "Contact Phone* / phone / text",
+              "Email* / email / email",
+              "Inquiry* / inquiry / textarea"
+            ],
+            "riskyFields": [
+              "Address* / address / text"
+            ],
+            "generalFields": [
+              "First Name* / first_name / text",
+              "Last Name* / last_name / text",
+              "Contact Phone* / phone / text",
+              "Email* / email / email"
+            ],
+            "sampleFields": [
+              "First Name* / first_name / text",
+              "Last Name* / last_name / text",
+              "Address* / address / text",
+              "State* / state / text",
+              "Contact Phone* / phone / text",
+              "Email* / email / email",
+              "Inquiry* / inquiry / textarea"
+            ]
+          }
+        ],
+        "contactLinks": [
+          {
+            "text": "Contact",
+            "href": "https://www.brown-ohaver.com/page/contact-us"
+          }
+        ],
+        "emails": [
+          "bohok@brown-ohaver.com"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "company": "Corbitt Public Adjusting Oklahoma",
+      "sourceUrl": "https://corbittpublicadjusting.com/states/oklahoma",
+      "phone": "888-303-6607",
+      "status": "CALL_FIRST_NO_FORM_FOUND",
+      "recommendation": "Call first using the phone opener.",
+      "page": {
+        "ok": true,
+        "statusCode": 200,
+        "finalUrl": "https://corbittpublicadjusting.com/states/oklahoma",
+        "title": "",
+        "forms": [],
+        "contactLinks": [],
+        "emails": [],
+        "error": ""
+      }
+    },
+    {
+      "company": "Jansen Adjusters International Oklahoma",
+      "sourceUrl": "https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/",
+      "phone": "800.779.8714",
+      "status": "FORM_REVIEW_NEEDED",
+      "recommendation": "Open form, but call instead if required fields ask for claim-specific details.",
+      "page": {
+        "ok": true,
+        "statusCode": 200,
+        "finalUrl": "https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/",
+        "title": "Public Adjuster Tulsa Claim Adjusters Oklahoma | Jansen/Adjusters International",
+        "forms": [
+          {
+            "action": "https://www.jansenai.com/_formsubmit/ContactForm/",
+            "method": "POST",
+            "fieldCount": 12,
+            "requiredFields": [
+              "First Name * / FirstName / ContactForm_ContactForm_FirstName / text",
+              "Last Name * / LastName / ContactForm_ContactForm_LastName / text",
+              "Email * / Email / ContactForm_ContactForm_Email / email",
+              "Phone * / Phone / ContactForm_ContactForm_Phone / tel",
+              "City * / City / ContactForm_ContactForm_City / text",
+              "State / ContactForm_ContactForm_State / select",
+              "Zip * / Zip / ContactForm_ContactForm_Zip / text"
+            ],
+            "riskyFields": [
+              "Address 1 / Address1 / ContactForm_ContactForm_Address1 / text",
+              "Address 2 / Address2 / ContactForm_ContactForm_Address2 / text"
+            ],
+            "generalFields": [
+              "First Name * / FirstName / ContactForm_ContactForm_FirstName / text",
+              "Last Name * / LastName / ContactForm_ContactForm_LastName / text",
+              "Email * / Email / ContactForm_ContactForm_Email / email",
+              "Phone * / Phone / ContactForm_ContactForm_Phone / tel"
+            ],
+            "sampleFields": [
+              "First Name * / FirstName / ContactForm_ContactForm_FirstName / text",
+              "Last Name * / LastName / ContactForm_ContactForm_LastName / text",
+              "Email * / Email / ContactForm_ContactForm_Email / email",
+              "Phone * / Phone / ContactForm_ContactForm_Phone / tel",
+              "Address 1 / Address1 / ContactForm_ContactForm_Address1 / text",
+              "Address 2 / Address2 / ContactForm_ContactForm_Address2 / text",
+              "City * / City / ContactForm_ContactForm_City / text",
+              "State / ContactForm_ContactForm_State / select",
+              "Zip * / Zip / ContactForm_ContactForm_Zip / text",
+              "Additional Comments or Questions / Comments / ContactForm_ContactForm_Comments / textarea",
+              "ScheduleAppointment / ContactForm_ContactForm_ScheduleAppointment / checkbox",
+              "WebField / ContactForm_ContactForm_WebField / text"
+            ]
+          },
+          {
+            "action": "https://www.jansenai.com/_subscription/FooterSubscribeForm/",
+            "method": "POST",
+            "fieldCount": 8,
+            "requiredFields": [
+              "Enter Your Email to Subscribe / Email / FooterSubscribeForm_FooterSubscribeForm_Email / email"
+            ],
+            "riskyFields": [],
+            "generalFields": [
+              "Enter Your Email to Subscribe / Email / FooterSubscribeForm_FooterSubscribeForm_Email / email"
+            ],
+            "sampleFields": [
+              "Types[App\\Newsroom\\NewsroomArticle] / FooterSubscribeForm_FooterSubscribeForm_Types_App_Newsroom_New",
+              "Types[App\\Podcast\\PodcastEpisode] / FooterSubscribeForm_FooterSubscribeForm_Types_App_Podcast_Podcas",
+              "Types[App\\Video\\Video] / FooterSubscribeForm_FooterSubscribeForm_Types_App_Video_Video / checkbox",
+              "Types[App\\CaseStudy\\CaseStudy] / FooterSubscribeForm_FooterSubscribeForm_Types_App_CaseStudy_CaseStu",
+              "Types[App\\Publication\\Publication-2] / FooterSubscribeForm_FooterSubscribeForm_Types_App_Publication",
+              "Types[App\\Publication\\Publication-1] / FooterSubscribeForm_FooterSubscribeForm_Types_App_Publication",
+              "Enter Your Email to Subscribe / Email / FooterSubscribeForm_FooterSubscribeForm_Email / email",
+              "WebField / FooterSubscribeForm_FooterSubscribeForm_WebField / text"
+            ]
+          }
+        ],
+        "contactLinks": [
+          {
+            "text": "Contact",
+            "href": "https://www.jansenai.com/contact/"
+          },
+          {
+            "text": "Office Locations",
+            "href": "https://www.jansenai.com/contact/office-locations/"
+          },
+          {
+            "text": "Contact Us",
+            "href": "https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/#contact-form"
+          },
+          {
+            "text": "Dallas, Texas",
+            "href": "https://www.jansenai.com/contact/office-locations/dallas-texas/"
+          },
+          {
+            "text": "Houston, Texas",
+            "href": "https://www.jansenai.com/contact/office-locations/houston-texas/"
+          },
+          {
+            "text": "New Orleans, Louisiana",
+            "href": "https://www.jansenai.com/contact/office-locations/new-orleans-louisiana/"
+          },
+          {
+            "text": "San Juan, Puerto Rico",
+            "href": "https://www.jansenai.com/contact/office-locations/san-juan-puerto-rico/"
+          },
+          {
+            "text": "Tulsa, Oklahoma",
+            "href": "https://www.jansenai.com/contact/office-locations/oklahoma-city-oklahoma/"
+          }
+        ],
+        "emails": [
+          "info@jansenai.com"
+        ],
+        "error": ""
+      }
+    }
+  ]
+}

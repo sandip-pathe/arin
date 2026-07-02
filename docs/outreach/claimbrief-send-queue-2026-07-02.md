@@ -14,6 +14,7 @@ npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:today
+npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:form-call-sprint
 ```
 
@@ -27,6 +28,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
+- `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
@@ -46,11 +48,16 @@ Use the today action sheet first when starting from zero. It narrows the queue
 to five Oklahoma wind/hail targets with exact form copy, call openers, and
 tracker commands.
 
+Use the today contact-path report before opening those pages. It checks the
+public target pages for static forms and flags claim-specific fields that should
+route you to a call instead of a form submit.
+
 No-env first move:
 
 ```bash
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:today
+npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:form-call-sprint
 ```
 

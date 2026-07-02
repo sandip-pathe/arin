@@ -1,83 +1,16 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { campaignDate, generatedDir, getTodayTargets } from "./claimbrief-today-targets.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = join(__dirname, "..");
-const campaignDate = "2026-07-02";
-const generatedDir = join(root, "docs", "outreach", "generated");
 const publicBaseUrl = process.env.CLAIMBRIEF_PUBLIC_BASE_URL || "https://app.anaya.legal";
 const oklahomaTargetUrl = `${publicBaseUrl}/claimbrief/oklahoma-hail`;
 const oklahomaOfferUrl =
   process.env.CLAIMBRIEF_OKLAHOMA_OFFER_URL || oklahomaTargetUrl;
-const targetLimit = Number(process.env.CLAIMBRIEF_TODAY_LIMIT || 5);
 
 const paths = {
-  prospects: join(root, "docs", "outreach", `claimbrief-prospects-${campaignDate}.csv`),
-  tracker: join(root, "docs", "outreach", "claimbrief-pipeline-tracker.csv"),
   markdown: join(generatedDir, `claimbrief-today-action-sheet-${campaignDate}.md`),
   html: join(generatedDir, `claimbrief-today-action-sheet-${campaignDate}.html`),
 };
-
-const parseCsv = (text) => {
-  const rows = [];
-  let current = [];
-  let field = "";
-  let inQuotes = false;
-
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-    const next = text[index + 1];
-
-    if (char === '"' && inQuotes && next === '"') {
-      field += '"';
-      index += 1;
-      continue;
-    }
-
-    if (char === '"') {
-      inQuotes = !inQuotes;
-      continue;
-    }
-
-    if (char === "," && !inQuotes) {
-      current.push(field);
-      field = "";
-      continue;
-    }
-
-    if ((char === "\n" || char === "\r") && !inQuotes) {
-      if (char === "\r" && next === "\n") {
-        index += 1;
-      }
-      current.push(field);
-      field = "";
-      if (current.some((value) => value.length > 0)) {
-        rows.push(current);
-      }
-      current = [];
-      continue;
-    }
-
-    field += char;
-  }
-
-  if (field.length > 0 || current.length > 0) {
-    current.push(field);
-    rows.push(current);
-  }
-
-  const [headers, ...data] = rows;
-  if (!headers) {
-    return [];
-  }
-
-  return data.map((row) =>
-    Object.fromEntries(headers.map((header, index) => [header, row[index] || ""]))
-  );
-};
-
-const readCsv = (path) => (existsSync(path) ? parseCsv(readFileSync(path, "utf8")) : []);
 
 const escapeHtml = (value) =>
   String(value ?? "")
@@ -97,56 +30,9 @@ const slugify = (value) =>
     .slice(0, 56);
 
 const shellQuote = (value) => `"${String(value ?? "").replace(/"/g, '\\"')}"`;
-const trackerKey = (company, contact) => `${company}::${contact}`;
 const telHref = (phone) => String(phone || "").replace(/[^0-9+]/g, "");
 
-const prospects = readCsv(paths.prospects);
-const trackerRows = readCsv(paths.tracker);
-const trackerByContact = new Map(
-  trackerRows.map((row) => [trackerKey(row.company, row.contact), row])
-);
-
-const hasOklahomaSignal = (row) => {
-  const haystack = [
-    row.company,
-    row.state_focus,
-    row.website,
-    row.contact_value,
-    row.observed_specialty,
-    row.first_line,
-    row.evidence_note,
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  return row.state_focus === "OK" || haystack.includes("oklahoma");
-};
-
-const isUnattempted = (row) => {
-  const tracker = trackerByContact.get(trackerKey(row.company, row.contact_value));
-  return !tracker || tracker.status === "not_sent";
-};
-
-const contactPriority = (row) => {
-  if (row.contact_channel === "contact_form") {
-    return 0;
-  }
-  if (row.phone) {
-    return 1;
-  }
-  return 2;
-};
-
-const actionRows = prospects
-  .filter(hasOklahomaSignal)
-  .filter(isUnattempted)
-  .sort(
-    (a, b) =>
-      contactPriority(a) - contactPriority(b) ||
-      (a.state_focus === "OK" ? 0 : 1) - (b.state_focus === "OK" ? 0 : 1) ||
-      Number(a.priority) - Number(b.priority)
-  )
-  .slice(0, targetLimit);
+const actionRows = getTodayTargets();
 
 const subjectFor = (row) => row.recommended_subject || "Oklahoma wind/hail claim brief?";
 

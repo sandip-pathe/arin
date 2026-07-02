@@ -217,6 +217,7 @@ This packet is for review and sending. It does not send anything by itself.
 - After each send, update \`docs/outreach/claimbrief-pipeline-tracker.csv\`.
 - If a contact form asks for policyholder claim details, do not invent them. Use only the general message field or call instead.
 - If starting from zero, use \`docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html\` before this broader packet.
+- Check \`docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md\` before submitting any today-sheet forms.
 
 ## Direct Emails
 
@@ -228,7 +229,7 @@ ${emailLines}
 
 ## First 20 Contact Forms Or Calls
 
-Start with \`docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html\` for the five-target Oklahoma action sheet. If there is no reply, use \`docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv\` or the send board for the broader queue.
+Start with \`docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html\` for the five-target Oklahoma action sheet, then read \`docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md\` before opening forms. If there is no reply, use \`docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv\` or the send board for the broader queue.
 
 | Order | Company | Contact URL | Phone | Subject |
 | ---: | --- | --- | --- | --- |
