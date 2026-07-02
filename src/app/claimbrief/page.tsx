@@ -6,6 +6,8 @@ import { v7 } from "uuid";
 import {
   ArrowRight,
   BadgeDollarSign,
+  CheckCircle2,
+  Clock3,
   FileCheck2,
   FileSearch,
   Mail,
@@ -34,6 +36,21 @@ const outputs = [
   "Estimate or scope mismatches",
   "Missing evidence checklist",
   "Draft response outline for human review",
+];
+
+const pilotSteps = [
+  {
+    title: "Send one redacted packet",
+    detail: "Use an old closed file first: policy, denial letter, estimates, and key correspondence.",
+  },
+  {
+    title: "Get the cited brief",
+    detail: "Receive a PDF/Markdown review packet with source-linked facts and evidence gaps.",
+  },
+  {
+    title: "Only pay if it helps",
+    detail: "Move to $99 for 3 briefs or $299/month for up to 20 briefs after the sample proves useful.",
+  },
 ];
 
 const contactEmail =
@@ -95,21 +112,21 @@ const pricing = [
   {
     name: "Starter",
     price: "$99",
-    detail: "3 claim briefs",
+    detail: "3 concierge claim briefs after the free sample",
     envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL,
     fallbackHref: starterFallbackHref,
   },
   {
     name: "Monthly",
     price: "$299",
-    detail: "up to 20 briefs",
+    detail: "up to 20 briefs/month for one office workflow",
     envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL,
     fallbackHref: monthlyFallbackHref,
   },
   {
     name: "White label",
     price: "$1,500",
-    detail: "setup plus monthly support",
+    detail: "branded setup after a paid pilot works",
     envUrl: process.env.NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL,
     fallbackHref: whiteLabelFallbackHref,
   },
@@ -156,37 +173,34 @@ export default function ClaimBriefPage() {
             <div className="max-w-2xl">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-800">
                 <ShieldCheck className="h-4 w-4" />
-                Built for licensed claim professionals
+                24-hour concierge pilot for licensed claim professionals
               </div>
               <h1 className="text-4xl font-semibold leading-tight text-slate-950 sm:text-5xl">
-                Cited insurance claim briefs from messy claim packets.
+                Cited property-claim review briefs in 24 hours.
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-                Upload a policy, denial letter, estimate, or claim
-                correspondence. ClaimBrief turns it into a professional review
-                packet with source-linked facts, evidence gaps, and response
-                outline.
+                Send one old closed or redacted property-insurance claim packet.
+                ClaimBrief turns the policy, denial letter, estimates, and
+                correspondence into a professional review packet with
+                source-linked facts, evidence gaps, and a response outline.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button
-                  onClick={startClaimBrief}
-                  className="h-12 rounded-md bg-slate-950 px-5 text-base text-white hover:bg-slate-800"
-                >
-                  Create sample brief
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
                 <a
-                  href="#cold-outreach"
-                  className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
+                  href={sampleRequestHref}
+                  className="inline-flex h-12 items-center justify-center rounded-md bg-slate-950 px-5 text-base font-semibold text-white hover:bg-slate-800"
                 >
-                  View outreach offer
+                  <Mail className="mr-2 h-4 w-4" />
+                  Request free sample
                 </a>
                 <a
-                  href="#request-sample"
-                  className="inline-flex h-12 items-center justify-center rounded-md border border-emerald-700 bg-emerald-700 px-5 text-base font-medium text-white hover:bg-emerald-800"
+                  href={pricing[0].envUrl || pricing[0].fallbackHref}
+                  target={pricing[0].envUrl ? "_blank" : undefined}
+                  rel={pricing[0].envUrl ? "noreferrer" : undefined}
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
                 >
-                  Request free sample
+                  <Receipt className="mr-2 h-4 w-4" />
+                  {pricing[0].envUrl ? "Start $99 pilot" : "Request $99 pilot"}
                 </a>
                 <a
                   href="/samples/claimbrief-sample-review.html"
@@ -196,6 +210,13 @@ export default function ClaimBriefPage() {
                 >
                   View sample packet
                 </a>
+                <Button
+                  onClick={startClaimBrief}
+                  className="h-12 rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  Try local brief
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </div>
 
               <p className="mt-4 text-sm leading-6 text-slate-500">
@@ -216,7 +237,46 @@ export default function ClaimBriefPage() {
                   className="h-auto w-full"
                 />
               </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {pilotSteps.map((step, index) => (
+                  <div
+                    key={step.title}
+                    className="rounded-md border border-slate-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
+                      {index + 1}
+                    </div>
+                    <h2 className="text-sm font-semibold text-slate-950">
+                      {step.title}
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                      {step.detail}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
+        </section>
+
+        <section className="border-b border-slate-200 bg-slate-950 px-4 py-6 text-white sm:px-8">
+          <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-200">
+                <Clock3 className="h-4 w-4" />
+                Free first sample
+              </div>
+              <p className="text-sm leading-6 text-slate-200">
+                If the brief does not save review time, do not pay. If it helps,
+                the starter batch is $99 for 3 briefs.
+              </p>
+            </div>
+            <a
+              href="#request-sample"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-white px-4 text-sm font-semibold text-slate-950 hover:bg-slate-100"
+            >
+              See packet requirements
+            </a>
           </div>
         </section>
 
@@ -247,7 +307,7 @@ export default function ClaimBriefPage() {
             </div>
             <div>
               <BadgeDollarSign className="mb-3 h-7 w-7 text-blue-700" />
-              <h2 className="text-xl font-semibold">Sell First Pricing</h2>
+              <h2 className="text-xl font-semibold">Pilot Pricing</h2>
               <div className="mt-4 grid gap-2">
                 {pricing.map((tier) => (
                   <div
@@ -266,7 +326,7 @@ export default function ClaimBriefPage() {
                         rel={tier.envUrl ? "noreferrer" : undefined}
                         className="inline-flex h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-sm font-medium text-slate-800 hover:bg-slate-50"
                       >
-                        {tier.envUrl ? "Pay" : "Ask"}
+                        {tier.envUrl ? "Pay" : "Request"}
                       </a>
                     </div>
                   </div>
@@ -291,8 +351,9 @@ export default function ClaimBriefPage() {
                 hours.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-600">
-                The first useful sale is not a subscription screen. It is one
-                real packet, one useful output, then a small paid batch.
+                The first step is deliberately manual: one real packet, one
+                useful output, then a small paid batch if the review packet
+                earns it.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -309,7 +370,7 @@ export default function ClaimBriefPage() {
                   className="inline-flex h-11 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
                 >
                   <Receipt className="mr-2 h-4 w-4" />
-                  Start $99 pilot
+                  {pricing[0].envUrl ? "Start $99 pilot" : "Request $99 pilot"}
                 </a>
               </div>
               <p className="mt-3 text-sm text-slate-500">
@@ -339,11 +400,11 @@ export default function ClaimBriefPage() {
 
         <section id="cold-outreach" className="bg-white px-4 py-10 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-2xl font-semibold">Cold Outreach Offer</h2>
+            <h2 className="text-2xl font-semibold">What The Pilot Produces</h2>
             <p className="mt-3 max-w-3xl text-slate-600">
-              Send one old closed or redacted claim packet. I will return a
-              free ClaimBrief sample within 24 hours. If it is useless, tell me
-              and I will not follow up.
+              ClaimBrief is a review artifact for professionals, not another
+              claims CRM. The output is designed to be edited, shared
+              internally, or ignored by a human reviewer.
             </p>
             <a
               href="/samples/claimbrief-sample-review.html"
@@ -354,10 +415,21 @@ export default function ClaimBriefPage() {
               Open sample ClaimBrief
             </a>
             <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-5 font-mono text-sm leading-7 text-slate-700">
-              I am testing a small tool for public adjusters that turns claim
-              documents into a cited review brief: denial reasons, policy
-              provisions, missing evidence, and draft response outline. No
-              carrier contact, no legal advice, no homeowner-facing promises.
+              <div className="grid gap-3 md:grid-cols-2">
+                {[
+                  "Cited claim overview",
+                  "Carrier position in its own wording",
+                  "Policy provisions and exclusions mentioned",
+                  "Missing evidence checklist",
+                  "Estimate or scope mismatches",
+                  "Draft response outline for human review",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
