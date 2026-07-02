@@ -310,6 +310,8 @@ Built for licensed claim professionals. ClaimBrief does not negotiate claims, co
 Reusable outreach assets:
 
 - Lead template: `docs/outreach/claimbrief-leads-template.csv`
+- First prospect list: `docs/outreach/claimbrief-prospects-2026-07-02.csv`
+- Send queue: `docs/outreach/claimbrief-send-queue-2026-07-02.md`
 - Email sequence: `docs/outreach/claimbrief-email-sequence.md`
 - AI personalization prompt: `docs/outreach/claimbrief-ai-personalization-prompt.md`
 

@@ -61,6 +61,8 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [US ClaimBrief Go-To-Market](docs/US_CLAIMBRIEF_GO_TO_MARKET.md)
 - [ClaimBrief Outreach Emails](docs/outreach/claimbrief-email-sequence.md)
 - [ClaimBrief Lead Template](docs/outreach/claimbrief-leads-template.csv)
+- [ClaimBrief Prospect List](docs/outreach/claimbrief-prospects-2026-07-02.csv)
+- [ClaimBrief Send Queue](docs/outreach/claimbrief-send-queue-2026-07-02.md)
 
 ## Tech Stack
 
