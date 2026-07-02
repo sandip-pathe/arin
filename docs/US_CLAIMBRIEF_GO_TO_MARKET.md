@@ -312,6 +312,8 @@ Reusable outreach assets:
 - Lead template: `docs/outreach/claimbrief-leads-template.csv`
 - First prospect list: `docs/outreach/claimbrief-prospects-2026-07-02.csv`
 - Send queue: `docs/outreach/claimbrief-send-queue-2026-07-02.md`
+- Reply and close playbook: `docs/outreach/claimbrief-reply-and-close-playbook.md`
+- Pipeline tracker: `docs/outreach/claimbrief-pipeline-tracker.csv`
 - Direct email mailmerge: `docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv`
 - Contact form messages: `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - Public sample packet: `public/samples/claimbrief-sample-review.html`

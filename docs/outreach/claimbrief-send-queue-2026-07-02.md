@@ -19,6 +19,11 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 
+Use after replies start:
+
+- `docs/outreach/claimbrief-reply-and-close-playbook.md`
+- `docs/outreach/claimbrief-pipeline-tracker.csv`
+
 ## Offer To Send
 
 Use the "free sample" offer:
