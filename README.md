@@ -64,10 +64,13 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Prospect List](docs/outreach/claimbrief-prospects-2026-07-02.csv)
 - [ClaimBrief Send Queue](docs/outreach/claimbrief-send-queue-2026-07-02.md)
 - [ClaimBrief Reply And Close Playbook](docs/outreach/claimbrief-reply-and-close-playbook.md)
+- [ClaimBrief First Sale Runbook](docs/outreach/claimbrief-first-sale-runbook.md)
+- [ClaimBrief Outbound Compliance Checklist](docs/outreach/claimbrief-outbound-compliance-checklist.md)
 - [ClaimBrief Pipeline Tracker](docs/outreach/claimbrief-pipeline-tracker.csv)
 - [ClaimBrief Direct Email Mailmerge](docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv)
 - [ClaimBrief Contact Form Messages](docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv)
 - [ClaimBrief Send Board](docs/outreach/generated/claimbrief-send-board-2026-07-02.html)
+- [ClaimBrief Send Readiness Report](docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md)
 - [ClaimBrief Sample Review Packet](public/samples/claimbrief-sample-review.html)
 
 ## Tech Stack
@@ -95,6 +98,8 @@ Create a local environment file:
 OPENAI_API_KEY=your_server_side_key
 
 # Optional ClaimBrief sales links.
+CLAIMBRIEF_POSTAL_ADDRESS="Your compliant mailing address"
+CLAIMBRIEF_SAMPLE_URL=https://app.anaya.legal/samples/claimbrief-sample-review.html
 NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL=hello@anaya.legal
 NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL=https://buy.stripe.com/...
 NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL=https://buy.stripe.com/...
@@ -118,6 +123,8 @@ http://localhost:9002
 ```bash
 npm run lint
 npm run typecheck
+npm run outreach:claimbrief
+npm run outreach:claimbrief:check
 npm audit --omit=dev
 npm run build
 ```

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "outreach:claimbrief": "node scripts/generate-claimbrief-outreach.mjs"
+    "outreach:claimbrief": "node scripts/generate-claimbrief-outreach.mjs",
+    "outreach:claimbrief:check": "node scripts/check-claimbrief-send-readiness.mjs",
+    "outreach:claimbrief:check:strict": "node scripts/check-claimbrief-send-readiness.mjs --strict"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",

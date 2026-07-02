@@ -30,6 +30,7 @@ determination, no homeowner-facing promise.
 
 - Create payment links for `ClaimBrief Starter - $99` and `ClaimBrief Monthly Pilot - $299/month`.
 - Set `CLAIMBRIEF_POSTAL_ADDRESS` and regenerate outreach drafts.
+- Run `npm run outreach:claimbrief:check` and fix every blocker before sending.
 - Open `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`.
 - Keep `docs/outreach/claimbrief-pipeline-tracker.csv` open while sending.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.

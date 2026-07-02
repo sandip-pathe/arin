@@ -12,6 +12,7 @@ contact-form, phone, or payment-link send.
 ## Before Sending Email
 
 - Set `CLAIMBRIEF_POSTAL_ADDRESS` before generating final drafts, or manually replace `[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]` in every draft.
+- Run `npm run outreach:claimbrief:check` and review `docs/outreach/generated/claimbrief-send-readiness-report-2026-07-02.md`.
 - Use accurate sender/header information from the mailbox that should receive replies.
 - Keep subject lines literal. Do not imply an existing relationship, claim review, referral, or urgent insurance matter.
 - Keep the opt-out line in every first email and follow-up: `If this is not relevant, reply "no" and I will not follow up.`
