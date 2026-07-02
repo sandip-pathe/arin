@@ -45,6 +45,7 @@ determination, no homeowner-facing promise.
 
 - Send 35 direct emails or intentionally skip with tracker notes.
 - Submit or call the first 20 contact-form/call leads.
+- If starting cold, work the five-target today action sheet before the broader queue.
 - Update every touched row immediately: `status`, `last_touch_date`, `next_action`, and `notes`.
 - Run `npm run outreach:claimbrief:tracker` after each sending block to refresh the pipeline summary.
 - Do not add features, rewrite the product, or research a new wedge during Day 1.
@@ -69,6 +70,9 @@ Timely trigger path:
   `CLAIMBRIEF_OKLAHOMA_OFFER_URL=https://app.anaya.legal/claimbrief` and
   regenerate the sprint board.
 - Run `npm run outreach:claimbrief:trigger-sprint`.
+- Run `npm run outreach:claimbrief:today`.
+- Open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
+  before the larger trigger board.
 - Work Oklahoma wind/hail targets before adding more generic public-adjuster
   leads.
 
@@ -79,13 +83,15 @@ Use this when no ClaimBrief sales env vars are visible locally.
 1. Run `npm run outreach:claimbrief:check`.
 2. Run `npm run outreach:claimbrief:check:form-call`.
 3. Confirm the form/call report is `READY` or `READY_WITH_WARNINGS`.
-4. Run `npm run outreach:claimbrief:form-call-sprint`.
-5. Open `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`.
-6. Work targets from top to bottom.
+4. Run `npm run outreach:claimbrief:today`.
+5. Open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`.
+6. Work all five targets from top to bottom.
 7. For each target, open the public contact page and use only general contact fields.
 8. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
 9. After every submitted form, call, or skip, copy the matching tracker command from the sprint board and run it locally.
-10. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
+10. If there is no reply, run `npm run outreach:claimbrief:form-call-sprint`
+    and move to the broader queue.
+11. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
 
 Stop the sprint immediately if someone replies, asks for a sample, or offers to
 send a packet. Move to reply handling and produce the sample before touching

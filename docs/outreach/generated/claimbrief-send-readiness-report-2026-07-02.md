@@ -47,6 +47,7 @@ Channel scope: **all**
 | file:mailmerge | direct-email | pass | docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv |
 | file:formMessages | form-call | pass | docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv |
 | file:sendBoard | global | pass | docs/outreach/generated/claimbrief-send-board-2026-07-02.html |
+| file:todayActionSheet | form-call | pass | docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html |
 | file:formCallSprint | form-call | pass | docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html |
 | file:triggerSprint | form-call | pass | docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html |
 | file:liveRoutes | global | pass | docs/outreach/generated/claimbrief-live-routes-2026-07-02.md |

@@ -55,6 +55,13 @@ const paths = {
     "generated",
     `claimbrief-send-board-${campaignDate}.html`
   ),
+  todayActionSheet: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-today-action-sheet-${campaignDate}.html`
+  ),
   formCallSprint: join(
     root,
     "docs",
@@ -234,6 +241,7 @@ const pathScopes = {
   mailmerge: "direct-email",
   emlDir: "direct-email",
   formMessages: "form-call",
+  todayActionSheet: "form-call",
   formCallSprint: "form-call",
   triggerSprint: "form-call",
 };

@@ -13,6 +13,7 @@ npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
+npm run outreach:claimbrief:today
 npm run outreach:claimbrief:form-call-sprint
 ```
 
@@ -25,6 +26,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
+- `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02/`
@@ -40,15 +42,21 @@ Use the form/call sprint board for the no-address path. It shows only the
 unattempted contact-form/call queue and copyable text; it does not submit
 anything.
 
+Use the today action sheet first when starting from zero. It narrows the queue
+to five Oklahoma wind/hail targets with exact form copy, call openers, and
+tracker commands.
+
 No-env first move:
 
 ```bash
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:today
 npm run outreach:claimbrief:form-call-sprint
 ```
 
-Then open `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
-and work only the first 20 form/call cards.
+Then open `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
+and work the five target cards. Use the broader form/call sprint only if none
+of those creates a reply or packet request.
 
 Use after replies start:
 
