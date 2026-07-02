@@ -453,6 +453,7 @@ Implemented in the current MVP:
 - Claim-specific summary, quick skim, and chat prompts.
 - Claim-specific upload modal copy.
 - Sample claim packet for demos.
+- `/claimbrief/intake`, `/claimbrief/pilot`, and `/claimbrief/starter` support the sample, price, and $99 close flow.
 - Branded ClaimBrief PDF, Markdown, and TXT exports with source references.
 - ClaimBrief outreach files under `docs/outreach/`.
 
@@ -537,7 +538,9 @@ Deploy wiring:
 - Optionally set `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL` to the $299/month payment link.
 - Set `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL` only after one paid pilot proves the workflow.
 
-If the payment links are not set, the ClaimBrief page falls back to prefilled manual-invoice email CTAs. That keeps the sales page usable before checkout is ready.
+If the payment links are not set, the ClaimBrief page routes the $99 offer to
+`/claimbrief/starter`, and that page falls back to a prefilled manual-invoice
+email CTA. That keeps the close path usable before checkout is ready.
 
 ## The Bet
 

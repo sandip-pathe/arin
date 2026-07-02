@@ -2,8 +2,8 @@
 
 import {
   ArrowLeft,
-  BadgeDollarSign,
   CheckCircle2,
+  FileArchive,
   Mail,
   Receipt,
   ShieldCheck,
@@ -15,91 +15,75 @@ import Logo from "@/components/logo";
 const contactEmail =
   process.env.NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL || "hello@anaya.legal";
 
+const starterUrl = process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL;
+
 const buildMailto = (subject: string, body: string) =>
   `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
     body
   )}`;
 
-const starterFallbackHref = "/claimbrief/starter";
-
-const monthlyFallbackHref = buildMailto(
-  "ClaimBrief monthly pilot",
+const invoiceHref = buildMailto(
+  "ClaimBrief starter invoice request",
   `Hi Sandy,
 
-I want to start or discuss the ClaimBrief $299/month pilot for up to 20 claim briefs.
+I want to start the ClaimBrief $99 starter batch for 3 claim briefs.
 
 Please send payment or invoice instructions and the packet workflow.
+
+I understand ClaimBrief creates document-review packets for professional review and does not provide legal advice, public-adjusting services, carrier submission, claim negotiation, or coverage determinations.
 `
 );
 
-const sampleFallbackHref = buildMailto(
-  "ClaimBrief free sample",
+const packetHref = buildMailto(
+  "ClaimBrief starter packet workflow",
   `Hi Sandy,
 
-I want to send one old closed or redacted claim packet for a free ClaimBrief sample before starting the paid pilot.
+I am ready to send claim packets for the ClaimBrief starter batch.
 
-Please confirm the safest way to send the packet.
+Please confirm the safest packet-transfer workflow.
 `
 );
 
-const pilotTiers = [
-  {
-    name: "Starter",
-    price: "$99",
-    detail: "3 ClaimBriefs",
-    bestFor: "First paid batch after a useful free sample.",
-    href: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL || starterFallbackHref,
-    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "Pay for starter" : "Start starter batch",
-  },
-  {
-    name: "Monthly",
-    price: "$299",
-    detail: "up to 20 ClaimBriefs/month",
-    bestFor: "One office with repeated denial, underpayment, or scope-review files.",
-    href: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL || monthlyFallbackHref,
-    cta: process.env.NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL ? "Start monthly" : "Request monthly invoice",
-  },
-];
-
 const included = [
-  "Manual/concierge file intake during the pilot",
-  "PDF and Markdown ClaimBrief output",
-  "Claim overview with source references",
-  "Carrier denial or underpayment reasons",
+  "3 concierge ClaimBrief review packets",
+  "PDF and Markdown output",
+  "Carrier position and source references",
   "Policy provisions and exclusions mentioned",
   "Missing evidence checklist",
   "Draft response outline for human review",
 ];
 
-const excluded = [
+const notIncluded = [
   "No legal advice",
   "No public-adjusting services",
   "No carrier contact or claim submission",
   "No coverage determination",
   "No settlement recommendation",
-  "No homeowner-facing promises",
+  "No homeowner-facing communication",
 ];
 
-const workflow = [
-  "Pay for the starter batch or monthly pilot.",
-  "Send redacted or active claim packets by the agreed workflow.",
+const steps = [
+  "Pay by checkout link or request a manual invoice.",
+  "Send up to 3 claim packets using the agreed workflow.",
   "Receive each ClaimBrief as PDF and Markdown.",
-  "Use, edit, or ignore the packet internally.",
-  "Renew only if it saves review time.",
+  "Use, edit, or ignore each packet internally.",
 ];
 
-export default function ClaimBriefPilotPage() {
+export default function ClaimBriefStarterPage() {
+  const payHref = starterUrl || invoiceHref;
+  const payLabel = starterUrl ? "Pay $99 starter" : "Request $99 invoice";
+
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-950">
       <header className="border-b border-slate-200 bg-white px-4 py-3 sm:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <Logo />
           <a
-            href="/claimbrief"
+            href="/claimbrief/pilot"
             className="inline-flex h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            ClaimBrief
+            Pilot details
           </a>
         </div>
       </header>
@@ -109,70 +93,77 @@ export default function ClaimBriefPilotPage() {
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-800">
-                <BadgeDollarSign className="h-4 w-4" />
-                Concierge pilot, no annual contract
+                <Receipt className="h-4 w-4" />
+                Starter batch
               </div>
               <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-slate-950 sm:text-5xl">
-                Pay only after the sample proves useful.
+                Start with 3 ClaimBriefs for $99.
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-                ClaimBrief is sold first as a small manual pilot: send files,
-                get cited review packets back, renew only if the output saves
-                review time for your office. If checkout links are not set up
-                yet, the pilot can still close by manual invoice.
+                Use this after the free sample is useful, or when an office
+                wants to skip straight to a small paid batch. The starter is a
+                manual concierge service, not a software subscription.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
-                  href={pilotTiers[0].href}
-                  target={process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "_blank" : undefined}
-                  rel={process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "noreferrer" : undefined}
+                  href={payHref}
+                  target={starterUrl ? "_blank" : undefined}
+                  rel={starterUrl ? "noreferrer" : undefined}
                   className="inline-flex h-12 items-center justify-center rounded-md bg-slate-950 px-5 text-base font-semibold text-white hover:bg-slate-800"
                 >
                   <Receipt className="mr-2 h-4 w-4" />
-                  {pilotTiers[0].cta}
+                  {payLabel}
                 </a>
                 <a
-                  href={sampleFallbackHref}
+                  href={packetHref}
                   className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
                 >
                   <Mail className="mr-2 h-4 w-4" />
-                  Try free sample first
+                  Ask packet workflow
                 </a>
                 <a
-                  href="/claimbrief/intake"
+                  href="/samples/claimbrief-sample-review.html"
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
                 >
-                  Packet instructions
+                  View sample output
                 </a>
               </div>
+              <p className="mt-4 text-sm leading-6 text-slate-500">
+                Contact email: {contactEmail}
+              </p>
             </div>
 
-            <div className="grid gap-3">
-              {pilotTiers.map((tier) => (
-                <div
-                  key={tier.name}
-                  className="rounded-lg border border-slate-200 bg-slate-50 p-5"
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold">{tier.name}</h2>
-                      <p className="mt-1 text-sm text-slate-600">{tier.detail}</p>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">
-                        {tier.bestFor}
-                      </p>
-                    </div>
-                    <div className="text-3xl font-semibold">{tier.price}</div>
-                  </div>
-                  <a
-                    href={tier.href}
-                    target={tier.href.startsWith("http") ? "_blank" : undefined}
-                    rel={tier.href.startsWith("http") ? "noreferrer" : undefined}
-                    className="mt-5 inline-flex h-10 w-full items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800"
-                  >
-                    {tier.cta}
-                  </a>
+            <div className="border-l border-slate-200 bg-slate-50/70 p-5">
+              <div className="flex items-start gap-3">
+                <FileArchive className="mt-1 h-6 w-6 shrink-0 text-blue-700" />
+                <div>
+                  <h2 className="text-xl font-semibold">Starter scope</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Each ClaimBrief covers one property-claim packet. Do not
+                    combine multiple unrelated claims into one brief.
+                  </p>
                 </div>
-              ))}
+              </div>
+              <div className="mt-5 grid gap-3">
+                <div className="border-t border-slate-200 pt-3">
+                  <div className="text-sm font-medium text-slate-500">Price</div>
+                  <div className="mt-1 text-3xl font-semibold">$99</div>
+                </div>
+                <div className="border-t border-slate-200 pt-3">
+                  <div className="text-sm font-medium text-slate-500">Output</div>
+                  <div className="mt-1 text-base font-semibold">
+                    3 PDF + Markdown review packets
+                  </div>
+                </div>
+                <div className="border-t border-slate-200 pt-3">
+                  <div className="text-sm font-medium text-slate-500">Renewal</div>
+                  <div className="mt-1 text-base font-semibold">
+                    No contract; move to monthly only if useful
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -185,8 +176,7 @@ export default function ClaimBriefPilotPage() {
                 <div>
                   <h2 className="text-xl font-semibold">Included</h2>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
-                    The paid pilot buys review packets, not a full claims
-                    management platform.
+                    The paid starter buys useful artifacts, not seats or setup.
                   </p>
                 </div>
               </div>
@@ -204,14 +194,15 @@ export default function ClaimBriefPilotPage() {
               <div className="flex items-start gap-3">
                 <XCircle className="mt-1 h-6 w-6 shrink-0 text-rose-700" />
                 <div>
-                  <h2 className="text-xl font-semibold">Excluded</h2>
+                  <h2 className="text-xl font-semibold">Not Included</h2>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
-                    These boundaries keep the pilot narrow, useful, and safe.
+                    Keep the first paid batch narrow so it can be fulfilled
+                    fast and safely.
                   </p>
                 </div>
               </div>
               <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-700">
-                {excluded.map((item) => (
+                {notIncluded.map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-700" />
                     <span>{item}</span>
@@ -227,18 +218,19 @@ export default function ClaimBriefPilotPage() {
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-800">
                 <ShieldCheck className="h-4 w-4" />
-                Pilot workflow
+                Payment-to-packet workflow
               </div>
               <h2 className="text-3xl font-semibold tracking-tight">
-                Simple enough to start this week.
+                The starter is intentionally simple.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-600">
-                The first paid batch should prove whether the office wants more
-                ClaimBriefs. No onboarding project, no implementation sprint.
+                Close the smallest useful batch, fulfill it manually, then
+                decide whether the office has enough volume for the monthly
+                pilot.
               </p>
             </div>
             <div className="grid gap-3">
-              {workflow.map((item, index) => (
+              {steps.map((item, index) => (
                 <div
                   key={item}
                   className="grid grid-cols-[auto_1fr] gap-3 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700"
@@ -256,21 +248,17 @@ export default function ClaimBriefPilotPage() {
         <section className="bg-slate-950 px-4 py-8 text-white sm:px-8">
           <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <h2 className="text-2xl font-semibold">Refund rule</h2>
+              <h2 className="text-2xl font-semibold">After payment</h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-200">
-                If the first paid batch is not useful, do not renew. The point
-                of the pilot is to prove review-time savings with real files,
-                not to lock anyone into a contract.
+                Use the intake instructions before sending files. Start with
+                redacted or closed packets whenever possible.
               </p>
             </div>
             <a
-              href={pilotTiers[0].href}
-              target={process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "_blank" : undefined}
-              rel={process.env.NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL ? "noreferrer" : undefined}
+              href="/claimbrief/intake"
               className="inline-flex h-11 items-center justify-center rounded-md bg-white px-4 text-sm font-semibold text-slate-950 hover:bg-slate-100"
             >
-              <Receipt className="mr-2 h-4 w-4" />
-              {pilotTiers[0].cta}
+              Packet instructions
             </a>
           </div>
         </section>

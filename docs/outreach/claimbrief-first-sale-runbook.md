@@ -36,6 +36,7 @@ determination, no homeowner-facing promise.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
 - Use `/claimbrief/intake` after a positive reply so the prospect knows what to redact and send.
 - Use `/claimbrief/pilot` when someone asks price or after a useful free sample.
+- Use `/claimbrief/starter` when someone is ready for the $99 starter batch or needs invoice/payment instructions.
 - If direct email is blocked by the missing postal address, start with contact forms and calls. Do not wait to sell.
 
 ## Day 1 Execution
@@ -122,7 +123,7 @@ will make a free sample.
 | Signal | Meaning | Action |
 | --- | --- | --- |
 | Sends packet | Strongest signal | Produce sample before doing anything else. |
-| Asks price | Buying signal | Send `/claimbrief/pilot`, offer free sample, and explain the $99 starter. |
+| Asks price | Buying signal | Send `/claimbrief/pilot` and `/claimbrief/starter`, offer free sample, and explain the $99 starter. |
 | Asks sample | Proof request | Send sample link, then ask for one redacted file. |
 | Asks security | Trust risk | Ask for old closed/redacted file; do not overpromise. |
 | Says no CRM | Category confusion | Reframe as a one-file review packet. |
@@ -177,6 +178,9 @@ If yes, I can do the starter batch:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
+
 Should I send the starter payment or invoice instructions?
 ```
 
@@ -188,7 +192,8 @@ Great. Starter is $99 for 3 ClaimBriefs.
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Payment or invoice instructions: {{payment_or_invoice_instructions}}
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
 
 After payment, send up to 3 redacted or active claim packets and I will return
 each ClaimBrief as PDF + Markdown.

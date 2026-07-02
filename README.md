@@ -28,6 +28,7 @@ The current product direction is deliberately narrow: a fast private legal readi
 - Offers a ClaimBrief route for US property-insurance claim packet review.
 - Offers a ClaimBrief packet-intake instruction route for safe redacted-file handoff.
 - Offers a ClaimBrief paid-pilot scope route that works with or without payment links.
+- Offers a ClaimBrief starter-batch route for the $99 manual pilot close.
 - Extracts text from PDF, DOCX, image, TXT, and Markdown files.
 - Uses local parsing, PDF text extraction, OCR, and sentence chunking before AI calls.
 - Generates quick skims, structured summaries, source-linked legal points, and legal ontology fields.
@@ -136,6 +137,7 @@ npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
 npm run outreach:claimbrief:form-call-sprint
+npm run outreach:claimbrief:trigger-sprint
 npm audit --omit=dev
 npm run build
 ```
@@ -146,6 +148,7 @@ The latest verified build route table only includes:
 - `/claimbrief`
 - `/claimbrief/intake`
 - `/claimbrief/pilot`
+- `/claimbrief/starter`
 - `/s/[sessionId]`
 - `/api/ai/chat`
 - `/api/ai/quick-skim`

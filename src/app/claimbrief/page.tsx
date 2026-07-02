@@ -78,15 +78,7 @@ Please confirm the safest way to send the packet.
 `
 );
 
-const starterFallbackHref = buildMailto(
-  "ClaimBrief starter pilot",
-  `Hi Sandy,
-
-I want to start the ClaimBrief $99 starter pilot for 3 claim briefs.
-
-Please send payment or invoice instructions and the packet workflow.
-`
-);
+const starterFallbackHref = "/claimbrief/starter";
 
 const monthlyFallbackHref = buildMailto(
   "ClaimBrief monthly pilot",

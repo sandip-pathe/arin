@@ -109,6 +109,9 @@ If it was useful, I can do the starter batch:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
+
 Should I send payment or invoice instructions for the starter batch?
 ```
 

@@ -9,6 +9,7 @@ const generatedDir = join(root, "docs", "outreach", "generated");
 const claimBriefUrl = "http://localhost:9002/claimbrief";
 const intakeUrl = "http://localhost:9002/claimbrief/intake";
 const pilotUrl = "http://localhost:9002/claimbrief/pilot";
+const starterUrl = "http://localhost:9002/claimbrief/starter";
 const sampleUrl = "http://localhost:9002/samples/claimbrief-sample-review.html";
 
 const paths = {
@@ -291,6 +292,7 @@ const html = `<!doctype html>
         <a class="button primary" href="${claimBriefUrl}">Open ClaimBrief page</a>
         <a class="button" href="${intakeUrl}">Packet instructions</a>
         <a class="button" href="${pilotUrl}">Pilot details</a>
+        <a class="button" href="${starterUrl}">Starter batch</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
         <a class="button primary" href="${relativeHref(paths.formCallSprint)}">Form/call sprint</a>
         <a class="button primary" href="${relativeHref(paths.triggerSprint)}">Oklahoma trigger sprint</a>

@@ -235,6 +235,10 @@ Config:
 - `NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL`
 - `NEXT_PUBLIC_CLAIMBRIEF_WHITELABEL_URL`
 
+The `/claimbrief/starter` route exists for the first close. It gives a prospect
+who says "yes" one narrow next step: pay $99 for 3 ClaimBriefs, or request a
+manual invoice if checkout is not configured yet.
+
 ## Decision 13: Sell A Manual Pilot Before A Platform
 
 Decision:

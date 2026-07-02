@@ -84,6 +84,9 @@ For the first pilot I am keeping it simple:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
+
 No annual contract. If the first paid batch is not useful, do not renew.
 
 Want to start with the free sample or the $99 starter batch?
@@ -142,6 +145,9 @@ If yes, I can do the starter batch:
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
+
 Should I send the starter payment or invoice instructions?
 ```
 
@@ -153,7 +159,8 @@ Great. Starter is $99 for 3 ClaimBriefs.
 Pilot details:
 https://app.anaya.legal/claimbrief/pilot
 
-Payment or invoice instructions: {{payment_or_invoice_instructions}}
+Starter checkout or invoice request:
+https://app.anaya.legal/claimbrief/starter
 
 After payment, send up to 3 redacted or active claim packets and I will return each ClaimBrief as PDF + Markdown.
 ```
@@ -199,6 +206,12 @@ Payment page or invoice copy:
 
 ```text
 ClaimBrief creates cited property-insurance claim review packets for professional review. It does not provide legal advice, public-adjusting services, carrier submission, claim negotiation, or coverage determinations.
+```
+
+If the starter payment link is not ready, use this close page instead:
+
+```text
+https://app.anaya.legal/claimbrief/starter
 ```
 
 ## First-Sale Success Criteria
