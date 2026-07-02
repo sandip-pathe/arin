@@ -347,6 +347,7 @@ const html = `<!doctype html>
 payment links are optional; manual invoice fallback is OK
 npm run outreach:claimbrief
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:form-call-sprint
 npm run outreach:claimbrief:tracker</pre>
         <p class="muted">Direct email needs the postal-address blocker cleared. Forms/calls can be reviewed from the queue and submitted manually only with action-time confirmation.</p>
       </section>

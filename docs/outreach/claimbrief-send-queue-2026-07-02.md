@@ -13,6 +13,7 @@ npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
+npm run outreach:claimbrief:form-call-sprint
 ```
 
 The default sample URL is `https://app.anaya.legal/samples/claimbrief-sample-review.html`. Set `CLAIMBRIEF_SAMPLE_URL` before generating if a different deployed URL is needed.
@@ -38,6 +39,16 @@ blocked.
 Use the form/call sprint board for the no-address path. It shows only the
 unattempted contact-form/call queue and copyable text; it does not submit
 anything.
+
+No-env first move:
+
+```bash
+npm run outreach:claimbrief:check
+npm run outreach:claimbrief:form-call-sprint
+```
+
+Then open `docs/outreach/generated/claimbrief-form-call-sprint-2026-07-02.html`
+and work only the first 20 form/call cards.
 
 Use after replies start:
 
