@@ -1,6 +1,6 @@
 # ClaimBrief First Attempt Packet - 2026-07-02
 
-Status: **BLOCKED_IDENTITY**
+Status: **READY_FOR_ACTION_CONFIRMATION**
 
 Purpose: make the first external action precise. This packet still does not submit forms, send messages, or make calls.
 
@@ -8,20 +8,20 @@ Purpose: make the first external action precise. This packet still does not subm
 
 | Item | Env key | Status | Why |
 | --- | --- | --- | --- |
-| operator first name | `CLAIMBRIEF_OPERATOR_FIRST_NAME` | missing | Needed for most contact forms and for a credible phone opener. |
-| operator last name | `CLAIMBRIEF_OPERATOR_LAST_NAME` | missing | Needed for forms that split name into first and last. |
-| operator/company label | `CLAIMBRIEF_OPERATOR_COMPANY` | missing | Useful when a form asks company or when a receptionist asks who is calling. |
-| reply email | `CLAIMBRIEF_REPLY_EMAIL or NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL` | missing | Needed so prospects can send packets or ask for pricing. |
-| reply phone | `CLAIMBRIEF_REPLY_PHONE` | missing | Needed for the Gavnat form and useful for callbacks. |
+| operator first name | `CLAIMBRIEF_OPERATOR_FIRST_NAME` | pass | Needed for most contact forms and for a credible phone opener. |
+| operator last name | `CLAIMBRIEF_OPERATOR_LAST_NAME` | pass | Needed for forms that split name into first and last. |
+| operator/company label | `CLAIMBRIEF_OPERATOR_COMPANY` | pass | Useful when a form asks company or when a receptionist asks who is calling. |
+| reply email | `CLAIMBRIEF_REPLY_EMAIL or NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL` | pass | Needed so prospects can send packets or ask for pricing. |
+| reply phone | `CLAIMBRIEF_REPLY_PHONE` | pass | Needed for the Gavnat form and useful for callbacks. |
 
 Values are intentionally not printed here. The report only shows whether each value is set.
 
 Set missing values locally before any form submit or call:
 
 ```bash
-CLAIMBRIEF_OPERATOR_FIRST_NAME="Sandy"
+CLAIMBRIEF_OPERATOR_FIRST_NAME="Sandip"
 CLAIMBRIEF_OPERATOR_LAST_NAME="..."
-CLAIMBRIEF_OPERATOR_COMPANY="ClaimBrief"
+CLAIMBRIEF_OPERATOR_COMPANY="Anaya"
 CLAIMBRIEF_REPLY_EMAIL="..."
 CLAIMBRIEF_REPLY_PHONE="..."
 ```
@@ -96,7 +96,7 @@ If Gavnat form is not usable, call **405-628-0126**.
 Phone opener:
 
 ```text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is Sandip. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 

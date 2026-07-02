@@ -18,6 +18,7 @@ const paths = {
 
 const env = readClaimBriefEnv();
 const identity = getClaimBriefIdentityStatus(env);
+const operatorFirstName = env.CLAIMBRIEF_OPERATOR_FIRST_NAME || "Sandip";
 
 const contactPathReports = existsSync(paths.contactPaths)
   ? JSON.parse(readFileSync(paths.contactPaths, "utf8")).reports || []
@@ -58,9 +59,9 @@ Values are intentionally not printed here. The report only shows whether each va
 Set missing values locally before any form submit or call:
 
 \`\`\`bash
-CLAIMBRIEF_OPERATOR_FIRST_NAME="Sandy"
+CLAIMBRIEF_OPERATOR_FIRST_NAME="Sandip"
 CLAIMBRIEF_OPERATOR_LAST_NAME="..."
-CLAIMBRIEF_OPERATOR_COMPANY="ClaimBrief"
+CLAIMBRIEF_OPERATOR_COMPANY="Anaya"
 CLAIMBRIEF_REPLY_EMAIL="..."
 CLAIMBRIEF_REPLY_PHONE="..."
 \`\`\`
@@ -124,7 +125,7 @@ If Gavnat form is not usable, call **405-628-0126**.
 Phone opener:
 
 \`\`\`text
-Hi, this is Sandy. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
+Hi, this is ${operatorFirstName}. I am testing ClaimBrief for public adjusters reviewing Oklahoma wind/hail files.
 
 The simple version: send one old redacted packet, and I return a cited brief with carrier position, policy language, missing evidence, and a response outline.
 
