@@ -24,6 +24,7 @@ const paths = {
   liveRoutes: join(generatedDir, `claimbrief-live-routes-${campaignDate}.md`),
   pipeline: join(generatedDir, `claimbrief-pipeline-summary-${campaignDate}.md`),
   dayOne: join(generatedDir, `claimbrief-day-1-send-packet-${campaignDate}.md`),
+  identityReadiness: join(generatedDir, `claimbrief-identity-readiness-${campaignDate}.md`),
   sendBoard: join(generatedDir, `claimbrief-send-board-${campaignDate}.html`),
   todayActionSheet: join(generatedDir, `claimbrief-today-action-sheet-${campaignDate}.html`),
   todayContactPaths: join(generatedDir, `claimbrief-today-contact-paths-${campaignDate}.md`),
@@ -303,6 +304,7 @@ const html = `<!doctype html>
         <a class="button" href="${starterUrl}">Starter batch</a>
         <a class="button" href="${oklahomaUrl}">Oklahoma page</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
+        <a class="button" href="${relativeHref(paths.identityReadiness)}">Identity readiness</a>
         <a class="button primary" href="${relativeHref(paths.firstAttemptPacket)}">First attempt packet</a>
         <a class="button primary" href="${relativeHref(paths.todayExecutionPlan)}">Today execution plan</a>
         <a class="button primary" href="${relativeHref(paths.todayActionSheet)}">Today action sheet</a>
@@ -372,6 +374,7 @@ npm run outreach:claimbrief:check
 npm run outreach:claimbrief:check:form-call
 npm run outreach:claimbrief:check:direct-email
 npm run outreach:claimbrief:live-check
+npm run outreach:claimbrief:identity
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan

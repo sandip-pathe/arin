@@ -55,6 +55,7 @@ Channel scope: **direct-email**
 | file:triggerSprint | form-call | pass | docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html |
 | file:liveRoutes | global | pass | docs/outreach/generated/claimbrief-live-routes-2026-07-02.md |
 | file:dayOnePacket | global | pass | docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md |
+| file:identityReadiness | form-call | pass | docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md |
 | file:emlDir | direct-email | pass | docs/outreach/generated/claimbrief-direct-email-eml-2026-07-02 |
 | env:CLAIMBRIEF_POSTAL_ADDRESS | direct-email | fail | Set this before sending email drafts. |
 | env:NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL | global | fail | Set the inbox that should receive sample and pilot requests. |

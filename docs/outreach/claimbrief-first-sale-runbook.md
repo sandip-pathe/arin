@@ -70,6 +70,7 @@ Timely trigger path:
   `CLAIMBRIEF_OKLAHOMA_OFFER_URL=https://app.anaya.legal/claimbrief` and
   regenerate the sprint board.
 - Run `npm run outreach:claimbrief:trigger-sprint`.
+- Run `npm run outreach:claimbrief:identity`.
 - Run `npm run outreach:claimbrief:today`.
 - Run `npm run outreach:claimbrief:today-paths`.
 - Run `npm run outreach:claimbrief:today-plan`.
@@ -89,20 +90,21 @@ Use this when no ClaimBrief sales env vars are visible locally.
 1. Run `npm run outreach:claimbrief:check`.
 2. Run `npm run outreach:claimbrief:check:form-call`.
 3. Confirm the form/call report is `READY` or `READY_WITH_WARNINGS`.
-4. Run `npm run outreach:claimbrief:today`.
-5. Run `npm run outreach:claimbrief:today-paths`.
-6. Run `npm run outreach:claimbrief:today-plan`.
-7. Run `npm run outreach:claimbrief:first-attempt`.
-8. Open `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`.
-9. Open `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`.
-10. Review `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`.
-11. Work all five targets from top to bottom.
-12. For each target, open the public contact page and use only general contact fields.
-13. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
-14. After every submitted form, call, voicemail, or skip, copy the matching tracker command from the execution plan and run it locally.
-15. If there is no reply, run `npm run outreach:claimbrief:form-call-sprint`
+4. Run `npm run outreach:claimbrief:identity`.
+5. Run `npm run outreach:claimbrief:today`.
+6. Run `npm run outreach:claimbrief:today-paths`.
+7. Run `npm run outreach:claimbrief:today-plan`.
+8. Run `npm run outreach:claimbrief:first-attempt`.
+9. Open `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`.
+10. Open `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`.
+11. Review `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md`.
+12. Work all five targets from top to bottom.
+13. For each target, open the public contact page and use only general contact fields.
+14. If the form asks for policyholder, claim number, loss address, carrier, or fake claim details, do not submit it; call instead or copy the skip tracker command.
+15. After every submitted form, call, voicemail, or skip, copy the matching tracker command from the execution plan and run it locally.
+16. If there is no reply, run `npm run outreach:claimbrief:form-call-sprint`
     and move to the broader queue.
-16. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
+17. Run `npm run outreach:claimbrief:tracker` after the sprint to refresh the pipeline summary.
 
 Stop the sprint immediately if someone replies, asks for a sample, or offers to
 send a packet. Move to reply handling and produce the sample before touching

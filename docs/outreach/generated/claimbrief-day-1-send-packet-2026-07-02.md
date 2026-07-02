@@ -11,6 +11,7 @@ This packet is for review and sending. It does not send anything by itself.
 - Replace the mailing-address placeholder before any real send, or regenerate with `CLAIMBRIEF_POSTAL_ADDRESS`.
 - After each send, update `docs/outreach/claimbrief-pipeline-tracker.csv`.
 - If a contact form asks for policyholder claim details, do not invent them. Use only the general message field or call instead.
+- Before the first real external action, check `docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md`.
 - Before the first real external action, use `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`.
 - If starting from zero, use `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html` before this broader packet.
 - Check `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md` before submitting any today-sheet forms.
@@ -61,7 +62,7 @@ Open the `.eml` files from `docs/outreach/generated/claimbrief-direct-email-eml-
 
 ## First 20 Contact Forms Or Calls
 
-Start with `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md` and `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html` for the five-target Oklahoma submit/call plan, then read `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md` before opening forms. If there is no reply, use `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv` or the send board for the broader queue.
+Start with `docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md`, `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`, and `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html` for the five-target Oklahoma submit/call plan. Then read `docs/outreach/generated/claimbrief-today-contact-paths-2026-07-02.md` before opening forms. If there is no reply, use `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv` or the send board for the broader queue.
 
 | Order | Company | Contact URL | Phone | Subject |
 | ---: | --- | --- | --- | --- |

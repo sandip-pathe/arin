@@ -15,6 +15,7 @@
     "outreach:claimbrief:check:direct-email": "node scripts/check-claimbrief-send-readiness.mjs --channel=direct-email",
     "outreach:claimbrief:tracker": "node scripts/claimbrief-tracker.mjs",
     "outreach:claimbrief:dashboard": "node scripts/build-claimbrief-command-center.mjs",
+    "outreach:claimbrief:identity": "node scripts/check-claimbrief-identity.mjs",
     "outreach:claimbrief:today": "node scripts/build-claimbrief-today-action-sheet.mjs",
     "outreach:claimbrief:today-paths": "node scripts/check-claimbrief-today-contact-paths.mjs",
     "outreach:claimbrief:today-plan": "node scripts/build-claimbrief-today-execution-plan.mjs",

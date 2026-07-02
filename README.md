@@ -75,6 +75,7 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [ClaimBrief Pipeline Tracker](docs/outreach/claimbrief-pipeline-tracker.csv)
 - [ClaimBrief Direct Email Mailmerge](docs/outreach/generated/claimbrief-direct-email-mailmerge-2026-07-02.csv)
 - [ClaimBrief Contact Form Messages](docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv)
+- [ClaimBrief Identity Readiness](docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md)
 - [ClaimBrief Send Board](docs/outreach/generated/claimbrief-send-board-2026-07-02.html)
 - [ClaimBrief First Attempt Packet](docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md)
 - [ClaimBrief Today Execution Plan](docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html)
@@ -119,6 +120,11 @@ CLAIMBRIEF_POSTAL_ADDRESS="Your compliant mailing address"
 CLAIMBRIEF_SAMPLE_URL=https://app.anaya.legal/samples/claimbrief-sample-review.html
 CLAIMBRIEF_PUBLIC_BASE_URL=https://app.anaya.legal
 CLAIMBRIEF_OKLAHOMA_OFFER_URL=https://app.anaya.legal/claimbrief/oklahoma-hail
+CLAIMBRIEF_OPERATOR_FIRST_NAME=Sandy
+CLAIMBRIEF_OPERATOR_LAST_NAME=...
+CLAIMBRIEF_OPERATOR_COMPANY=ClaimBrief
+CLAIMBRIEF_REPLY_EMAIL=hello@anaya.legal
+CLAIMBRIEF_REPLY_PHONE=+1...
 NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL=hello@anaya.legal
 NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL=https://buy.stripe.com/...
 NEXT_PUBLIC_CLAIMBRIEF_MONTHLY_URL=https://buy.stripe.com/...
@@ -148,6 +154,7 @@ npm run outreach:claimbrief:check:form-call
 npm run outreach:claimbrief:check:direct-email
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
+npm run outreach:claimbrief:identity
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan

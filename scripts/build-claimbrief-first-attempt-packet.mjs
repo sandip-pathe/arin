@@ -1,6 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { campaignDate, generatedDir, root } from "./claimbrief-today-targets.mjs";
+import {
+  getClaimBriefIdentityStatus,
+  readClaimBriefEnv,
+} from "./claimbrief-identity.mjs";
+import { campaignDate, generatedDir } from "./claimbrief-today-targets.mjs";
 
 const publicBaseUrl = process.env.CLAIMBRIEF_PUBLIC_BASE_URL || "https://app.anaya.legal";
 const oklahomaOfferUrl =
@@ -12,88 +16,8 @@ const paths = {
   markdown: join(generatedDir, `claimbrief-first-attempt-packet-${campaignDate}.md`),
 };
 
-const envNames = [
-  "CLAIMBRIEF_OPERATOR_FIRST_NAME",
-  "CLAIMBRIEF_OPERATOR_LAST_NAME",
-  "CLAIMBRIEF_OPERATOR_COMPANY",
-  "CLAIMBRIEF_REPLY_EMAIL",
-  "NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL",
-  "CLAIMBRIEF_REPLY_PHONE",
-  "CLAIMBRIEF_PUBLIC_BASE_URL",
-  "CLAIMBRIEF_OKLAHOMA_OFFER_URL",
-];
-
-const readEnvFiles = () => {
-  const env = {};
-  for (const fileName of [".env.local", ".env", ".env.production.local"]) {
-    const path = join(root, fileName);
-    if (!existsSync(path)) {
-      continue;
-    }
-
-    const lines = readFileSync(path, "utf8").split(/\r?\n/);
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
-        continue;
-      }
-      const [key, ...rest] = trimmed.split("=");
-      const cleanKey = key.trim();
-      if (!envNames.includes(cleanKey) || env[cleanKey] != null) {
-        continue;
-      }
-      env[cleanKey] = rest.join("=").trim().replace(/^['"]|['"]$/g, "");
-    }
-  }
-
-  for (const name of envNames) {
-    if (process.env[name]) {
-      env[name] = process.env[name];
-    }
-  }
-
-  return env;
-};
-
-const hasValue = (value) => Boolean(String(value || "").trim());
-const env = readEnvFiles();
-const replyEmail = env.CLAIMBRIEF_REPLY_EMAIL || env.NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL || "";
-
-const identityChecks = [
-  {
-    name: "operator first name",
-    key: "CLAIMBRIEF_OPERATOR_FIRST_NAME",
-    ok: hasValue(env.CLAIMBRIEF_OPERATOR_FIRST_NAME),
-    why: "Needed for most contact forms and for a credible phone opener.",
-  },
-  {
-    name: "operator last name",
-    key: "CLAIMBRIEF_OPERATOR_LAST_NAME",
-    ok: hasValue(env.CLAIMBRIEF_OPERATOR_LAST_NAME),
-    why: "Needed for forms that split name into first and last.",
-  },
-  {
-    name: "operator/company label",
-    key: "CLAIMBRIEF_OPERATOR_COMPANY",
-    ok: hasValue(env.CLAIMBRIEF_OPERATOR_COMPANY),
-    why: "Useful when a form asks company or when a receptionist asks who is calling.",
-  },
-  {
-    name: "reply email",
-    key: "CLAIMBRIEF_REPLY_EMAIL or NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL",
-    ok: hasValue(replyEmail),
-    why: "Needed so prospects can send packets or ask for pricing.",
-  },
-  {
-    name: "reply phone",
-    key: "CLAIMBRIEF_REPLY_PHONE",
-    ok: hasValue(env.CLAIMBRIEF_REPLY_PHONE),
-    why: "Needed for the Gavnat form and useful for callbacks.",
-  },
-];
-
-const blockers = identityChecks.filter((check) => !check.ok);
-const status = blockers.length ? "BLOCKED_IDENTITY" : "READY_FOR_ACTION_CONFIRMATION";
+const env = readClaimBriefEnv();
+const identity = getClaimBriefIdentityStatus(env);
 
 const contactPathReports = existsSync(paths.contactPaths)
   ? JSON.parse(readFileSync(paths.contactPaths, "utf8")).reports || []
@@ -102,7 +26,7 @@ const gavnat = contactPathReports.find((report) => report.company === "Gavnat Ok
 const gavnatForm = gavnat?.page?.forms?.[0];
 const executionPlanExists = existsSync(paths.executionPlan);
 
-const checklistRows = identityChecks
+const checklistRows = identity.checks
   .map(
     (check) =>
       `| ${check.name} | \`${check.key}\` | ${check.ok ? "pass" : "missing"} | ${check.why} |`
@@ -119,7 +43,7 @@ const sampleFields = gavnatForm?.sampleFields?.length
 
 const markdown = `# ClaimBrief First Attempt Packet - ${campaignDate}
 
-Status: **${status}**
+Status: **${identity.status}**
 
 Purpose: make the first external action precise. This packet still does not submit forms, send messages, or make calls.
 
@@ -223,8 +147,8 @@ Contact path report exists: **${gavnat ? "yes" : "no"}**
 
 writeFileSync(paths.markdown, markdown.trimEnd() + "\n");
 console.log(`ClaimBrief first attempt packet: ${paths.markdown}`);
-console.log(`Status: ${status}`);
-if (blockers.length) {
+console.log(`Status: ${identity.status}`);
+if (identity.blockers.length) {
   console.log("Missing identity values:");
-  blockers.forEach((blocker) => console.log(`- ${blocker.key}`));
+  identity.blockers.forEach((blocker) => console.log(`- ${blocker.key}`));
 }

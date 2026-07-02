@@ -13,6 +13,7 @@ npm run outreach:claimbrief
 npm run outreach:claimbrief:check
 npm run outreach:claimbrief:tracker
 npm run outreach:claimbrief:dashboard
+npm run outreach:claimbrief:identity
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan
@@ -28,6 +29,7 @@ Generated outputs:
 - `docs/outreach/generated/claimbrief-direct-email-drafts-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - `docs/outreach/generated/claimbrief-contact-form-drafts-2026-07-02.md`
+- `docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
@@ -67,6 +69,7 @@ No-env first move:
 
 ```bash
 npm run outreach:claimbrief:check
+npm run outreach:claimbrief:identity
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan

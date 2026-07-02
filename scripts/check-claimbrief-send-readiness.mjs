@@ -111,6 +111,13 @@ const paths = {
     "generated",
     `claimbrief-day-1-send-packet-${campaignDate}.md`
   ),
+  identityReadiness: join(
+    root,
+    "docs",
+    "outreach",
+    "generated",
+    `claimbrief-identity-readiness-${campaignDate}.md`
+  ),
   emlDir: join(
     root,
     "docs",
@@ -266,6 +273,7 @@ const pathScopes = {
   todayContactPaths: "form-call",
   todayExecutionPlan: "form-call",
   firstAttemptPacket: "form-call",
+  identityReadiness: "form-call",
   formCallSprint: "form-call",
   triggerSprint: "form-call",
 };

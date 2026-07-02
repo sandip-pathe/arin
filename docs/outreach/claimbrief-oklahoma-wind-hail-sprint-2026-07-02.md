@@ -105,6 +105,7 @@ priority 101-109:
 
 Generated sprint board:
 
+- `docs/outreach/generated/claimbrief-identity-readiness-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-first-attempt-packet-2026-07-02.md`
 - `docs/outreach/generated/claimbrief-today-execution-plan-2026-07-02.html`
 - `docs/outreach/generated/claimbrief-today-action-sheet-2026-07-02.html`
@@ -118,6 +119,7 @@ Targeted page:
 Build command:
 
 ```bash
+npm run outreach:claimbrief:identity
 npm run outreach:claimbrief:today
 npm run outreach:claimbrief:today-paths
 npm run outreach:claimbrief:today-plan
