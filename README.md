@@ -26,6 +26,7 @@ The current product direction is deliberately narrow: a fast private legal readi
 
 - Creates private legal sessions in the current browser.
 - Offers a ClaimBrief route for US property-insurance claim packet review.
+- Offers a ClaimBrief packet-intake instruction route for safe redacted-file handoff.
 - Extracts text from PDF, DOCX, image, TXT, and Markdown files.
 - Uses local parsing, PDF text extraction, OCR, and sentence chunking before AI calls.
 - Generates quick skims, structured summaries, source-linked legal points, and legal ontology fields.

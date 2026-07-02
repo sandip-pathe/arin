@@ -32,6 +32,9 @@ is a high-value firm with clear volume.
 ```text
 Great. Please send one old closed or redacted claim packet.
 
+Packet instructions:
+https://app.anaya.legal/claimbrief/intake
+
 Best packet:
 - policy excerpts or full policy
 - carrier denial/coverage letter
@@ -56,6 +59,9 @@ Target turnaround: 24 hours.
 Yes. Sample format:
 
 https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Packet instructions:
+https://app.anaya.legal/claimbrief/intake
 
 That is the shape: claim overview, denial reasons, policy provisions, evidence gaps, response outline, and source refs.
 

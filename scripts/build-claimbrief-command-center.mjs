@@ -7,6 +7,7 @@ const root = join(__dirname, "..");
 const campaignDate = "2026-07-02";
 const generatedDir = join(root, "docs", "outreach", "generated");
 const claimBriefUrl = "http://localhost:9002/claimbrief";
+const intakeUrl = "http://localhost:9002/claimbrief/intake";
 const sampleUrl = "http://localhost:9002/samples/claimbrief-sample-review.html";
 
 const paths = {
@@ -272,6 +273,7 @@ const html = `<!doctype html>
       <p class="muted">Local operator dashboard for the ${campaignDate} public-adjuster outreach batch. No messages are sent from this page.</p>
       <div class="button-row">
         <a class="button primary" href="${claimBriefUrl}">Open ClaimBrief page</a>
+        <a class="button" href="${intakeUrl}">Packet instructions</a>
         <a class="button" href="${sampleUrl}">Sample packet</a>
         <a class="button" href="${relativeHref(paths.sendBoard)}">Send board</a>
         <a class="button" href="${relativeHref(paths.dayOne)}">Day 1 packet</a>

@@ -34,6 +34,7 @@ determination, no homeowner-facing promise.
 - Open `docs/outreach/generated/claimbrief-day-1-send-packet-2026-07-02.md`.
 - Keep `docs/outreach/claimbrief-pipeline-tracker.csv` open while sending.
 - Keep `docs/outreach/claimbrief-outbound-compliance-checklist.md` open for the pre-send gate.
+- Use `/claimbrief/intake` after a positive reply so the prospect knows what to redact and send.
 
 ## Day 1 Execution
 
@@ -93,6 +94,9 @@ will make a free sample.
 
 ```text
 Great. Please send one old closed or redacted claim packet.
+
+Packet instructions:
+https://app.anaya.legal/claimbrief/intake
 
 Best packet:
 - policy excerpts or full policy

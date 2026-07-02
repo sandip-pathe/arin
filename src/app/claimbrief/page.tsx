@@ -210,6 +210,12 @@ export default function ClaimBriefPage() {
                 >
                   View sample packet
                 </a>
+                <a
+                  href="/claimbrief/intake"
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"
+                >
+                  Packet instructions
+                </a>
                 <Button
                   onClick={startClaimBrief}
                   className="h-12 rounded-md border border-slate-300 bg-white px-5 text-base font-medium text-slate-800 hover:bg-slate-50"

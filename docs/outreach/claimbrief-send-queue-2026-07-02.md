@@ -46,6 +46,7 @@ Use the "free sample" offer:
 Sample packet path:
 
 - `/samples/claimbrief-sample-review.html`
+- `/claimbrief/intake`
 
 Do not pitch "AI." Pitch document review speed.
 
