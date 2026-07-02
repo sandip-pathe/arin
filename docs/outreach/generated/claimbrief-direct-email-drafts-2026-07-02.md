@@ -962,3 +962,339 @@ Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
 Sandy
 ```
 
+## 56. Claims Public Adjusting
+
+To: Claims@Claimspa.com
+Subject: Texas claim packet brief?
+
+```text
+Hi Claims Public Adjusting team,
+
+I saw Claims Public Adjusting represents homeowners and business owners across Texas Oklahoma and California.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Claims Public Adjusting team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 57. Horse & Crown
+
+To: claims@horsecrown.com
+Subject: appraisal file brief?
+
+```text
+Hi Horse & Crown team,
+
+I saw Horse & Crown focuses on appraisal loss consulting estimating and claim-resolution support in Florida.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Horse & Crown team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 58. 123Adjusting
+
+To: CLAIMS@123ADJUSTING.COM
+Subject: Florida claim brief?
+
+```text
+Hi 123Adjusting team,
+
+I saw 123Adjusting publicly lists a claims email and phone for property-damage and insurance-claim help in Florida.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi 123Adjusting team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 63. Mission Property Loss Consultants
+
+To: info@missionae.com
+Subject: commercial policy brief?
+
+```text
+Hi Mission Property Loss Consultants team,
+
+I saw Mission PLC focuses on commercial public adjusting policy review and storm fire smoke water and business-interruption claims.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Mission Property Loss Consultants team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 77. Feller Loss Consultants
+
+To: info@FellerClaims.com
+Subject: Vegas claim brief?
+
+```text
+Hi Feller Loss Consultants team,
+
+I saw Feller Loss Consultants handles commercial and homeowners property-damage claims from Nevada and nearby states.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Feller Loss Consultants team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 79. Accurate Claims Consulting
+
+To: info@myaccurateclaim.com
+Subject: water claim brief?
+
+```text
+Hi Accurate Claims Consulting team,
+
+I saw Accurate Claims Consulting handles insurance claims across California Arizona Connecticut and Georgia with a public contact email.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Accurate Claims Consulting team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+
+## 85. Loti
+
+To: mike@loti.com
+Subject: homeowner recovery brief?
+
+```text
+Hi Loti team,
+
+I saw Loti focuses on helping homeowners through complex insurance recovery after major property loss.
+
+I am testing ClaimBrief, a small tool that turns claim documents into a cited review brief for licensed claim professionals.
+
+It reads the policy, denial letter, carrier estimate, contractor estimate, and correspondence, then outputs:
+
+- denial reasons in the carrier's own wording
+- policy provisions and exclusions mentioned
+- missing evidence checklist
+- draft response outline for human review
+
+No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed.
+
+If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Worth trying on one file?
+
+Sandy
+```
+
+Follow-up subject: not a CRM
+
+```text
+Hi Loti team,
+
+Quick clarification: I am not selling another claims CRM.
+
+This is just a "brief this messy file" tool for policies, denial letters, estimates, and adjuster correspondence.
+
+The output is a PDF/Markdown review packet your team can edit or ignore.
+
+I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
+
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Sandy
+```
+

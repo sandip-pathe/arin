@@ -4,7 +4,7 @@ Purpose: turn the ClaimBrief wedge into replies, sample files, and first paid pi
 
 This queue uses only public company/contact information collected from company pages, public search results, and public directories/pages. Do not invent missing emails. If the row says `contact_form`, use the form or call the office after sending the form.
 
-Current queue size: 55 prospects, with 20 direct-email leads and 35 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
+Current queue size: 85 prospects, with 27 direct-email leads and 58 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
 
 Generate send-ready files with:
 
@@ -65,10 +65,17 @@ Send these first because they have public email addresses or email-like contact 
 | 18 | Continental Public Adjusters | `claims@contpa.com` | Florida denied, delayed, and underpaid commercial, residential, and condo claims. |
 | 19 | Trust Public Adjusting Group | `Claims@TrustPublicAdjusting.com` | Florida residential and commercial claim review plus policy reviews. |
 | 20 | Kruger Property Solutions | `claims@callkruger.com` | Restoration operator with insurance-denial guidance and storm workflow. |
+| 21 | Claims Public Adjusting | `Claims@Claimspa.com` | Texas/Oklahoma/California public adjusting with public claims email. |
+| 22 | Horse & Crown | `claims@horsecrown.com` | Florida appraisal, umpire, loss consulting, and estimating work. |
+| 23 | 123Adjusting | `CLAIMS@123ADJUSTING.COM` | Florida property-damage public-adjusting outreach with public claims email. |
+| 24 | Mission Property Loss Consultants | `info@missionae.com` | Commercial public adjusting, policy reviews, and storm/fire/water claims. |
+| 25 | Feller Loss Consultants | `info@FellerClaims.com` | Nevada and nearby-state commercial and homeowner property-damage claims. |
+| 26 | Accurate Claims Consulting | `info@myaccurateclaim.com` | California/Arizona/Connecticut/Georgia public adjusting with water/fire/mold claim examples. |
+| 27 | Loti | `mike@loti.com` | Homeowner major-loss insurance recovery with software-enabled claim support. |
 
 ## Contact Form / Phone First Batch
 
-Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 35 form/call targets; use the send board for every generated message.
+Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 58 form/call targets; use the send board for every generated message. The table below is just the first manual batch so the page stays readable.
 
 | Order | Company | Contact Path | Phone |
 | ---: | --- | --- | --- |
@@ -163,19 +170,20 @@ Sandy
 
 Day 1:
 
-- Send all 20 direct emails from the send board.
-- Submit the first 12 contact forms or make 12 office calls.
+- Send all 27 direct emails from the send board.
+- Submit the first 15 contact forms or make 15 office calls.
 - Track every outcome in `claimbrief-pipeline-tracker.csv`.
 
 Day 2:
 
 - Follow up with non-responders from the email-ready batch.
-- Submit the remaining 23 contact forms/calls.
-- Add 45 more prospects from Texas, Florida, Colorado, and Louisiana.
+- Submit the next 25 contact forms/calls.
+- Add 15 restoration-contractor prospects only if the first 85 produce no replies.
 - Record a 60-90 second demo from `/claimbrief`.
 
 Day 3:
 
+- Submit the remaining 18 contact forms/calls.
 - Manually produce every free sample with Anaya/ClaimBrief.
 - Ask: "If I could do 20 of these a month for your office, would $299/month be worth it?"
 
