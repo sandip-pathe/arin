@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +11,7 @@ const prospectFile = join(
   "claimbrief-prospects-2026-07-02.csv"
 );
 const outputDir = join(root, "docs", "outreach", "generated");
+const trackerFile = join(root, "docs", "outreach", "claimbrief-pipeline-tracker.csv");
 const sampleUrl =
   process.env.CLAIMBRIEF_SAMPLE_URL ||
   "https://app.anaya.legal/samples/claimbrief-sample-review.html";
@@ -318,7 +319,54 @@ const formRows = prospects
     source_url: row.source_url,
   }));
 
+const trackerHeaders = [
+  "company",
+  "contact",
+  "channel",
+  "status",
+  "next_action",
+  "next_action_date",
+  "last_touch_date",
+  "reply_bucket",
+  "packet_received",
+  "sample_delivered",
+  "payment_status",
+  "expected_value",
+  "notes",
+];
+
+const existingTrackerRows = existsSync(trackerFile)
+  ? parseCsv(readFileSync(trackerFile, "utf8"))
+  : [];
+const existingTrackerByCompany = new Map(
+  existingTrackerRows.map((row) => [row.company, row])
+);
+
+const trackerRows = prospects.map((row) => {
+  const existing = existingTrackerByCompany.get(row.company) || {};
+  const defaultNextAction =
+    row.contact_channel === "email" ? "send_email" : "submit_form_or_call";
+
+  return {
+    company: row.company,
+    contact: row.contact_value,
+    channel: row.contact_channel,
+    status: existing.status || "not_sent",
+    next_action: existing.next_action || defaultNextAction,
+    next_action_date: existing.next_action_date || "",
+    last_touch_date: existing.last_touch_date || "",
+    reply_bucket: existing.reply_bucket || "",
+    packet_received: existing.packet_received || "no",
+    sample_delivered: existing.sample_delivered || "no",
+    payment_status: existing.payment_status || "not_sent",
+    expected_value: existing.expected_value || "299",
+    notes: existing.notes || `${row.state_focus}; ${row.evidence_note}`,
+  };
+});
+
 mkdirSync(outputDir, { recursive: true });
+
+writeFileSync(trackerFile, toCsv(trackerRows, trackerHeaders));
 
 writeFileSync(
   join(outputDir, "claimbrief-direct-email-mailmerge-2026-07-02.csv"),
@@ -396,4 +444,5 @@ writeFileSync(
 
 console.log(`Generated ${emailRows.length} direct-email rows.`);
 console.log(`Generated ${formRows.length} contact-form rows.`);
+console.log(`Generated ${trackerRows.length} tracker rows.`);
 console.log("Generated send board.");

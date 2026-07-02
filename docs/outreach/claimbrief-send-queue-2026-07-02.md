@@ -4,6 +4,8 @@ Purpose: turn the ClaimBrief wedge into replies, sample files, and first paid pi
 
 This queue uses only public company/contact information collected from company pages, public search results, and public directories/pages. Do not invent missing emails. If the row says `contact_form`, use the form or call the office after sending the form.
 
+Current queue size: 45 prospects, with 12 direct-email leads and 33 contact-form/call leads. The generated send board and pipeline tracker are the source of truth after regeneration.
+
 Generate send-ready files with:
 
 ```bash
@@ -50,10 +52,15 @@ Send these first because they have public email addresses or email-like contact 
 | 5 | Skyline Adjusters | `claims@skylineadjusters.com` | Public adjuster offices in Texas plus claims assistance. |
 | 6 | Skipton Claims Management | `Office@skiptoninc.com` | Colorado/Texas/Florida, hail damage and commercial losses. |
 | 7 | Your Public Adjuster | `info@YourPublicAdjuster.us` | Florida Hurricane Ian and wind/storm-surge claim work. |
+| 8 | Triumph Consulting | `claims@triumphfl.com` | Florida denied claim appeals, deadlines, and free file review. |
+| 9 | Peninsula Public Adjusters | `info@peninsulapublicadjusters.com` | Florida underpaid or denied claim evaluation and policy review. |
+| 10 | United Claims Specialists | `claims@ucspa.com` | Louisiana denied property claims plus commercial and large-loss work. |
+| 11 | Sill Public Adjusters | `info@sill.com` | Commercial and large residential property damage claims. |
+| 12 | Alpha Public Adjusting | `claims@alphapublicadjusting.com` | Georgia/Florida public adjusting with public contact email. |
 
 ## Contact Form / Phone First Batch
 
-Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead.
+Use the same copy, but shorten the form message to 500 characters if needed. If the form asks for policyholder claim details, do not submit fake claim information; use the general message field only or call instead. The full list has 33 form/call targets; use the send board for every generated message.
 
 | Order | Company | Contact Path | Phone |
 | ---: | --- | --- | --- |
@@ -97,6 +104,8 @@ No carrier contact, no legal advice, no homeowner-facing promises. Just document
 
 If you send one old closed or redacted claim packet, I will return a sample ClaimBrief in 24 hours. If it is useless, tell me and I will not follow up.
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Worth trying on one file?
 
 Sandy
@@ -107,7 +116,9 @@ Sandy
 ```text
 I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
 
-No carrier contact, no legal advice, no homeowner-facing promises. Could I create one free sample from an old closed or redacted claim packet?
+No carrier contact, no legal advice, no homeowner-facing promises. Sample: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
 ```
 
 ## Phone Opener
@@ -131,6 +142,8 @@ The output is a PDF/Markdown review packet your team can edit or ignore.
 
 I can do one free sample from a closed/redacted file. Want me to show you what it looks like?
 
+Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
 Sandy
 ```
 
@@ -138,13 +151,14 @@ Sandy
 
 Day 1:
 
-- Send 7 direct emails.
-- Submit 8 contact forms or make 8 office calls.
-- Track every outcome in `claimbrief-prospects-2026-07-02.csv`.
+- Send all 12 direct emails from the send board.
+- Submit the first 12 contact forms or make 12 office calls.
+- Track every outcome in `claimbrief-pipeline-tracker.csv`.
 
 Day 2:
 
 - Follow up with non-responders from the email-ready batch.
+- Submit the remaining 21 contact forms/calls.
 - Add 40 more prospects from Texas and Florida.
 - Record a 60-90 second demo from `/claimbrief`.
 

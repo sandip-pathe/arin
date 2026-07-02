@@ -508,3 +508,223 @@ Phone opener:
 Hi, I am calling about a tiny document-review tool for public adjusters. I saw AllCity Adjusting handles large loss; fire; water; storm; in-house claims CRM. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
 ```
 
+## 31. South Wind Public Adjusters
+
+URL: https://southwindpa.com/
+Phone: 1-866-979-4631
+Subject: denied claim brief?
+
+```text
+I saw South Wind's intake form covers hail, hurricane, tornado, denied, and underpaid claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw South Wind Public Adjusters handles commercial and residential claims; hail; hurricane; tornado; denied and underpaid claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 32. Texas Public Adjusting
+
+URL: https://texaspublicadjusting.net/
+Phone: not found
+Subject: Texas denial brief?
+
+```text
+I saw Texas Public Adjusting lists multiple denied wind and hail claim results.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Texas Public Adjusting handles denied wind and hail claims; water; fire; frozen pipe; Dallas/Texas claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 34. Florida's Best Public Adjusters
+
+URL: https://www.flbestpublicadjusters.com/contact/
+Phone: (813) 895-3149
+Subject: Milton claim brief?
+
+```text
+I saw Florida's Best discusses denied and underpaid Hurricane Milton claims in Tampa.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Florida's Best Public Adjusters handles Tampa public adjuster; Hurricane Milton; denied and underpaid claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 35. Altieri Insurance Consultants
+
+URL: https://altieriinsuranceconsultants.com/contact/
+Phone: not found
+Subject: denied file brief?
+
+```text
+I saw Altieri writes about reviewing denied claims and spotting insurer mistakes.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Altieri Insurance Consultants handles denied claim review; policy review; Florida public adjusting. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 36. Right Way Public Adjusters
+
+URL: https://rightwaypa.com/denied-claims/
+Phone: (877) 744-8929
+Subject: denial appeal brief?
+
+```text
+I saw Right Way's denied-claims page focuses on appeal support and evidence submission.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Right Way Public Adjusters handles denied and underpaid claims; hurricane; roof; water; business interruption. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 38. Public Insurance Adjusters of Colorado
+
+URL: https://publicinsuranceadjustersofcolorado.com/contact/
+Phone: 866.919.1962
+Subject: Colorado source brief?
+
+```text
+I saw PIAC lists wind/hail, roofing, commercial, HOA, and multifamily claim types.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Public Insurance Adjusters of Colorado handles wind and hail; fire; water; roofing; commercial; HOA; multifamily claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 41. Insurance Claim Recovery Support
+
+URL: https://insuranceclaimrecoverysupport.com/
+Phone: not found
+Subject: large-loss packet?
+
+```text
+I saw ICRS focuses on commercial and multifamily large-loss claim documentation.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Insurance Claim Recovery Support handles large-loss commercial, multifamily, hail, fire, wind, hurricane, business interruption. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 43. Adjust Up Claims
+
+URL: https://adjustupclaims.com/
+Phone: (305) 574-9139
+Subject: property claim brief?
+
+```text
+I saw Adjust Up Claims handles all types of Florida insurance property claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Adjust Up Claims handles Florida public adjuster; fire, hurricane, and insurance property claims. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 44. FCS Public Adjusters
+
+URL: https://www.fcspublicadjuster.com/
+Phone: not found
+Subject: denied scope brief?
+
+```text
+I saw FCS targets denied, water, roof, hurricane, windstorm, and hail claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw FCS Public Adjusters handles denied claims; flood; water leak; mold; roof leak; hurricane; windstorm; hail. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
+## 45. Ademar Adjusters
+
+URL: https://ademarpublicadjustersflorida.com/miami-public-adjusters/
+Phone: not found
+Subject: Miami claim brief?
+
+```text
+I saw Ademar's Miami page discusses undervalued settlements, denied claims, and hurricane claims.
+
+I am testing ClaimBrief, a document-review tool for licensed claim professionals. It turns a policy, denial letter, estimates, and correspondence into a cited claim brief: denial reasons, policy provisions, missing evidence, and draft response outline.
+
+No carrier contact, no legal advice, no homeowner-facing promises. Sample format: https://app.anaya.legal/samples/claimbrief-sample-review.html
+
+Could I create one free sample from an old closed or redacted claim packet?
+```
+
+Phone opener:
+
+```text
+Hi, I am calling about a tiny document-review tool for public adjusters. I saw Ademar Adjusters handles Miami public adjusters; denied or undervalued claims; hurricane; construction estimates. The simple version: send one old redacted claim packet, and I return a cited brief with denial reasons, policy language, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?
+```
+
