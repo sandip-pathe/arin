@@ -258,7 +258,7 @@ const cards = triggerRows
             <button class="button" data-copy="email-command-${slug}">Copy email tracker command</button>
           </section>`
         : "";
-    const phoneOpener = `Hi, this is Sandy. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
+    const phoneOpener = `Hi, this is ${process.env.CLAIMBRIEF_OPERATOR_FIRST_NAME || "Sandip"}. I am calling about ClaimBrief, a document-review tool for public adjusters working wind, hail, denied, or underpaid files. The simple version is: send one old redacted claim packet, and I return a cited brief with the carrier position, policy language mentioned, missing evidence, and a response outline. Who reviews carrier letters or policy language before a response goes out?`;
 
     return `<article class="card">
       <div class="card-head">
