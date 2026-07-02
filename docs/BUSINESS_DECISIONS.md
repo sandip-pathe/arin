@@ -282,3 +282,30 @@ Why:
 Current trigger page:
 
 - `/claimbrief/oklahoma-hail`
+
+## Decision 15: Anaya Is The Brand, ClaimBrief Is The Workflow
+
+Decision:
+
+Keep Anaya as the company/product platform and use ClaimBrief as the first
+commercial workflow for US property-insurance claim packets.
+
+Why:
+
+- `anaya.legal` already exists and carries the broader legal-document product.
+- ClaimBrief is clearer as a named workflow or offer than as a separate company.
+- A subdomain such as `claimbrief.anaya.legal` can be added later if the offer
+  earns its own traffic, but early outreach should not wait on a new domain.
+- The operator is based in India, so outreach should stay remote-first and
+  honest rather than implying a US office.
+
+Current domain choice:
+
+- Main app: `https://app.anaya.legal`
+- Current ClaimBrief URL: `https://app.anaya.legal/claimbrief`
+- Future clean URL candidate: `https://claimbrief.anaya.legal`
+
+Operational rule:
+
+Use “Anaya” when a form asks for company. Use “ClaimBrief” when naming the
+specific claim-document review workflow.
