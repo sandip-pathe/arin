@@ -29,6 +29,7 @@ The current product direction is deliberately narrow: a fast private legal readi
 - Offers a ClaimBrief packet-intake instruction route for safe redacted-file handoff.
 - Offers a ClaimBrief paid-pilot scope route that works with or without payment links.
 - Offers a ClaimBrief starter-batch route for the $99 manual pilot close.
+- Offers an Oklahoma wind/hail ClaimBrief route for a timely first-sales trigger.
 - Extracts text from PDF, DOCX, image, TXT, and Markdown files.
 - Uses local parsing, PDF text extraction, OCR, and sentence chunking before AI calls.
 - Generates quick skims, structured summaries, source-linked legal points, and legal ontology fields.
@@ -149,6 +150,7 @@ The latest verified build route table only includes:
 - `/claimbrief/intake`
 - `/claimbrief/pilot`
 - `/claimbrief/starter`
+- `/claimbrief/oklahoma-hail`
 - `/s/[sessionId]`
 - `/api/ai/chat`
 - `/api/ai/quick-skim`

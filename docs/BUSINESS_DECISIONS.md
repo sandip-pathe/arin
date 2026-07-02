@@ -261,3 +261,24 @@ Operational rule:
 
 Do not build account billing, upload portals, or team dashboards until at least
 one prospect sends a real packet or pays for the starter batch.
+
+## Decision 14: Use Timely Trigger Pages For Narrow Outreach
+
+Decision:
+
+Add targeted ClaimBrief pages only when they make a specific cold-outreach
+batch easier to understand and act on.
+
+Why:
+
+- Generic public-adjuster outreach is weaker than a timely, local claim-review
+  reason.
+- The Oklahoma wind/hail page gives the Oklahoma trigger sprint a specific URL
+  without changing the core product.
+- The page must avoid carrier accusations and keep the same boundaries: no legal
+  advice, no public-adjusting services, no carrier contact, no claim submission,
+  and no coverage determination.
+
+Current trigger page:
+
+- `/claimbrief/oklahoma-hail`

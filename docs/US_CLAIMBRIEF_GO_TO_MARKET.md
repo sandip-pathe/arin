@@ -318,6 +318,7 @@ Reusable outreach assets:
 - Contact form messages: `docs/outreach/generated/claimbrief-contact-form-messages-2026-07-02.csv`
 - Send board: `docs/outreach/generated/claimbrief-send-board-2026-07-02.html`
 - Public sample packet: `public/samples/claimbrief-sample-review.html`
+- Oklahoma wind/hail landing page: `/claimbrief/oklahoma-hail`
 - Email sequence: `docs/outreach/claimbrief-email-sequence.md`
 - AI personalization prompt: `docs/outreach/claimbrief-ai-personalization-prompt.md`
 
@@ -454,6 +455,7 @@ Implemented in the current MVP:
 - Claim-specific upload modal copy.
 - Sample claim packet for demos.
 - `/claimbrief/intake`, `/claimbrief/pilot`, and `/claimbrief/starter` support the sample, price, and $99 close flow.
+- `/claimbrief/oklahoma-hail` supports a timely Oklahoma wind/hail outreach trigger.
 - Branded ClaimBrief PDF, Markdown, and TXT exports with source references.
 - ClaimBrief outreach files under `docs/outreach/`.
 

@@ -10,6 +10,7 @@ flowchart TD
   User --> ClaimBrief["/claimbrief"]
   ClaimBrief --> Intake["/claimbrief/intake"]
   ClaimBrief --> Pilot["/claimbrief/pilot"]
+  ClaimBrief --> Oklahoma["/claimbrief/oklahoma-hail"]
   Pilot --> Starter["/claimbrief/starter"]
   Home --> LocalIndex["localStorage session index"]
   ClaimBrief --> Session
@@ -61,7 +62,7 @@ Server routes:
 
 There are no session persistence APIs today. That is intentional. The current product choice is local browser storage plus explicit export.
 
-Workflow-specific prompting is selected through local settings. The `claim-brief` workflow changes summary, quick skim, and chat prompts without changing the storage model. The `/claimbrief/intake`, `/claimbrief/pilot`, and `/claimbrief/starter` routes are static sales/support surfaces; they do not upload files, create sessions, or persist user data.
+Workflow-specific prompting is selected through local settings. The `claim-brief` workflow changes summary, quick skim, and chat prompts without changing the storage model. The `/claimbrief/intake`, `/claimbrief/pilot`, `/claimbrief/starter`, and `/claimbrief/oklahoma-hail` routes are static sales/support surfaces; they do not upload files, create sessions, or persist user data.
 
 ## Data Flow
 
@@ -88,6 +89,7 @@ Supporting sales routes:
 - `/claimbrief/intake`: explains redaction and packet requirements for one sample.
 - `/claimbrief/pilot`: explains the manual starter/monthly pilot after the sample is useful or a prospect asks price.
 - `/claimbrief/starter`: gives the $99 starter-batch close page with checkout-link or manual-invoice fallback.
+- `/claimbrief/oklahoma-hail`: gives Oklahoma wind/hail prospects a timely packet-review offer tied to current public claim-handling news.
 
 ### Existing Session
 

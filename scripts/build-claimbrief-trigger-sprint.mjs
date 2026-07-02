@@ -7,6 +7,7 @@ const root = join(__dirname, "..");
 const campaignDate = "2026-07-02";
 const generatedDir = join(root, "docs", "outreach", "generated");
 const emailPlaceholder = "[ADD VALID PHYSICAL POSTAL ADDRESS BEFORE SENDING]";
+const oklahomaOfferUrl = "https://app.anaya.legal/claimbrief/oklahoma-hail";
 
 const paths = {
   prospects: join(root, "docs", "outreach", `claimbrief-prospects-${campaignDate}.csv`),
@@ -167,6 +168,8 @@ const triggerMessage = (row) => `${row.first_line}
 I am testing ClaimBrief for wind/hail, denial, and underpayment files. It turns a policy, carrier letter, estimates, and correspondence into a cited review brief: carrier position, policy language mentioned, missing evidence, and draft response outline.
 
 No carrier contact, no legal advice, no homeowner-facing promises. Just document review speed for a licensed claim professional.
+
+Oklahoma wind/hail sample page: ${oklahomaOfferUrl}
 
 Could I create one free sample from an old closed or redacted Oklahoma wind/hail packet?${
   row.contact_channel === "email" && directEmailAllowed
@@ -388,6 +391,8 @@ const html = `<!doctype html>
     <main>
       <section class="banner">
         Use this as the timely sprint after the June 2026 Oklahoma wind/hail claim-handling news cycle. Do not accuse any carrier in outreach. Ask for one old closed or redacted packet and offer a cited review brief.
+        <br />
+        Offer page: <a href="${oklahomaOfferUrl}" target="_blank" rel="noreferrer">${oklahomaOfferUrl}</a>
       </section>
       ${cards || '<section class="card"><h2>No unattempted trigger targets found.</h2><p class="muted">Run the tracker summary to inspect follow-ups or reopen skipped targets.</p></section>'}
     </main>

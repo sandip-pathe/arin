@@ -9,6 +9,7 @@ Anaya runs on Next.js App Router with two major surfaces:
 - `src/app/claimbrief/intake/page.tsx`: ClaimBrief packet-intake instruction route.
 - `src/app/claimbrief/pilot/page.tsx`: ClaimBrief paid-pilot scope and pricing route.
 - `src/app/claimbrief/starter/page.tsx`: ClaimBrief $99 starter-batch close route.
+- `src/app/claimbrief/oklahoma-hail/page.tsx`: Oklahoma wind/hail first-sales trigger route.
 - `src/app/s/[sessionId]/page.tsx`: document analysis workspace.
 
 Server routes live under:
@@ -106,6 +107,10 @@ explains the paid starter/monthly scope once a sample is useful or a prospect
 asks price. `/claimbrief/starter` is the close page for the $99 starter batch:
 it sends buyers to a configured checkout URL when one exists, or to a
 manual-invoice email request when checkout is not ready.
+`/claimbrief/oklahoma-hail` is a static targeted landing route for the
+Oklahoma wind/hail outreach sprint. It links to the official Oklahoma Attorney
+General announcement as a public trigger, but still routes conversion through
+the same sample, intake, and starter-batch paths.
 
 - `NEXT_PUBLIC_CLAIMBRIEF_CONTACT_EMAIL`: recipient for free sample and fallback pilot emails.
 - `NEXT_PUBLIC_CLAIMBRIEF_STARTER_URL`: optional checkout URL for the $99 starter pilot.

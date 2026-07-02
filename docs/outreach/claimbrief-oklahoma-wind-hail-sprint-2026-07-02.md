@@ -9,10 +9,12 @@ week is Oklahoma wind/hail claim review.
 
 Recent trigger:
 
-- On 2026-06-26, a widely syndicated report said the Oklahoma Attorney General
-  filed a lawsuit accusing State Farm of using a program to deny or minimize
-  wind and hail disaster claims. State Farm denies the allegations.
-  Source: https://nypost.com/2026/06/26/us-news/oklahoma-accuses-state-farm-of-denying-claims-for-disaster-damage/
+- On 2026-06-24, the Oklahoma Attorney General announced a new lawsuit
+  alleging State Farm wrongfully denied or underpaid legitimate hail and wind
+  damage claims from Oklahoma homeowners. The outreach point is not to accuse
+  any carrier; it is that Oklahoma wind/hail claim files are timely and
+  document-heavy.
+  Source: https://oklahoma.gov/oag/news/newsroom/2026/june/drummond-files-new-lawsuit-against-state-farm.html
 - Triple-I's latest homeowners data says 5.3% of insured homes had a claim in
   2023, and property damage accounted for 97.3% of homeowners claims.
   Source: https://www.iii.org/fact-statistic/facts-statistics-homeowners-and-renters-insurance
@@ -65,6 +67,12 @@ Could I create one free sample from an old closed or redacted Oklahoma wind/hail
 packet?
 ```
 
+Targeted offer page:
+
+```text
+https://app.anaya.legal/claimbrief/oklahoma-hail
+```
+
 ## Prioritized Targets
 
 These were added to `docs/outreach/claimbrief-prospects-2026-07-02.csv` as
@@ -85,6 +93,10 @@ priority 101-109:
 Generated sprint board:
 
 - `docs/outreach/generated/claimbrief-oklahoma-trigger-sprint-2026-07-02.html`
+
+Targeted page:
+
+- `/claimbrief/oklahoma-hail`
 
 Build command:
 

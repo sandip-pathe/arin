@@ -57,6 +57,8 @@ Timely trigger path:
 
 - Use `docs/outreach/claimbrief-oklahoma-wind-hail-sprint-2026-07-02.md`
   when the broad queue feels too generic.
+- Use `https://app.anaya.legal/claimbrief/oklahoma-hail` as the specific page
+  for Oklahoma wind/hail form and call follow-up.
 - Run `npm run outreach:claimbrief:trigger-sprint`.
 - Work Oklahoma wind/hail targets before adding more generic public-adjuster
   leads.
