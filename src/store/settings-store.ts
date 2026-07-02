@@ -3,6 +3,7 @@ import { devtools, persist } from "zustand/middleware";
 
 export const defaultSettings = {
   summary: {
+    workflow: "legal",
     length: "medium",
     complexity: "balanced",
     tone: "professional",

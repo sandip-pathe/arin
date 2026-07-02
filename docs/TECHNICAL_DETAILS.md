@@ -5,6 +5,7 @@
 Anaya runs on Next.js App Router with two major surfaces:
 
 - `src/app/page.tsx`: local session dashboard.
+- `src/app/claimbrief/page.tsx`: ClaimBrief sales/demo route.
 - `src/app/s/[sessionId]/page.tsx`: document analysis workspace.
 
 Server routes live under:
@@ -78,6 +79,23 @@ Notes:
 - `owner` is normalized to `This browser`.
 - Chat timestamps are revived as `Date` instances on load.
 - Existing orphaned content can rebuild metadata if the index is missing.
+
+## Workflow Modes
+
+Implementation: `src/store/settings-store.ts`
+
+Current workflows:
+
+- `legal`: generic legal summary and chat workflow.
+- `claim-brief`: US property-insurance claim packet workflow.
+
+The `/claimbrief` route starts a new session with:
+
+```text
+/s/{sessionId}?new=true&workflow=claim-brief
+```
+
+The session page reads that query string and sets summary settings to the ClaimBrief workflow with US property-claim context. The workflow is sent to summary, quick skim, and chat API routes so prompts stay consistent.
 
 ## File Extraction
 
@@ -158,11 +176,26 @@ type SummaryItem = {
 };
 ```
 
+When `settings.summary.workflow` is `claim-brief`, the route uses claim-specific prompts and asks for:
+
+- Claim overview.
+- Documents reviewed.
+- Carrier denial or underpayment reasons.
+- Policy provisions, exclusions, endorsements, and deadlines found.
+- Estimate or scope mismatches.
+- Missing evidence checklist.
+- Draft response outline for human review.
+- Questions for the licensed reviewer.
+
+The output still uses the existing `SummaryItem` shape so the current UI and exports continue to work.
+
 ## Quick Skim API
 
 Implementation: `src/app/api/ai/quick-skim/route.ts`
 
 This route produces one concise briefing paragraph for the first part of the document. It is designed to give users fast feedback while the fuller summary is still running.
+
+In ClaimBrief mode, the quick skim focuses on claim type, carrier position, policy or estimate issues, missing evidence, and review priorities.
 
 ## Chat API
 
@@ -180,15 +213,24 @@ Behavior:
 - The assistant should not invent information.
 - The assistant should avoid legal advice and instead clarify the document.
 
+In ClaimBrief mode, chat avoids legal advice, public-adjusting services, claim negotiation, and settlement recommendations. It can clarify the claim packet, list evidence gaps, and draft neutral review questions.
+
 ## Exports
 
 Implementation: `src/lib/export-utils.ts`
 
 Summary export:
 
-- `exportToPDF(summary, title)`
-- `exportToMarkdown(summary, title)`
-- `exportToText(summary, title)`
+- `exportToPDF(summary, title, options?)`
+- `exportToMarkdown(summary, title, options?)`
+- `exportToText(summary, title, options?)`
+
+Export options can include:
+
+- `workflow`: `legal` or `claim-brief`.
+- `paragraphs`: source paragraphs used to render source references.
+
+In ClaimBrief mode, summary exports use ClaimBrief branding, include the professional-review disclaimer, add section-level source references, and append a source index when source paragraphs are available.
 
 Chat export:
 

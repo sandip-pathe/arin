@@ -92,6 +92,7 @@ export function WelcomeModal({
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [showTextarea, setShowTextarea] = useState(false);
+  const isClaimBrief = settings.summary.workflow === "claim-brief";
 
   useEffect(() => {
     setShowOnboarding(localStorage.getItem("onboardingDismissed") !== "true");
@@ -248,9 +249,9 @@ export function WelcomeModal({
   );
 
   const jurisdictionOptions = [
-    { value: "indian-law", label: "Indian Law" },
+    { value: "us-property-claims", label: "US Property Claims" },
     { value: "us-law", label: "US Law" },
-    { value: "eu-law", label: "EU Law" },
+    { value: "indian-law", label: "Indian Law" },
     { value: "trade-law", label: "Trade Law" },
   ];
 
@@ -263,16 +264,47 @@ export function WelcomeModal({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTitle className="sr-only">
-        Welcome to Legal AI Assistant
+        {isClaimBrief ? "Create ClaimBrief" : "Welcome to Legal AI Assistant"}
       </DialogTitle>
       <DialogDescription className="sr-only">
-        This is your personal legal assistant powered by AI. You can ask
-        questions, upload documents, and get summaries of legal texts.
+        {isClaimBrief
+          ? "Upload claim documents to create a cited review brief for professional review."
+          : "This is your personal legal assistant powered by AI. You can ask questions, upload documents, and get summaries of legal texts."}
       </DialogDescription>
       <DialogContent className="w-full h-full max-w-none max-h-none rounded-none md:max-w-4xl md:h-[90dvh] md:rounded-3xl p-0 bg-transparent shadow-none border-none overflow-hidden">
         <div className="relative bg-white md:rounded-3xl shadow-lg h-full p-4 md:p-8 overflow-y-auto">
           <Logo />
           <div className="pt-4">
+            <div className="mb-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950">
+              <div className="text-base font-semibold">
+                {isClaimBrief
+                  ? "Create a cited insurance claim brief"
+                  : "Create a private legal workspace"}
+              </div>
+              <p className="mt-1 text-blue-900/80">
+                {isClaimBrief
+                  ? "Upload a policy, denial letter, carrier estimate, contractor estimate, or claim correspondence. ClaimBrief organizes the packet for human review and does not submit claims or provide legal advice."
+                  : "Upload documents or paste text. Sessions stay in this browser unless you export them."}
+              </p>
+              {isClaimBrief && (
+                <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
+                  {[
+                    "Policy",
+                    "Denial letter",
+                    "Carrier estimate",
+                    "Contractor estimate",
+                    "Correspondence",
+                  ].map((label) => (
+                    <span
+                      key={label}
+                      className="rounded-full border border-blue-200 bg-white px-3 py-1 text-blue-700"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -319,7 +351,11 @@ export function WelcomeModal({
                           <Textarea
                             ref={textareaRef}
                             autoFocus
-                            placeholder="Paste the text here. . ."
+                            placeholder={
+                              isClaimBrief
+                                ? "Paste claim correspondence or denial text here..."
+                                : "Paste the text here. . ."
+                            }
                             className={`
                           w-full bg-white min-h-32 border-none focus:ring-0 focus:outline-0 
                           placeholder:text-gray-300 placeholder:text-2xl resize-none p-4 rounded-lg transition-all duration-200
@@ -549,10 +585,17 @@ export function WelcomeModal({
                             </SelectItem>
                           </SelectContent>
                         </Select>
-                        {showOnboarding && (
+                        {(showOnboarding || isClaimBrief) && (
                           <OnboardingSamplePdf
+                            label={
+                              isClaimBrief
+                                ? "Try Sample Claim Packet"
+                                : "Try Sample Document!"
+                            }
                             onUseSampleDoc={onUseSampleDoc}
-                            onDismiss={handleDismissOnboarding}
+                            onDismiss={
+                              isClaimBrief ? undefined : handleDismissOnboarding
+                            }
                           />
                         )}
                       </div>
@@ -582,7 +625,9 @@ export function WelcomeModal({
                         ) : (
                           <>
                             <ArrowUp className="h-5 w-5 text-white" size={24} />
-                            <span className="font-medium text-lg">Process</span>
+                            <span className="font-medium text-lg">
+                              {isClaimBrief ? "Create Brief" : "Process"}
+                            </span>
                           </>
                         )}
                       </Button>

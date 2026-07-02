@@ -1,4 +1,5 @@
 import type { ChatMessages, SummaryItem } from "@/types/page";
+import { useSettingsStore } from "@/store/settings-store";
 
 const readError = async (response: Response, fallback: string) => {
   try {
@@ -14,10 +15,11 @@ export async function ChatWithOpenAI(
   inputText: string,
   history: ChatMessages[] = []
 ) {
+  const settings = useSettingsStore.getState().settings.summary;
   const response = await fetch("/api/ai/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ context, inputText, history }),
+    body: JSON.stringify({ context, inputText, history, settings }),
   });
 
   if (!response.ok) {

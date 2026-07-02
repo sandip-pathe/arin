@@ -1,11 +1,13 @@
 import useSessionStore from "@/store/session-store";
 
 interface OnboardingSamplePdfProps {
+  label?: string;
   onUseSampleDoc?: () => void;
   onDismiss?: () => void;
 }
 
 export default function OnboardingSamplePdf({
+  label = "Try Sample Document!",
   onUseSampleDoc,
   onDismiss,
 }: OnboardingSamplePdfProps) {
@@ -20,7 +22,7 @@ export default function OnboardingSamplePdf({
           onDismiss?.();
         }}
       >
-        <span className="ml-1 hover:text-blue-600">Try Sample Document!</span>
+        <span className="ml-1 hover:text-blue-600">{label}</span>
       </button>
     </>
   );

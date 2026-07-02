@@ -8,6 +8,7 @@ import SummaryContent from "./summaryContent";
 import { Button } from "@/components/ui/button";
 import { exportToMarkdown, exportToPDF, exportToText } from "@/lib/export-utils";
 import { FiDownload } from "react-icons/fi";
+import { useSettingsStore } from "@/store/settings-store";
 
 type Props = {
   paragraphs?: Paragraph[];
@@ -26,6 +27,7 @@ export default function SummaryDisplay({
   summary,
   onCitationClick,
 }: Props) {
+  const { settings } = useSettingsStore();
   const [exportingFormat, setExportingFormat] = useState<
     "pdf" | "markdown" | "text" | null
   >(null);
@@ -55,14 +57,20 @@ export default function SummaryDisplay({
     if (!summary) return;
 
     const title = summary.title || "Anaya Summary";
+    const exportOptions = {
+      workflow:
+        settings.summary.workflow === "claim-brief" ? "claim-brief" : "legal",
+      paragraphs,
+    } as const;
+
     setExportingFormat(format);
     try {
       if (format === "pdf") {
-        await exportToPDF(summary, title);
+        await exportToPDF(summary, title, exportOptions);
       } else if (format === "markdown") {
-        exportToMarkdown(summary, title);
+        exportToMarkdown(summary, title, exportOptions);
       } else {
-        exportToText(summary, title);
+        exportToText(summary, title, exportOptions);
       }
     } finally {
       setExportingFormat(null);

@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSessionData } from "@/hooks/use-session-data";
 import { useFileProcessing } from "@/hooks/use-file-process";
 import useSessionStore from "@/store/session-store";
+import { useSettingsStore } from "@/store/settings-store";
 import { Paragraph, SummaryItem } from "@/types/page";
 import { FiSliders, FiDownload } from "react-icons/fi";
 import { RightPanel } from "@/components/right-panel";
@@ -49,6 +50,30 @@ All confidential information exchanged under this agreement must be used only fo
 
 The agreement is governed by the laws of Singapore. Any dispute must first be escalated to senior executives for good-faith negotiation before either party commences arbitration.`;
 
+const SAMPLE_CLAIM_TEXT = `PROPERTY INSURANCE CLAIM PACKET
+
+Insured: Maria Lopez
+Property: 418 Cedar Ridge Lane, Austin, Texas
+Carrier: Lone Star Mutual Insurance
+Policy: HO-783921-TX
+Claim: LS-2026-0418
+Date of Loss: April 18, 2026
+Reported Date: April 20, 2026
+
+Carrier denial letter dated May 12, 2026:
+Lone Star Mutual has completed its inspection of the reported wind and hail damage. Coverage is denied for roof replacement because the observed roof conditions are consistent with long-term wear, deterioration, and improper maintenance. The policy excludes loss caused by wear and tear, marring, deterioration, and latent defect. Interior ceiling staining is also denied because no storm-created opening was observed.
+
+Policy excerpts included in the packet:
+Coverage A applies to direct physical loss to the dwelling unless excluded. The insured must give prompt notice, protect the property from further damage, show the damaged property as often as reasonably required, and provide records and documents requested by the company.
+
+Exclusions include wear and tear, marring, deterioration, latent defect, faulty workmanship, and neglect. Suit against the company must be brought within two years and one day after the date of loss.
+
+Contractor estimate dated May 19, 2026:
+The contractor identifies missing shingles on the west slope, creased shingles on the rear slope, damaged ridge cap, and water staining in the upstairs hallway. The contractor estimate totals $18,420. The carrier estimate totals $1,280 for minor repairs below the $2,500 deductible.
+
+Open reviewer notes:
+Photos show hail marks on soft metals and gutters. No engineer report is included. No moisture readings are included. The carrier letter does not reference the contractor estimate.`;
+
 export default function SessionPage() {
   const { sessionId, activeSession, createNewSession, loadSessionData } =
     useSessionData();
@@ -56,6 +81,7 @@ export default function SessionPage() {
     useFileProcessing();
   const { toast } = useToast();
   const searchParams = useSearchParams();
+  const { settings, updateSettings } = useSettingsStore();
 
   const {
     setActiveSession,
@@ -67,6 +93,7 @@ export default function SessionPage() {
     attachments,
     removeAttachment,
     setParagraphs,
+    paragraphs,
     summaries,
     setSummaries,
     setChatMessages,
@@ -92,15 +119,31 @@ export default function SessionPage() {
 
   const summaryRef = useRef<HTMLDivElement>(null);
   const isNew = searchParams.get("new") === "true";
+  const requestedWorkflow = searchParams.get("workflow");
+  const isClaimBrief = settings.summary.workflow === "claim-brief";
   const router = useRouter();
 
   const handleUseSampleDoc = () => {
-    setInputText(SAMPLE_LEGAL_TEXT);
+    setInputText(isClaimBrief ? SAMPLE_CLAIM_TEXT : SAMPLE_LEGAL_TEXT);
     toast({
       title: "Sample loaded",
-      description: "Review the sample text, then process it when ready.",
+      description: isClaimBrief
+        ? "Review the sample claim packet, then create the brief."
+        : "Review the sample text, then process it when ready.",
     });
   };
+
+  useEffect(() => {
+    if (requestedWorkflow !== "claim-brief") return;
+    updateSettings({
+      summary: {
+        workflow: "claim-brief",
+        jurisdiction: "us-property-claims",
+        style: "detailed",
+        tone: "professional",
+      },
+    });
+  }, [requestedWorkflow, updateSettings]);
 
   useEffect(() => {
     if (initialized || !sessionId) {
@@ -172,7 +215,7 @@ export default function SessionPage() {
           setSummaries(result);
           setActiveSession({
             ...activeSession!,
-            title: result.title || "Legal Session",
+            title: result.title || (isClaimBrief ? "ClaimBrief" : "Legal Session"),
           });
           setParagraphs(inputTextParagraphs);
 
@@ -248,7 +291,10 @@ export default function SessionPage() {
       if (!sessionId) return;
 
       try {
-        const title = result.title || activeSession?.title || "Legal Session";
+        const title =
+          result.title ||
+          activeSession?.title ||
+          (isClaimBrief ? "ClaimBrief" : "Legal Session");
         const updatedAt = Date.now();
 
         saveLocalSessionContent(sessionId, {
@@ -283,6 +329,7 @@ export default function SessionPage() {
     [
       activeSession,
       attachments.length,
+      isClaimBrief,
       setActiveSession,
       toast,
     ]
@@ -344,15 +391,20 @@ export default function SessionPage() {
 
     setIsExporting(true);
     try {
+      const exportOptions = {
+        workflow: isClaimBrief ? "claim-brief" : "legal",
+        paragraphs,
+      } as const;
+
       switch (format) {
         case "pdf":
-          await exportToPDF(summaries, activeSession.title);
+          await exportToPDF(summaries, activeSession.title, exportOptions);
           break;
         case "markdown":
-          exportToMarkdown(summaries, activeSession.title);
+          exportToMarkdown(summaries, activeSession.title, exportOptions);
           break;
         case "text":
-          exportToText(summaries, activeSession.title);
+          exportToText(summaries, activeSession.title, exportOptions);
           break;
       }
       toast({
@@ -405,7 +457,7 @@ export default function SessionPage() {
             <div className="z-10 border-b flex items-center justify-between py-2">
               <div className="flex items-center justify-between w-full">
                 <div className="p-2 ml-10 font-medium">
-                  Briefs and Key Information
+                  {isClaimBrief ? "Claim Brief and Key Information" : "Briefs and Key Information"}
                 </div>
                 {(activeSession?.noOfAttachments ?? 0) > 0 && (
                   <motion.span

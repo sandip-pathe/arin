@@ -7,7 +7,9 @@ Anaya is now a local-first Next.js application with a narrow server boundary for
 ```mermaid
 flowchart TD
   User["User browser"] --> Home["Home page"]
+  User --> ClaimBrief["/claimbrief"]
   Home --> LocalIndex["localStorage session index"]
+  ClaimBrief --> Session
   Home --> Session["/s/[sessionId]"]
   Session --> Extraction["Browser extraction: PDF, DOCX, OCR, TXT, MD"]
   Extraction --> Chunking["Browser sentence chunking"]
@@ -56,6 +58,8 @@ Server routes:
 
 There are no session persistence APIs today. That is intentional. The current product choice is local browser storage plus explicit export.
 
+Workflow-specific prompting is selected through local settings. The `claim-brief` workflow changes summary, quick skim, and chat prompts without changing the storage model.
+
 ## Data Flow
 
 ### New Session
@@ -67,6 +71,14 @@ There are no session persistence APIs today. That is intentional. The current pr
 5. Parsed text becomes paragraph records with stable paragraph ids.
 6. Summary and quick skim requests are sent through server routes.
 7. Results are written back to localStorage.
+
+### ClaimBrief Session
+
+1. User opens `/claimbrief`.
+2. The page sets `settings.summary.workflow` to `claim-brief`.
+3. The page creates a local session at `/s/{sessionId}?new=true&workflow=claim-brief`.
+4. The upload modal asks for policies, denial letters, estimates, and claim correspondence.
+5. Summary, quick skim, and chat requests use claim-review prompts and preserve the same local-first storage model.
 
 ### Existing Session
 

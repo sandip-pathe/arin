@@ -184,3 +184,33 @@ Why:
 - The repo had stale docs from the old Firebase/Firebase Studio era.
 - Future work needs a clear memory of what was intentionally removed.
 - Positioning and architecture are now linked: the product promise depends on the technical shape.
+
+## Decision 11: First US Monetization Wedge Is ClaimBrief
+
+Decision:
+
+Use the current Anaya engine to test a narrow US property-insurance claim packet workflow called ClaimBrief.
+
+Why:
+
+- Generic legal AI is too broad and crowded.
+- Public adjusters and restoration operators already handle expensive document-heavy claims.
+- The buyer is reachable through directories, state associations, Google Maps, and LinkedIn.
+- Existing Anaya capabilities map well to the first artifact: ingest documents, summarize, cite, chat, and export.
+
+Initial offer:
+
+- Free sample brief from one old closed or redacted claim packet.
+- $99 for 3 claim briefs.
+- $299/month for up to 20 briefs.
+- White-label setup after a paid pilot.
+
+Boundaries:
+
+- No carrier contact.
+- No claim submission.
+- No legal advice.
+- No public-adjusting services.
+- No settlement recommendation.
+
+The goal is fast paid validation through cold outreach, not a full SaaS build.

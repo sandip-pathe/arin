@@ -3,9 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Anaya - Privacy-First Legal AI",
+  title: "Anaya - Local-First Document AI",
   description:
-    "Process legal documents privately with AI. Your files stay on your device. Zero data retention.",
+    "Create local-first legal and claim-document workspaces with server-routed AI analysis and exportable briefs.",
 };
 
 export default function RootLayout({

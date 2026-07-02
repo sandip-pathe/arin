@@ -36,10 +36,11 @@ export async function summarizeParagraphs(
 }
 
 export async function quickSkimSummary(paragraphs: Paragraph[]): Promise<string> {
+  const settings = useSettingsStore.getState().settings.summary;
   const response = await fetch("/api/ai/quick-skim", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ paragraphs }),
+    body: JSON.stringify({ paragraphs, settings }),
   });
 
   if (!response.ok) {

@@ -17,11 +17,17 @@ import { useSettingsStore } from "@/store/settings-store";
 
 export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
   const { settings, updateSettings } = useSettingsStore();
+  const [workflow, setWorkflow] = useState(settings.summary.workflow);
   const [summaryLength, setSummaryLength] = useState(settings.summary.length);
   const [complexity, setComplexity] = useState(settings.summary.complexity);
   const [tone, setTone] = useState(settings.summary.tone);
   const [style, setStyle] = useState(settings.summary.style);
   const [saving, setSaving] = useState(false);
+
+  const workflowOptions = [
+    { value: "legal", label: "Legal Summary" },
+    { value: "claim-brief", label: "ClaimBrief" },
+  ];
 
   const lengthOptions = [
     { value: "short", label: "Short" },
@@ -46,6 +52,7 @@ export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
   ];
 
   useEffect(() => {
+    setWorkflow(settings.summary.workflow);
     setSummaryLength(settings.summary.length);
     setComplexity(settings.summary.complexity);
     setTone(settings.summary.tone);
@@ -54,18 +61,20 @@ export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
 
   const hasChanges = useMemo(() => {
     return (
+      workflow !== settings.summary.workflow ||
       summaryLength !== settings.summary.length ||
       complexity !== settings.summary.complexity ||
       tone !== settings.summary.tone ||
       style !== settings.summary.style
     );
-  }, [summaryLength, complexity, tone, style, settings]);
+  }, [workflow, summaryLength, complexity, tone, style, settings]);
 
   const handleSave = async () => {
     if (!hasChanges) return;
     setSaving(true);
     await updateSettings({
       summary: {
+        workflow,
         length: summaryLength,
         complexity,
         tone,
@@ -85,6 +94,31 @@ export const SummarySettings = ({ onClose }: { onClose?: () => void }) => {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>Workflow</Label>
+          <div className="flex flex-wrap gap-2">
+            {workflowOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant={workflow === option.value ? "default" : "outline"}
+                className={cn(
+                  "rounded-full px-4 py-2 transition-colors",
+                  workflow === option.value
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-blue-600 hover:text-white"
+                )}
+                onClick={() => setWorkflow(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+          <p className="text-sm text-gray-500">
+            ClaimBrief creates a property-insurance claim review brief for
+            professional review.
+          </p>
+        </div>
+
         <div className="space-y-2">
           <Label>Summary Length</Label>
           <div className="flex gap-2">

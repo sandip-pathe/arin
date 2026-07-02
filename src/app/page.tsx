@@ -293,6 +293,31 @@ export default function HomePage() {
             </div>
           </div>
 
+          <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-emerald-950 sm:px-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  US sales wedge
+                </div>
+                <div className="mt-1 text-lg font-semibold">
+                  ClaimBrief for property insurance claim packets
+                </div>
+                <p className="mt-1 max-w-3xl text-sm text-emerald-900/80">
+                  Turn policies, denial letters, estimates, and claim
+                  correspondence into a cited review brief for licensed claim
+                  professionals.
+                </p>
+              </div>
+              <Button
+                className="h-10 rounded-md bg-emerald-700 px-4 text-white hover:bg-emerald-800 md:self-center"
+                onClick={() => router.push("/claimbrief")}
+              >
+                Open ClaimBrief
+                <FiArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
           {hasAnySessions && (
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 p-4 sm:p-5 bg-white rounded-xl md:rounded-2xl border border-neutral-100 shadow-sm">
               <div className="flex flex-wrap gap-2 w-full md:w-auto">

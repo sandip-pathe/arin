@@ -73,6 +73,9 @@ const defaultOntology = () => ({
   citationsAndPrecedents: [],
 });
 
+const getWorkflow = (settings: any) =>
+  settings?.workflow === "claim-brief" ? "claim-brief" : "legal";
+
 const parseSummaryItem = (content: string): SummaryItem => {
   const parsed = safeJSON(content);
 
@@ -85,13 +88,46 @@ const parseSummaryItem = (content: string): SummaryItem => {
 
 const processBatch = async (
   openai: OpenAI,
-  paragraphs: Paragraph[]
+  paragraphs: Paragraph[],
+  workflow: "legal" | "claim-brief"
 ): Promise<any> => {
   const paragraphText = paragraphs
     .map((paragraph) => `(${paragraph.id}) ${paragraph.text}`)
     .join("\n\n");
 
-  const systemPrompt = `
+  const systemPrompt =
+    workflow === "claim-brief"
+      ? `
+You are ClaimBrief, an AI document-review assistant for licensed property insurance claim professionals.
+Extract facts from insurance policies, denial letters, carrier estimates, contractor estimates, claim correspondence, and related property-claim documents.
+
+Rules:
+1. Output JSON only.
+2. Do not hallucinate, negotiate, submit claims, or give legal/public-adjusting advice.
+3. Each extraction must be atomic and include sourceParagraphs.
+4. Keep every point grounded only in provided text.
+5. Flag uncertainty as a question for human review, not as a conclusion.
+
+Schema:
+{
+  "extractions": [
+    { "text": "Claim-relevant point", "sourceParagraphs": ["d1.p1"] }
+  ],
+  "legalOntology": {
+    "parties": ["Insured, insurer, adjuster, contractor, expert, or mortgagee names found"],
+    "obligations": ["Notice, proof of loss, mitigation, inspection, documentation, payment, or cooperation duties found"],
+    "conditions": ["Coverage conditions, deductibles, exclusions, limitations, endorsements, or triggers found"],
+    "clauses": ["Policy provisions, endorsements, exclusions, valuation provisions, suit limitations, or appraisal clauses found"],
+    "definitions": ["Defined policy terms or claim terms found"],
+    "dates": ["Date of loss, report date, inspection date, denial date, deadline, suit limitation, or follow-up date found"],
+    "proceduralPosture": ["Claim stage, denial, underpayment, supplement, appraisal, litigation, or reopen status found"],
+    "courtAndJudges": [],
+    "conflicts": ["Disputes, estimate mismatches, carrier reasons, missing evidence, or unclear positions found"],
+    "implications": ["Questions for human review, evidence gaps, next-document needs, or review priorities found"],
+    "citationsAndPrecedents": ["Claim numbers, policy form numbers, statutes, building codes, regulations, or cited authorities found"]
+  }
+}`
+      : `
 You are a specialized legal AI assistant.
 Extract legally significant points from the provided text.
 
@@ -141,8 +177,56 @@ const aggregateResults = async (
   settings: any
 ): Promise<SummaryItem> => {
   const inputJson = JSON.stringify(batchResults, null, 2);
+  const workflow = getWorkflow(settings);
 
-  const systemPrompt = `
+  const systemPrompt =
+    workflow === "claim-brief"
+      ? `
+You are ClaimBrief, a careful property insurance claim-document analyst.
+
+Goal: produce one cited claim review brief for a licensed claim professional to review.
+
+Rules:
+1. Output JSON only.
+2. Do not give legal advice, public adjusting services, claim negotiation, or settlement recommendations.
+3. Preserve sourceParagraphs.
+4. Separate facts found in the packet from questions for human review.
+5. Do not invent policy language, dates, codes, damages, or carrier positions.
+6. Style: ${settings?.style || "detailed"}.
+7. Tone: ${settings?.tone || "professional"}.
+8. Length: ${settings?.length || "medium"}.
+
+Create extraction text entries in this order where evidence exists:
+- Claim overview
+- Documents reviewed
+- Carrier denial or underpayment reasons
+- Policy provisions, exclusions, endorsements, and deadlines found
+- Estimate or scope mismatches
+- Missing evidence checklist
+- Draft response outline for human review
+- Questions for the licensed reviewer
+
+JSON schema:
+{
+  "title": "Unique 7-word claim brief title",
+  "extractions": [
+    { "text": "Claim overview: grounded claim-review point", "sourceParagraphs": ["d1.p1"] }
+  ],
+  "legalOntology": {
+    "parties": [],
+    "obligations": [],
+    "conditions": [],
+    "clauses": [],
+    "definitions": [],
+    "dates": [],
+    "proceduralPosture": [],
+    "courtAndJudges": [],
+    "conflicts": [],
+    "implications": [],
+    "citationsAndPrecedents": []
+  }
+}`
+      : `
 You are a senior legal associate consolidating extraction results.
 
 Goal: produce one master structured summary and unified ontology.
@@ -201,10 +285,11 @@ export async function POST(request: Request) {
 
     const openai = getOpenAI();
     const safeParagraphs = normalizeParagraphs(paragraphs);
+    const workflow = getWorkflow(settings);
     const batches = makeBatches(safeParagraphs);
     const limit = pLimit(CONCURRENCY);
     const batchResults = await Promise.all(
-      batches.map((batch) => limit(() => processBatch(openai, batch)))
+      batches.map((batch) => limit(() => processBatch(openai, batch, workflow)))
     );
     const summary = await aggregateResults(openai, batchResults, settings);
 

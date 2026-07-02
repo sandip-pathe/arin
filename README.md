@@ -25,6 +25,7 @@ The current product direction is deliberately narrow: a fast private legal readi
 ## What It Does
 
 - Creates private legal sessions in the current browser.
+- Offers a ClaimBrief route for US property-insurance claim packet review.
 - Extracts text from PDF, DOCX, image, TXT, and Markdown files.
 - Uses local parsing, PDF text extraction, OCR, and sentence chunking before AI calls.
 - Generates quick skims, structured summaries, source-linked legal points, and legal ontology fields.
@@ -57,6 +58,9 @@ There is no browser-exposed OpenAI key, no Firebase client, no Firestore writes,
 - [Technical Details](docs/TECHNICAL_DETAILS.md)
 - [Business Decisions](docs/BUSINESS_DECISIONS.md)
 - [Local Private Migration Notes](docs/LOCAL_PRIVATE_MIGRATION.md)
+- [US ClaimBrief Go-To-Market](docs/US_CLAIMBRIEF_GO_TO_MARKET.md)
+- [ClaimBrief Outreach Emails](docs/outreach/claimbrief-email-sequence.md)
+- [ClaimBrief Lead Template](docs/outreach/claimbrief-leads-template.csv)
 
 ## Tech Stack
 
@@ -107,6 +111,7 @@ npm run build
 The latest verified build route table only includes:
 
 - `/`
+- `/claimbrief`
 - `/s/[sessionId]`
 - `/api/ai/chat`
 - `/api/ai/quick-skim`
