@@ -1,0 +1,145 @@
+account_name,domain,contact_name,contact_title,email,sender_account,subject_line,email_body,personalization_reason,work_angle,research_used,confidence_score
+Mulberri,mulberri.io,Yong Zheng,Co-founder & CTO,yong@mulberri.io,Sandeep,Mulberri + underwriting intake help,"Hi Yong,
+
+Saw Mulberri is positioning itself as the single source of truth from underwriting through claims, and the Omnyy partnership around underwriting ops stood out.
+
+That usually means a lot of intake pain: broker records, carrier docs, PEO files, claims context, and underwriting notes that need to become clean internal data.
+
+I build fixed-price LangGraph/FastAPI document workflows for insurance teams, especially the intake and review layer that is useful but easy to bury inside product tech debt.
+
+If contract help is relevant, happy to send a few specific ways I could help.
+
+Best,
+Sandeep",References Mulberri positioning as underwriting-to-claims source of truth and Omnyy partnership around underwriting operations.,"Contract sprint for underwriting intake, broker/carrier record extraction, claims context normalization, and review queues.","updated CSV Clay fields: company about page, Business Wire partnership signal, document pain point.",9
+CoverTree,covertree.com,Divyansh Sharma,CTO,div@covertree.com,Sandeep,CoverTree + manufactured-home docs,"Hi Divyansh,
+
+Saw CoverTree raised the $13M Series A to scale manufactured-home insurance and the Maple platform.
+
+That category feels document-heavy in a very specific way: property details, lender workflows, quote/bind data, policy docs, claims files, and book conversion cleanup.
+
+I build contract LangGraph/FastAPI workflows for insurance ops where the output needs to be reviewable, not just roughly extracted. The sprint could stay narrow: intake, validation, and handoff.
+
+If a focused build sprint would help, I can send a 1-page schema for the document intake layer.
+
+Thanks,
+Sandeep",References Series A and manufactured-home insurance workflow rather than generic insurtech automation.,"Contract build for quote/bind, policy, lender, and claims document extraction with human review.","updated CSV Clay fields: BusinessWire Series A source, product focus, document pain point.",9
+AxiTrust,axitrust.com,Adesh Singh,Head of Product & Engineering,adesh@axitrust.com,Sandeep,AxiTrust + surety application cleanup,"Hi Adesh,
+
+Saw AxiTrust raised seed funding around surety bonds for insurers, FIs, and MSMEs in India.
+
+The workflow sounds like a lot of messy evidence before anything is approved: financial docs, legal docs, banking data, ROC checks, underwriting notes, and claim tracking.
+
+I build project-based LangGraph/FastAPI systems for document-heavy credit and insurance workflows, with validation steps before data reaches a decision path.
+
+If useful, I can send a few concrete ways I could help on a short contract sprint.
+
+Best,
+Sandeep",Uses the surety bond seed funding and specific Indian MSME/insurer/FI workflow context.,"Project-based extraction and validation for surety applications, underwriting evidence, and claim tracking.",updated CSV Clay fields: Economic Times seed round source and document pain point. Signal metadata is weaker because status/date were undefined.,8
+Ryft,ryftpay.com,Richard Kirby,Co-founder & CTO,richard@ryftpay.com,Sandeep,Ryft + marketplace compliance docs,"Hi Richard,
+
+Saw Ryft raised the Series A to expand embedded payments for marketplaces and platforms.
+
+Marketplace payments can get gnarly outside the payment flow itself: seller onboarding, KYC, AML checks, payout holds, PSD2, PCI evidence, and edge-case reviews.
+
+I build remote LangGraph/FastAPI workflows for fintech ops teams that need strict extraction, review queues, and internal tools shipped without waiting on hiring.
+
+If contract capacity is useful, I can send a 1-page schema for the seller onboarding layer.
+
+Thanks,
+Sandeep",References Ryft Series A and the marketplace compliance/onboarding workflows tied to embedded payments.,"Remote contract sprint for seller onboarding, compliance document intake, payout exception review, and ops tooling.","updated CSV Clay fields: Business Insider Series A source, payment/compliance document pain point.",9
+GoDutch,godutch.com,Thomas Vles,Founder,thomas@godutch.com,Sandeep,GoDutch + invoice admin ops,"Hi Thomas,
+
+Saw GoDutch raised seed funding to scale business banking and finance automation for Dutch SMEs.
+
+The boring hard part is usually invoice intake, expense docs, bulk payments, approvals, bookkeeping exports, and all the tiny exceptions that make automation feel cooked.
+
+I build fixed-price LangGraph/FastAPI workflows for document-heavy ops, especially when a small team wants one internal module shipped fast. I would keep the scope narrow: intake, exceptions, and approval state.
+
+If helpful, I can send a 1-page schema for an invoice and expense review flow.
+
+Best,
+Sandeep",References GoDutch seed funding and SME banking/admin automation context.,"Fixed-price sprint for invoice intake, expense document processing, approval workflows, and bookkeeping export automation.","updated CSV Clay fields: funding signal, company website, document pain point.",8
+Mannjal,mannjal.com,Prashant Adurty,Co-founder & CEO,prashant@mannjal.com,Sandeep,Mannjal + borrower file workflows,"Hi Prashant,
+
+Saw Mannjal raised seed funding to expand the unified lending platform for MSMEs in Bharat.
+
+That sounds like a real borrower-file problem: field app uploads, large documents, lender-specific formats, underwriting workflows, and sanction docs that all need clean handoff.
+
+I build contract LangGraph/FastAPI pipelines for lending teams that need document extraction plus review state, not another huge product surface. The sprint could stay narrow: ingestion, conversion, and review handoff.
+
+If relevant, I can send a few specific ways I could help on a short sprint.
+
+Thanks,
+Sandeep",References Mannjal seed round and priority-sector/MSME lending workflow from the lead data.,"Contract sprint for borrower file ingestion, lender-format conversion, underwriting document extraction, and review state.","updated CSV Clay fields: Economic Times seed round source, AI note, document pain point.",9
+Instant Factoring,instantfactoring.com,Cristian Ionescu,CEO & Co-founder,cristian.ionescu@instantfactoring.com,Sandeep,Instant Factoring + invoice review capacity,"Hi Cristian,
+
+Saw Instant Factoring secured the new EUR 30M funding line to support more SMEs across Romania and Spain.
+
+At that volume, invoice-backed financing can create a quiet ops bottleneck: invoices, receivables evidence, SME onboarding docs, credit files, and exception review.
+
+I build project-based LangGraph/FastAPI workflows that turn those docs into structured queues and API-ready data for finance teams. I would keep the build narrow: intake, validation, and exception queues.
+
+If useful, I can send a 1-page schema for the invoice review layer.
+
+Best,
+Sandeep",References the EUR 30M funding line and Romania/Spain SME factoring expansion.,"Project-based invoice finance extraction, SME onboarding review, credit-doc normalization, and exception queues.","updated CSV Clay fields: Cinco Dias funding-line source, AI signal summary, document pain point.",9
+Anchor,sayanchor.com,Leeor Aharon,Co-founder & CTO,leeor@sayanchor.com,Sandeep,Anchor + billing document ops,"Hi Leeor,
+
+Saw Anchor raised the $20M Series A around autonomous billing and collections for accounting firms.
+
+The part that feels easy to underestimate is the document glue: proposals, agreements, onboarding docs, e-signature state, invoices, payment evidence, and reconciliation edge cases.
+
+I build remote LangGraph/FastAPI workflows and internal tools for exactly this kind of back-office automation. I would keep the sprint narrow: document state, extraction, and handoff.
+
+If contract help is relevant, I can send a 1-page schema for the billing-doc workflow.
+
+Thanks,
+Sandeep",References Anchor Series A and accounting-firm billing/collections workflow.,"Remote contract build for billing document extraction, onboarding docs, invoice/payment evidence, and reconciliation tooling.","updated CSV Clay fields: Series A signal and Anchor about/source URL, document pain point.",8
+Gynger,gynger.io,Mark Ghermezian,Founder & CEO,mark@gynger.io,Sandeep,Gynger + financing doc workflow,"Hi Mark,
+
+Saw Gynger announced the Series A plus the debt facility to scale embedded financing for tech purchases.
+
+The workflow feels very doc-heavy once it scales: buyer qualification, software contracts, invoices, payment terms, receivables, and AR handoff all need to stay in sync.
+
+I build fixed-price LangGraph/FastAPI sprints for fintech ops teams that need one workflow automated without hiring a full extra pod. The scope could stay tight: qualification docs, contracts, and AR handoff.
+
+If useful, I can send a few concrete ways I could help.
+
+Best,
+Sandeep",References Gynger Series A and debt facility for embedded technology financing.,"Fixed-price sprint for buyer qualification, contract/invoice extraction, payment term review, and AR workflow automation.","updated CSV Clay fields: Gynger newsroom signal, PR corroboration note, document pain point.",9
+Baobab Risk Solutions,baobab.io,Anton Foth,CTO & Founder,anton.foth@baobab.io,Sandeep,Baobab + cyber insurance submissions,"Hi Anton,
+
+Saw Baobab is launching Cyber Safe for SMBs, combining cyber insurance with security and monitoring.
+
+That kind of product still has a gritty document layer: broker submissions, cyber underwriting evidence, incident notes, crime or IT liability docs, and claims management.
+
+I build contract LangGraph/FastAPI workflows for regulated insurance ops where extraction needs strict guardrails and human review. I would keep the build narrow: submissions, incident evidence, and claims handoff.
+
+If helpful, I can send a 1-page schema for the submissions and claims intake layer.
+
+Thanks,
+Sandeep",References Baobab Cyber Safe product signal and SMB cyber insurance workflow.,"Contract workflow for broker submissions, cyber underwriting docs, incident evidence, and claims intake.","updated CSV Clay fields: Baobab about page, Cyber Safe product launch signal, document pain point.",8
+Triver,triver.co.uk,Jerome Le Luel,Founder & CEO,jerome@triver.com,Sandeep,Triver + invoice finance intake,"Hi Jerome,
+
+Saw Triver secured the new financing package after financing 17K+ invoices for UK SMEs.
+
+That scale usually makes intake the bottleneck: invoices, open banking data, SME credit docs, embedded partner workflows, and exception handling all need clean internal state.
+
+I build project-based LangGraph/FastAPI pipelines for invoice finance teams that need reliable extraction and review queues. The sprint could stay narrow: invoice intake, validation, and exception handling.
+
+If contract help is relevant, I can send a 1-page schema for the invoice intake layer.
+
+Best,
+Sandeep",References Triver financing package and invoice volume signal.,"Project-based invoice finance intake, open banking/credit doc review, partner workflow automation, and exception handling.","updated CSV Clay fields: Triver blog funding source, AI signal summary, document pain point.",9
+Defacto,getdefacto.com,Marc-Henri Gires,Co-founder & CTO,marco@getdefacto.com,Sandeep,Defacto + SME lending docs,"Hi Marc-Henri,
+
+Saw Defacto raised the Series B to scale embedded lending for SMEs across Europe.
+
+The messy part is probably not the lending API, it is invoices, purchase orders, receivables, supply-chain finance docs, and SME underwriting evidence arriving in half-clean formats.
+
+I build contract LangGraph/FastAPI workflows that turn those docs into structured review state and internal tools. I would keep the module narrow: invoice data, PO checks, and underwriting handoff.
+
+If useful, I can send a 1-page schema or a live codebase link.
+
+Thanks,
+Sandeep",References Defacto Series B and embedded lending for European SMEs.,"Contract extraction workflow for invoices, purchase orders, receivables, and SME underwriting evidence.","updated CSV Clay fields: Defacto website/source URL, Dealroom funding note, document pain point.",8
